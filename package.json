@@ -1,0 +1,17 @@
+{
+  "name": "relay",
+  "private": true,
+  "scripts": {
+    "postinstall": "pnpm --dir api install && pnpm --dir ui install",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "dev": "concurrently -k -n api,ui \"pnpm --dir api run start:dev\" \"pnpm --dir ui run dev\"",
+    "build": "pnpm --dir api run build && pnpm --dir ui run build",
+    "test": "pnpm --dir api test",
+    "typecheck": "pnpm --dir api run typecheck && pnpm --dir ui run typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

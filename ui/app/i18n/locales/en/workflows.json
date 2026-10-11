@@ -1,0 +1,9 @@
+{
+  "title": "Workflows",
+  "subtitle": "Automate repeated tasks with triggers and actions.",
+  "empty": {
+    "title": "No workflows yet",
+    "description": "Start from a template or build a flow from scratch."
+  },
+  "create": "New workflow"
+}

@@ -1,0 +1,157 @@
+import { edge, EngineHarness, node } from './support/engine-harness';
+import { TestServer } from './support/test-server';
+
+describe('engine: flows', () => {
+  let engine: EngineHarness;
+  const server = new TestServer();
+
+  beforeAll(async () => {
+    engine = await EngineHarness.create();
+    await server.start();
+  });
+  afterAll(async () => {
+    await server.stop();
+    await engine.close();
+  });
+  beforeEach(() => engine.reset());
+
+  it('passes data between steps through expressions', async () => {
+    server.reply({ status: 200, body: { saved: true } });
+    const workflowId = await engine.publish({
+      nodes: [
+        node('start', 'trigger.manual'),
+        node('greeting', 'data.set', {
+          fields: { text: 'Hi {{ trigger.name }}' },
+        }),
+        node('save', 'http.request', {
+          url: server.url('/posts'),
+          method: 'POST',
+          body: { message: '{{ steps.greeting.output.text }}' },
+        }),
+      ],
+      edges: [edge('start', 'greeting'), edge('greeting', 'save')],
+    });
+
+    const runId = await engine.start(workflowId, { name: 'Ana' });
+    await engine.worker.drain();
+
+    expect(await engine.statuses(runId)).toEqual({
+      run: 'succeeded',
+      steps: { start: 'succeeded', greeting: 'succeeded', save: 'succeeded' },
+    });
+    expect(server.received[0].body).toEqual({ message: 'Hi Ana' });
+    expect(server.received[0].headers['idempotency-key']).toMatch(
+      new RegExp(`^${runId}:save:1$`),
+    );
+  });
+
+  it('takes one branch, skips the other, and merges', async () => {
+    const workflowId = await engine.publish({
+      nodes: [
+        node('start', 'trigger.manual'),
+        node('check', 'logic.if', {
+          value: '{{ trigger.total }}',
+          operator: 'greater_than',
+          compare: 100,
+        }),
+        node('big', 'data.set', { fields: { size: 'big' } }),
+        node('small', 'data.set', { fields: { size: 'small' } }),
+        node('end', 'data.set', { fields: { done: true } }),
+      ],
+      edges: [
+        edge('start', 'check'),
+        edge('check', 'big', 'true'),
+        edge('check', 'small', 'false'),
+        edge('big', 'end'),
+        edge('small', 'end'),
+      ],
+    });
+
+    const runId = await engine.start(workflowId, { total: '250' });
+    await engine.worker.drain();
+
+    expect(await engine.statuses(runId)).toEqual({
+      run: 'succeeded',
+      steps: {
+        start: 'succeeded',
+        check: 'succeeded',
+        big: 'succeeded',
+        small: 'skipped',
+        end: 'succeeded',
+      },
+    });
+  });
+
+  it('runs parallel branches and joins them once', async () => {
+    const workflowId = await engine.publish({
+      nodes: [
+        node('start', 'trigger.manual'),
+        ...['a', 'b', 'c'].map((id) =>
+          node(id, 'data.set', { fields: { id } }),
+        ),
+        node('join', 'data.set', {
+          fields: {
+            all: '{{ steps.a.output.id }}{{ steps.b.output.id }}{{ steps.c.output.id }}',
+          },
+        }),
+      ],
+      edges: ['a', 'b', 'c'].flatMap((id) => [
+        edge('start', id),
+        edge(id, 'join'),
+      ]),
+    });
+
+    const runId = await engine.start(workflowId);
+    await engine.worker.drain();
+
+    const run = await engine.run(runId);
+    expect(run.status).toBe('succeeded');
+    const joins = run.steps.filter((step) => step.nodeId === 'join');
+    expect(joins).toHaveLength(1);
+    expect(joins[0].output).toEqual({ all: 'abc' });
+  });
+
+  it('sleeps on a delay without holding a worker, then goes on', async () => {
+    const workflowId = await engine.publish({
+      nodes: [
+        node('start', 'trigger.manual'),
+        node('wait', 'flow.delay', { amount: 2, unit: 'hours' }),
+        node('after', 'data.set', { fields: { ok: true } }),
+      ],
+      edges: [edge('start', 'wait'), edge('wait', 'after')],
+    });
+
+    const runId = await engine.start(workflowId);
+    await engine.worker.drain();
+    expect(await engine.statuses(runId)).toEqual({
+      run: 'waiting',
+      steps: { start: 'succeeded', wait: 'waiting' },
+    });
+
+    await engine.makeDue();
+    await engine.worker.drain();
+    const run = await engine.run(runId);
+    expect(run.status).toBe('succeeded');
+    expect(run.steps.find((step) => step.nodeId === 'wait')?.attempt).toBe(1);
+  });
+
+  it('cancels a waiting run', async () => {
+    const workflowId = await engine.publish({
+      nodes: [
+        node('start', 'trigger.manual'),
+        node('wait', 'flow.delay', { amount: 1, unit: 'days' }),
+      ],
+      edges: [edge('start', 'wait')],
+    });
+    const runId = await engine.start(workflowId);
+    await engine.worker.drain();
+
+    expect(await engine.canceller.cancelRun(runId)).toBe(true);
+    await engine.makeDue();
+    await engine.worker.drain();
+    expect(await engine.statuses(runId)).toEqual({
+      run: 'cancelled',
+      steps: { start: 'succeeded', wait: 'cancelled' },
+    });
+  });
+});

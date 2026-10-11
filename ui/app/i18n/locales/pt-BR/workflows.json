@@ -1,0 +1,9 @@
+{
+  "title": "Fluxos",
+  "subtitle": "Automatize tarefas repetidas com gatilhos e ações.",
+  "empty": {
+    "title": "Nenhum fluxo ainda",
+    "description": "Comece por um modelo ou monte um fluxo do zero."
+  },
+  "create": "Novo fluxo"
+}
