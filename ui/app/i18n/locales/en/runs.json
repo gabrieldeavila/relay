@@ -1,0 +1,58 @@
+{
+  "title": "Runs of {{name}}",
+  "backToEditor": "Edit flow",
+  "status": {
+    "running": "Running",
+    "waiting": "Waiting",
+    "succeeded": "Done",
+    "failed": "Failed",
+    "cancelled": "Cancelled",
+    "pending": "Not started",
+    "ready": "Queued",
+    "retrying": "Retrying soon",
+    "timed_out": "No answer in time",
+    "skipped": "Skipped",
+    "not_reached": "Not reached"
+  },
+  "outcome": {
+    "succeeded": "Done",
+    "failed": "Failed",
+    "retrying": "Failed, will retry",
+    "sleeping": "Paused",
+    "waiting": "Started waiting",
+    "timed_out": "No answer in time"
+  },
+  "header": {
+    "summary": "Version {{version}} · started {{started}} · {{duration}}"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "retry": "Retry failed step",
+    "runAgain": "Run again"
+  },
+  "list": {
+    "title": "Runs",
+    "empty": "No runs yet.",
+    "emptyTitle": "This flow has not run yet",
+    "emptyDescription": "Press Run now in the editor, or wait for its trigger."
+  },
+  "step": {
+    "pick": "Select a step to see what happened.",
+    "attempts": "Attempts",
+    "input": "What it received",
+    "output": "What it produced",
+    "went": "Went: {{port}}",
+    "pending": "This step has not started yet.",
+    "not_reached": "The run ended before this step.",
+    "skipped": "Skipped: the flow went another way."
+  },
+  "waiting": {
+    "timer": "Paused until {{when}}.",
+    "approval": "Waiting for an answer. You can answer here, or with the links sent by the flow.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "webhook": "Waiting for another app to call this link:",
+    "deadline": "Gives up at {{when}}."
+  },
+  "answerClosed": "This step was already answered."
+}

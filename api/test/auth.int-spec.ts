@@ -1,50 +1,17 @@
-import type { INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
-import { sql } from 'drizzle-orm';
 import { SignJWT } from 'jose';
-import type { Server } from 'node:http';
-import type { AddressInfo } from 'node:net';
-import { AppModule } from '../src/app.module';
-import { DATABASE, type Database } from '../src/database/database';
-import { TEST_DATABASE_URL } from './support/test-database-url';
+import { startHttpApp, tokenFor } from './support/http-harness';
 
-const SECRET = 'test-secret-with-at-least-32-characters!!';
 const ANA = '00000000-0000-4000-8000-00000000000a';
 const BIA = '00000000-0000-4000-8000-00000000000b';
 
-const tokenFor = (sub: string, role = 'authenticated', expiresIn = '1h') =>
-  new SignJWT({ role })
-    .setProtectedHeader({ alg: 'HS256' })
-    .setSubject(sub)
-    .setExpirationTime(expiresIn)
-    .sign(new TextEncoder().encode(SECRET));
-
 describe('auth over HTTP', () => {
-  let app: INestApplication;
-  let base: string;
-
-  const call = (path: string, token?: string, init: RequestInit = {}) =>
-    fetch(`${base}${path}`, {
-      ...init,
-      headers: {
-        'content-type': 'application/json',
-        ...(token ? { authorization: `Bearer ${token}` } : {}),
-      },
-    });
+  let http: Awaited<ReturnType<typeof startHttpApp>>;
+  const call = (...args: Parameters<typeof http.call>) => http.call(...args);
 
   beforeAll(async () => {
-    process.env.DATABASE_URL = TEST_DATABASE_URL;
-    process.env.WORKER_ENABLED = 'false';
-    process.env.SUPABASE_JWT_SECRET = SECRET;
-    const module = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-    app = module.createNestApplication();
-    await app.listen(0, '127.0.0.1');
-    base = `http://127.0.0.1:${((app.getHttpServer() as Server).address() as AddressInfo).port}`;
-    await app.get<Database>(DATABASE).execute(sql`DELETE FROM relay.workflows`);
+    http = await startHttpApp();
   });
-  afterAll(() => app.close());
+  afterAll(() => http.app.close());
 
   it('needs a login for the API but not for health, hooks or resume links', async () => {
     expect((await call('/workflows')).status).toBe(401);

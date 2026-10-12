@@ -12,8 +12,8 @@ import {
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { WorkflowFlowNode } from "../domain/to-flow-elements";
-import { WorkflowNodeCard } from "./WorkflowNodeCard";
+import type { WorkflowFlowNode } from "@/app/flow/domain/to-flow-elements";
+import { WorkflowNodeCard } from "@/app/flow/components/WorkflowNodeCard";
 
 const NODE_TYPES = { workflow: WorkflowNodeCard };
 

@@ -9,7 +9,10 @@ import { EventResumer } from './data/event-resumer.js';
 import { RunAdvancer } from './data/run-advancer.js';
 import { RunCanceller } from './data/run-canceller.js';
 import { RunContextReader } from './data/run-context.reader.js';
+import { RunEvents } from './data/run-events.js';
 import { RunReader } from './data/run-reader.js';
+import { RunRetrier } from './data/run-retrier.js';
+import { RunStream } from './data/run-stream.js';
 import { RunStarter } from './data/run-starter.js';
 import { StepExecutor } from './data/step-executor.js';
 import { StepQueue } from './data/step-queue.js';
@@ -34,6 +37,9 @@ import { RunsController } from './delivery/runs.controller.js';
     VersionGraphs,
     RunContextReader,
     RunReader,
+    RunEvents,
+    RunRetrier,
+    RunStream,
     StepQueue,
     RunAdvancer,
     RunStarter,

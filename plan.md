@@ -76,8 +76,10 @@ any app that serves tools in the Claude format (`GET /api/tools`) becomes a set 
       per exit, click-to-add palette, forms generated from config JSON Schemas (text, number,
       select, key/value, free value, schedule editor), "Use a value" menu for `{{ }}`,
       publish issues pinned to steps, autosave, Run now. Verified in a headless browser
-- [ ] **5. Runs view**: live timeline over SSE, input / output / attempts per step,
-      re-run from the failed step
+- [x] **5. Runs view**: live run over SSE (Postgres NOTIFY, so any process can wake
+      the screen), read-only canvas colored by step status, step details (attempts in order,
+      errors, data in and out), approve / reject from the screen, Cancel, Run again, and
+      Retry failed step (same run; finished steps keep their results). Verified in a browser
 - [ ] **6. Tool providers + Pincel**: import `/api/tools` catalogs as nodes, image outputs
       saved to Storage, first templates
 - [ ] **7. Local building blocks**: watch folder, CSV, SMTP email, Telegram, AI step

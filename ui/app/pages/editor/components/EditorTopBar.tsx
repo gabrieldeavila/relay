@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { FiArrowLeft, FiPlay, FiUploadCloud } from "react-icons/fi";
+import { FiArrowLeft, FiList, FiPlay, FiUploadCloud } from "react-icons/fi";
 import { Link } from "react-router";
 
 import { Badge } from "@/ui/components/primitives/badge";
@@ -10,6 +10,7 @@ import type { SaveState } from "../hooks/useWorkflowDraft";
 import { SaveStatus } from "./SaveStatus";
 
 type EditorTopBarProps = {
+  workflowId: string;
   name: string;
   latestVersion: number | null;
   saveState: SaveState;
@@ -42,10 +43,19 @@ export const EditorTopBar = memo((props: EditorTopBarProps) => {
       <SaveStatus state={props.saveState} />
       <div className="ml-auto flex items-center gap-2">
         {props.latestVersion ? (
-          <Badge variant="success">{t("published", { version: props.latestVersion })}</Badge>
+          <Badge variant="success">
+            {t("published", { version: props.latestVersion })}
+          </Badge>
         ) : (
           <Badge>{t("notPublished")}</Badge>
         )}
+        <Link
+          to={`/workflows/${props.workflowId}/runs`}
+          className="inline-flex items-center gap-1 px-2 text-sm text-(--color-text-muted) hover:text-(--color-text)"
+        >
+          <FiList aria-hidden="true" />
+          {t("runs")}
+        </Link>
         <Button
           variant="secondary"
           leftIcon={<FiPlay aria-hidden="true" />}

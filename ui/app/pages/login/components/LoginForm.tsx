@@ -31,7 +31,9 @@ export const LoginForm = memo(() => {
           <Input
             label={t("password")}
             type="password"
-            autoComplete={form.mode === "signIn" ? "current-password" : "new-password"}
+            autoComplete={
+              form.mode === "signIn" ? "current-password" : "new-password"
+            }
             minLength={6}
             required
             hint={form.mode === "signUp" ? t("passwordHint") : undefined}

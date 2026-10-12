@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { fetchWorkflow, saveWorkflow, type Workflow } from "../api/editor-api";
-import type { WorkflowGraph } from "../domain/types";
+import type { WorkflowGraph } from "@/app/flow/domain/types";
 
 export type SaveState = "saved" | "unsaved" | "saving" | "error";
 
@@ -25,7 +25,9 @@ export const useWorkflowDraft = (id: string) => {
   }, []);
 
   useEffect(() => {
-    fetchWorkflow(id).then(replace, (error: Error) => setLoadError(error.message));
+    fetchWorkflow(id).then(replace, (error: Error) =>
+      setLoadError(error.message),
+    );
   }, [id, replace]);
 
   const flush = useCallback(async () => {
@@ -67,7 +69,8 @@ export const useWorkflowDraft = (id: string) => {
 
   const markPublished = useCallback(
     (version: number) => {
-      if (latest.current) replace({ ...latest.current, latestVersion: version });
+      if (latest.current)
+        replace({ ...latest.current, latestVersion: version });
     },
     [replace],
   );

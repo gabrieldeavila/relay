@@ -10,5 +10,6 @@ export default [
   layout("auth/components/RequireLogin.tsx", [
     index("pages/workflows/index.tsx"),
     route("workflows/:id", "pages/editor/index.tsx"),
+    route("workflows/:id/runs/:runId?", "pages/runs/index.tsx"),
   ]),
 ] satisfies RouteConfig;

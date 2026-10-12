@@ -1,7 +1,9 @@
 import { useState } from "react";
 
 /** Open state and name field of the "new workflow" dialog. */
-export const useNewWorkflowModal = (create: (name: string) => Promise<void>) => {
+export const useNewWorkflowModal = (
+  create: (name: string) => Promise<void>,
+) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);

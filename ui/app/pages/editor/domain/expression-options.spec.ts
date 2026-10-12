@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { expressionOptions } from "./expression-options";
-import type { WorkflowGraph } from "./types";
+import type { WorkflowGraph } from "@/app/flow/domain/types";
 
 const at = { x: 0, y: 0 };
 // start → call → ask → post   (orphan is not upstream of post)
@@ -40,7 +40,12 @@ describe("expressionOptions", () => {
 
   it("offers only the resume link to the first step", () => {
     expect(
-      expressionOptions(graph, "start", () => true, () => false).map((o) => o.labelKey),
+      expressionOptions(
+        graph,
+        "start",
+        () => true,
+        () => false,
+      ).map((o) => o.labelKey),
     ).toEqual(["resumeUrl"]);
   });
 });

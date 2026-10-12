@@ -1,13 +1,7 @@
-import type { JsonSchema } from "./types";
+import type { JsonSchema } from "@/app/flow/domain/types";
 
 export type FieldKind =
-  | "text"
-  | "number"
-  | "select"
-  | "boolean"
-  | "keyValue"
-  | "schedule"
-  | "any";
+  "text" | "number" | "select" | "boolean" | "keyValue" | "schedule" | "any";
 
 export interface FieldDescriptor {
   name: string;
@@ -29,7 +23,9 @@ export function schemaFields(schema: JsonSchema): FieldDescriptor[] {
   }));
 }
 
-function describe(field: JsonSchema): Omit<FieldDescriptor, "name" | "required"> {
+function describe(
+  field: JsonSchema,
+): Omit<FieldDescriptor, "name" | "required"> {
   if (field.oneOf?.some((option) => option.properties?.every?.const)) {
     return { kind: "schedule" };
   }
@@ -58,5 +54,7 @@ const isRecord = (field: JsonSchema) =>
 
 function valueKindOf(field: JsonSchema): "text" | "any" {
   const values = field.additionalProperties;
-  return typeof values === "object" && values.type === "string" ? "text" : "any";
+  return typeof values === "object" && values.type === "string"
+    ? "text"
+    : "any";
 }

@@ -5,6 +5,7 @@ import {
   runs,
   stepAttempts,
   stepRuns,
+  workflowVersions,
   workflows,
 } from '../../../database/schema/index.js';
 
@@ -23,26 +24,36 @@ export class RunReader {
 
   async listForWorkflow(workflowId: string, ownerId: string, limit = 50) {
     const rows = await this.db
-      .select({ run: runs })
+      .select({ run: runs, version: workflowVersions.version })
       .from(runs)
       .innerJoin(workflows, eq(workflows.id, runs.workflowId))
+      .innerJoin(workflowVersions, eq(workflowVersions.id, runs.versionId))
       .where(
         and(eq(runs.workflowId, workflowId), eq(workflows.ownerId, ownerId)),
       )
       .orderBy(desc(runs.createdAt))
       .limit(limit);
-    return rows.map(({ run }) => run);
+    return rows.map(({ run, version }) => ({ ...run, version }));
   }
 
-  /** The run with every step and each step's attempts; null if missing. */
+  /**
+   * The run with the graph of its version, every step and each step's
+   * attempts in the order they ended (numbers restart after a manual
+   * retry, and an expired wait starts at its deadline); null if missing.
+   */
   async get(runId: string, ownerId: string) {
     const [row] = await this.db
-      .select({ run: runs })
+      .select({
+        run: runs,
+        graph: workflowVersions.graph,
+        version: workflowVersions.version,
+      })
       .from(runs)
       .innerJoin(workflows, eq(workflows.id, runs.workflowId))
+      .innerJoin(workflowVersions, eq(workflowVersions.id, runs.versionId))
       .where(and(eq(runs.id, runId), eq(workflows.ownerId, ownerId)));
-    const run = row?.run;
-    if (!run) return null;
+    if (!row) return null;
+    const { run, graph, version } = row;
 
     const steps = await this.db
       .select()
@@ -59,11 +70,13 @@ export class RunReader {
               steps.map((step) => step.id),
             ),
           )
-          .orderBy(asc(stepAttempts.attempt))
+          .orderBy(asc(stepAttempts.finishedAt), asc(stepAttempts.startedAt))
       : [];
 
     return {
       ...run,
+      graph,
+      version,
       steps: steps.map((step) => ({
         ...step,
         attempts: attempts.filter((attempt) => attempt.stepRunId === step.id),

@@ -14,6 +14,7 @@ import {
 import { planAdvance } from '../domain/plan-advance.js';
 import type { RunStatus } from '../domain/run-status.js';
 import type { StepChange } from '../domain/step-change.js';
+import { RunEvents } from './run-events.js';
 import { stepChangeColumns } from './step-change-columns.js';
 import type { ClaimedStep } from './step-queue.js';
 import { VersionGraphs } from './version-graphs.js';
@@ -34,6 +35,7 @@ export class RunAdvancer {
   constructor(
     @Inject(DATABASE) private readonly db: Database,
     private readonly versions: VersionGraphs,
+    private readonly events: RunEvents,
   ) {}
 
   /**
@@ -125,6 +127,7 @@ export class RunAdvancer {
         finishedAt: FINISHED_RUNS.includes(plan.status) ? new Date() : null,
       })
       .where(eq(runs.id, runId));
+    await this.events.notify(tx, [runId]);
   }
 
   private async writeStep(

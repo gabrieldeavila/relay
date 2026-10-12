@@ -8,6 +8,7 @@ import { EventResumer } from '../../src/modules/engine/data/event-resumer';
 import { RunAdvancer } from '../../src/modules/engine/data/run-advancer';
 import { RunCanceller } from '../../src/modules/engine/data/run-canceller';
 import { RunReader } from '../../src/modules/engine/data/run-reader';
+import { RunRetrier } from '../../src/modules/engine/data/run-retrier';
 import { RunStarter } from '../../src/modules/engine/data/run-starter';
 import { StepQueue } from '../../src/modules/engine/data/step-queue';
 import { WorkerLoop } from '../../src/modules/engine/data/worker-loop';
@@ -76,6 +77,13 @@ export class EngineHarness {
   }
   get canceller() {
     return this.module.get(RunCanceller);
+  }
+  get retrier() {
+    return this.module.get(RunRetrier);
+  }
+  /** Any provider of the app, for specs that need one directly. */
+  get<T>(type: new (...args: never[]) => T): T {
+    return this.module.get(type);
   }
   get resumer() {
     return this.module.get(EventResumer);

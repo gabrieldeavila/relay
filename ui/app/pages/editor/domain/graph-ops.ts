@@ -1,5 +1,9 @@
 import { nextNodeId } from "./node-id";
-import type { CatalogNode, GraphEdge, WorkflowGraph } from "./types";
+import type {
+  CatalogNode,
+  GraphEdge,
+  WorkflowGraph,
+} from "@/app/flow/domain/types";
 
 export const edgeId = (source: string, port: string, target: string) =>
   `${source}.${port}->${target}`;
@@ -10,11 +14,17 @@ export function addNode(
   node: CatalogNode,
   position: { x: number; y: number },
 ) {
-  const id = nextNodeId(node.type, graph.nodes.map((existing) => existing.id));
+  const id = nextNodeId(
+    node.type,
+    graph.nodes.map((existing) => existing.id),
+  );
   const config = defaultConfig(node);
   return {
     id,
-    graph: { ...graph, nodes: [...graph.nodes, { id, type: node.type, config, position }] },
+    graph: {
+      ...graph,
+      nodes: [...graph.nodes, { id, type: node.type, config, position }],
+    },
   };
 }
 
@@ -24,7 +34,9 @@ export const moveNode = (
   position: { x: number; y: number },
 ): WorkflowGraph => ({
   ...graph,
-  nodes: graph.nodes.map((node) => (node.id === nodeId ? { ...node, position } : node)),
+  nodes: graph.nodes.map((node) =>
+    node.id === nodeId ? { ...node, position } : node,
+  ),
 });
 
 export const updateConfig = (
@@ -33,19 +45,29 @@ export const updateConfig = (
   config: Record<string, unknown>,
 ): WorkflowGraph => ({
   ...graph,
-  nodes: graph.nodes.map((node) => (node.id === nodeId ? { ...node, config } : node)),
+  nodes: graph.nodes.map((node) =>
+    node.id === nodeId ? { ...node, config } : node,
+  ),
 });
 
 /** Removes nodes and every edge touching them. */
-export function removeNodes(graph: WorkflowGraph, nodeIds: string[]): WorkflowGraph {
+export function removeNodes(
+  graph: WorkflowGraph,
+  nodeIds: string[],
+): WorkflowGraph {
   const gone = new Set(nodeIds);
   return {
     nodes: graph.nodes.filter((node) => !gone.has(node.id)),
-    edges: graph.edges.filter((edge) => !gone.has(edge.source) && !gone.has(edge.target)),
+    edges: graph.edges.filter(
+      (edge) => !gone.has(edge.source) && !gone.has(edge.target),
+    ),
   };
 }
 
-export const removeEdges = (graph: WorkflowGraph, edgeIds: string[]): WorkflowGraph => ({
+export const removeEdges = (
+  graph: WorkflowGraph,
+  edgeIds: string[],
+): WorkflowGraph => ({
   ...graph,
   edges: graph.edges.filter((edge) => !edgeIds.includes(edge.id)),
 });
@@ -63,7 +85,10 @@ export function connect(
   const id = edgeId(source, sourcePort, target);
   if (source === target || isTrigger(target)) return graph;
   if (graph.edges.some((edge) => edge.id === id)) return graph;
-  return { ...graph, edges: [...graph.edges, { id, source, sourcePort, target }] };
+  return {
+    ...graph,
+    edges: [...graph.edges, { id, source, sourcePort, target }],
+  };
 }
 
 function defaultConfig(node: CatalogNode): Record<string, unknown> {

@@ -5,9 +5,14 @@ import { FiTrash2 } from "react-icons/fi";
 import { Alert } from "@/ui/components/primitives/alert";
 import { Button } from "@/ui/components/primitives/button";
 import { schemaFields } from "../domain/schema-fields";
-import type { CatalogNode, GraphIssue, GraphNode, WorkflowGraph } from "../domain/types";
+import type {
+  CatalogNode,
+  GraphIssue,
+  GraphNode,
+  WorkflowGraph,
+} from "@/app/flow/domain/types";
 import { useExpressionChoices } from "../hooks/useExpressionChoices";
-import { useNodeText } from "../hooks/useNodeText";
+import { useNodeText } from "@/app/flow/hooks/useNodeText";
 import { ConfigField } from "./fields/ConfigField";
 
 type NodeConfigPanelProps = {
@@ -24,7 +29,10 @@ export const NodeConfigPanel = memo((props: NodeConfigPanelProps) => {
   const { t } = useTranslation("editor");
   const text = useNodeText();
   const entry = catalog.get(node.type);
-  const fields = useMemo(() => (entry ? schemaFields(entry.configSchema) : []), [entry]);
+  const fields = useMemo(
+    () => (entry ? schemaFields(entry.configSchema) : []),
+    [entry],
+  );
   const choices = useExpressionChoices(props.graph, node.id, catalog);
 
   const setField = (name: string, value: unknown) => {
@@ -36,7 +44,11 @@ export const NodeConfigPanel = memo((props: NodeConfigPanelProps) => {
     <div className="flex flex-col gap-4 p-4">
       <header>
         <h2 className="text-lg font-semibold">{text.title(entry)}</h2>
-        {entry && <p className="text-sm text-(--color-text-muted)">{text.description(entry)}</p>}
+        {entry && (
+          <p className="text-sm text-(--color-text-muted)">
+            {text.description(entry)}
+          </p>
+        )}
         <p className="mt-2 text-xs text-(--color-text-muted)">
           {t("panel.stepId")}: <code className="font-mono">{node.id}</code>
         </p>

@@ -6,13 +6,25 @@ import {
 } from "@xyflow/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { keepMeasured, nextNodePosition } from "../domain/canvas-layout";
-import { addNode, connect, moveNode, removeEdges, removeNodes } from "../domain/graph-ops";
+import { keepMeasured } from "@/app/flow/domain/keep-measured";
+import { useNodeText } from "@/app/flow/hooks/useNodeText";
+import { nextNodePosition } from "../domain/canvas-layout";
+import {
+  addNode,
+  connect,
+  moveNode,
+  removeEdges,
+  removeNodes,
+} from "../domain/graph-ops";
 import {
   toFlowElements,
   type WorkflowFlowNode,
-} from "../domain/to-flow-elements";
-import type { CatalogNode, GraphIssue, WorkflowGraph } from "../domain/types";
+} from "@/app/flow/domain/to-flow-elements";
+import type {
+  CatalogNode,
+  GraphIssue,
+  WorkflowGraph,
+} from "@/app/flow/domain/types";
 
 type SetGraph = (update: (graph: WorkflowGraph) => WorkflowGraph) => void;
 
@@ -29,9 +41,15 @@ export const useFlowCanvas = (
 ) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [nodes, setNodes] = useState<WorkflowFlowNode[]>([]);
+  const { port } = useNodeText();
   const elements = useMemo(
-    () => toFlowElements(graph, catalog, issuesByNode, selectedId),
-    [graph, catalog, issuesByNode, selectedId],
+    () =>
+      toFlowElements(graph, catalog, {
+        selectedId,
+        issuesByNode,
+        portLabel: port,
+      }),
+    [graph, catalog, issuesByNode, selectedId, port],
   );
 
   useEffect(() => {
@@ -42,7 +60,11 @@ export const useFlowCanvas = (
     (changes: NodeChange<WorkflowFlowNode>[]) => {
       setNodes((current) => applyNodeChanges(changes, current));
       for (const change of changes) {
-        if (change.type === "position" && change.dragging === false && change.position) {
+        if (
+          change.type === "position" &&
+          change.dragging === false &&
+          change.position
+        ) {
           const { id, position } = change;
           setGraph((current) => moveNode(current, id, position));
         }
@@ -50,7 +72,8 @@ export const useFlowCanvas = (
           setGraph((current) => removeNodes(current, [change.id]));
           setSelectedId((current) => (current === change.id ? null : current));
         }
-        if (change.type === "select" && change.selected) setSelectedId(change.id);
+        if (change.type === "select" && change.selected)
+          setSelectedId(change.id);
       }
     },
     [setGraph],
@@ -58,7 +81,9 @@ export const useFlowCanvas = (
 
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
-      const removed = changes.flatMap((change) => (change.type === "remove" ? [change.id] : []));
+      const removed = changes.flatMap((change) =>
+        change.type === "remove" ? [change.id] : [],
+      );
       if (removed.length) setGraph((current) => removeEdges(current, removed));
     },
     [setGraph],
@@ -67,9 +92,16 @@ export const useFlowCanvas = (
   const onConnect = useCallback(
     ({ source, sourceHandle, target }: Connection) => {
       setGraph((current) => {
-        const typeOf = new Map(current.nodes.map((node) => [node.id, node.type]));
-        const isTrigger = (id: string) => catalog.get(typeOf.get(id) ?? "")?.kind === "trigger";
-        return connect(current, { source, sourcePort: sourceHandle ?? "out", target }, isTrigger);
+        const typeOf = new Map(
+          current.nodes.map((node) => [node.id, node.type]),
+        );
+        const isTrigger = (id: string) =>
+          catalog.get(typeOf.get(id) ?? "")?.kind === "trigger";
+        return connect(
+          current,
+          { source, sourcePort: sourceHandle ?? "out", target },
+          isTrigger,
+        );
       });
     },
     [catalog, setGraph],

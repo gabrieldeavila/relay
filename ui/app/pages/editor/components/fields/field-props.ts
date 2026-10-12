@@ -12,4 +12,6 @@ export interface FieldProps {
 
 /** Appends an inserted expression to existing text, with a space if needed. */
 export const appendExpression = (text: string, expression: string) =>
-  text && !text.endsWith(" ") ? `${text} ${expression}` : `${text}${expression}`;
+  text && !text.endsWith(" ")
+    ? `${text} ${expression}`
+    : `${text}${expression}`;

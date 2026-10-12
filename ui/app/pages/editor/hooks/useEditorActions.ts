@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 
 import { ApiError } from "@/app/api/api-error";
 import type { useToasts } from "@/app/hooks/useToasts";
@@ -11,11 +12,15 @@ type Toasts = ReturnType<typeof useToasts>;
 /** Publish and Run now, reported through toasts. */
 export const useEditorActions = (
   id: string,
-  draft: { flush: () => Promise<void>; markPublished: (version: number) => void },
+  draft: {
+    flush: () => Promise<void>;
+    markPublished: (version: number) => void;
+  },
   reloadTrigger: () => void,
   toasts: Toasts,
 ) => {
   const { t } = useTranslation("editor");
+  const navigate = useNavigate();
   const [running, setRunning] = useState(false);
   const publishing = usePublish(id, draft.flush, (version) => {
     draft.markPublished(version);
@@ -32,7 +37,7 @@ export const useEditorActions = (
     setRunning(true);
     try {
       const { id: runId } = await startRun(id);
-      toasts.push({ variant: "success", title: t("runStarted"), description: runId });
+      void navigate(`/workflows/${id}/runs/${runId}`);
     } catch (error) {
       const notPublished = error instanceof ApiError && error.status === 404;
       toasts.push({

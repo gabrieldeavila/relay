@@ -3,9 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import { Alert } from "@/ui/components/primitives/alert";
 import type { GroupedIssues } from "../domain/group-issues";
-import { useNodeText } from "../hooks/useNodeText";
+import { useNodeText } from "@/app/flow/hooks/useNodeText";
 
-type IssuesListProps = { grouped: GroupedIssues; onSelect: (nodeId: string) => void };
+type IssuesListProps = {
+  grouped: GroupedIssues;
+  onSelect: (nodeId: string) => void;
+};
 
 /** Why the last publish was refused; each step links to itself on the canvas. */
 export const IssuesList = memo(({ grouped, onSelect }: IssuesListProps) => {
@@ -23,7 +26,11 @@ export const IssuesList = memo(({ grouped, onSelect }: IssuesListProps) => {
         ))}
         {perNode.map(([nodeId, issues]) => (
           <li key={nodeId}>
-            <button type="button" className="font-mono underline" onClick={() => onSelect(nodeId)}>
+            <button
+              type="button"
+              className="font-mono underline"
+              onClick={() => onSelect(nodeId)}
+            >
               {nodeId}
             </button>
             : {issues.map((issue) => text.issue(issue)).join(" ")}

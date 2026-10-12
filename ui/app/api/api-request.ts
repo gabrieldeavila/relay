@@ -1,9 +1,15 @@
 import { accessToken, supabase } from "../auth/api/supabase-client";
 import { ApiError } from "./api-error";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4400";
+export const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4400";
 
 /** JSON call to the Relay API as the logged-in user. */
+/** Headers for calls that cannot go through `apiRequest` (streams). */
+export async function authHeaders(): Promise<Record<string, string>> {
+  const token = await accessToken();
+  return token ? { authorization: `Bearer ${token}` } : {};
+}
+
 export async function apiRequest<T>(
   path: string,
   init: { method?: string; body?: unknown } = {},

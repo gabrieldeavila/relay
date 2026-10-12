@@ -48,8 +48,10 @@ supabase migration up            # applies it locally
 | PATCH | `/workflows/:id` | Save `{ name?, draftGraph? }` |
 | POST | `/workflows/:id/publish` | Freeze the draft as a version (422 with `issues` if invalid) |
 | POST | `/workflows/:id/runs` | Start the latest version; body is the trigger payload |
-| GET | `/workflows/:id/runs`, `/runs/:id` | List runs, run with steps and attempts |
+| GET | `/workflows/:id/runs`, `/runs/:id` | List runs, run with its graph, steps and attempts |
+| GET | `/runs/:id/events` | Live run (server-sent events: `run` on every change, `ping`) |
 | POST | `/runs/:id/cancel` | Cancel a running or waiting run |
+| POST | `/runs/:id/retry` | Retry the steps that failed the run, in the same run |
 | GET | `/workflows/:id/trigger` | Manual, webhook URL, or next scheduled fire |
 | POST | `/hooks/:token` | Webhook trigger: starts a run with `{ body, query }` |
 | POST | `/resume/:token/:nodeId` | Resume a "wait for another app" step (send `Idempotency-Key`) |

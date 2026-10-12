@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { publishWorkflow } from "../api/editor-api";
-import type { GraphIssue } from "../domain/types";
+import type { GraphIssue } from "@/app/flow/domain/types";
 
 /** Saves pending edits, then publishes; keeps the issues of a refused publish. */
 export const usePublish = (

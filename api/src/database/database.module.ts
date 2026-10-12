@@ -4,7 +4,8 @@ import postgres from 'postgres';
 import { DATABASE } from './database.js';
 import * as schema from './schema/index.js';
 
-const SQL_CLIENT = 'SQL_CLIENT';
+/** Raw postgres.js client, for LISTEN/NOTIFY. */
+export const SQL_CLIENT = 'SQL_CLIENT';
 
 @Global()
 @Module({
@@ -19,7 +20,7 @@ const SQL_CLIENT = 'SQL_CLIENT';
       useFactory: (client: postgres.Sql) => drizzle(client, { schema }),
     },
   ],
-  exports: [DATABASE],
+  exports: [DATABASE, SQL_CLIENT],
 })
 export class DatabaseModule implements OnModuleDestroy {
   constructor(@Inject(SQL_CLIENT) private readonly client: postgres.Sql) {}

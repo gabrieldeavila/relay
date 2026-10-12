@@ -1,0 +1,58 @@
+{
+  "title": "Execuções de {{name}}",
+  "backToEditor": "Editar fluxo",
+  "status": {
+    "running": "Rodando",
+    "waiting": "Esperando",
+    "succeeded": "Concluído",
+    "failed": "Falhou",
+    "cancelled": "Cancelado",
+    "pending": "Não iniciado",
+    "ready": "Na fila",
+    "retrying": "Tentando de novo em breve",
+    "timed_out": "Sem resposta a tempo",
+    "skipped": "Pulado",
+    "not_reached": "Não alcançado"
+  },
+  "outcome": {
+    "succeeded": "Concluída",
+    "failed": "Falhou",
+    "retrying": "Falhou, vai tentar de novo",
+    "sleeping": "Pausado",
+    "waiting": "Começou a esperar",
+    "timed_out": "Sem resposta a tempo"
+  },
+  "header": {
+    "summary": "Versão {{version}} · iniciada {{started}} · {{duration}}"
+  },
+  "actions": {
+    "cancel": "Cancelar",
+    "retry": "Tentar de novo o passo que falhou",
+    "runAgain": "Executar de novo"
+  },
+  "list": {
+    "title": "Execuções",
+    "empty": "Nenhuma execução ainda.",
+    "emptyTitle": "Este fluxo ainda não rodou",
+    "emptyDescription": "Clique em Executar agora no editor, ou espere o gatilho dele."
+  },
+  "step": {
+    "pick": "Selecione um passo para ver o que aconteceu.",
+    "attempts": "Tentativas",
+    "input": "O que recebeu",
+    "output": "O que produziu",
+    "went": "Seguiu: {{port}}",
+    "pending": "Este passo ainda não começou.",
+    "not_reached": "A execução terminou antes deste passo.",
+    "skipped": "Pulado: o fluxo seguiu outro caminho."
+  },
+  "waiting": {
+    "timer": "Pausado até {{when}}.",
+    "approval": "Esperando uma resposta. Você pode responder aqui ou pelos links enviados pelo fluxo.",
+    "approve": "Aprovar",
+    "reject": "Recusar",
+    "webhook": "Esperando outro app chamar este link:",
+    "deadline": "Desiste em {{when}}."
+  },
+  "answerClosed": "Este passo já foi respondido."
+}

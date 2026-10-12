@@ -2,11 +2,16 @@ import { describe, expect, it } from "vitest";
 
 import { groupIssues } from "./group-issues";
 import { scheduleForFrequency, toggleWeekday } from "./schedule-form";
-import type { WorkflowGraph } from "./types";
+import type { WorkflowGraph } from "@/app/flow/domain/types";
 
 const at = { x: 0, y: 0 };
 const graph: WorkflowGraph = {
-  nodes: ["start", "a", "b"].map((id) => ({ id, type: "x", config: {}, position: at })),
+  nodes: ["start", "a", "b"].map((id) => ({
+    id,
+    type: "x",
+    config: {},
+    position: at,
+  })),
   edges: [{ id: "a.true->b", source: "a", sourcePort: "true", target: "b" }],
 };
 
@@ -34,12 +39,23 @@ describe("groupIssues", () => {
 describe("scheduleForFrequency", () => {
   it("keeps the chosen time and zone when switching frequency", () => {
     expect(
-      scheduleForFrequency("week", { every: "day", time: "07:30", timezone: "Europe/Lisbon" }),
-    ).toEqual({ every: "week", weekdays: ["mon"], time: "07:30", timezone: "Europe/Lisbon" });
+      scheduleForFrequency("week", {
+        every: "day",
+        time: "07:30",
+        timezone: "Europe/Lisbon",
+      }),
+    ).toEqual({
+      every: "week",
+      weekdays: ["mon"],
+      time: "07:30",
+      timezone: "Europe/Lisbon",
+    });
   });
 
   it("drops the time for frequencies without one", () => {
-    expect(scheduleForFrequency("minutes", { every: "day", time: "07:30" })).toEqual({
+    expect(
+      scheduleForFrequency("minutes", { every: "day", time: "07:30" }),
+    ).toEqual({
       every: "minutes",
       interval: 15,
     });

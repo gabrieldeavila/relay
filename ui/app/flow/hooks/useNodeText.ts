@@ -9,11 +9,14 @@ export const useNodeText = () => {
 
   const title = useCallback(
     (node: CatalogNode | undefined, fallback = "?") =>
-      node ? t(`nodes:${node.type}.title`, { defaultValue: node.title }) : fallback,
+      node
+        ? t(`nodes:${node.type}.title`, { defaultValue: node.title })
+        : fallback,
     [t],
   );
   const description = useCallback(
-    (node: CatalogNode) => t(`nodes:${node.type}.description`, { defaultValue: node.description }),
+    (node: CatalogNode) =>
+      t(`nodes:${node.type}.description`, { defaultValue: node.description }),
     [t],
   );
   const field = useCallback(
@@ -24,10 +27,15 @@ export const useNodeText = () => {
     (value: string) => t(`nodes:options.${value}`, { defaultValue: value }),
     [t],
   );
-  const port = useCallback((name: string) => t(`nodes:ports.${name}`, { defaultValue: name }), [t]);
+  const port = useCallback(
+    (name: string) => t(`nodes:ports.${name}`, { defaultValue: name }),
+    [t],
+  );
   const issue = useCallback(
     (item: GraphIssue) =>
-      t(`editor:issues.${item.code}`, { field: item.field ? field(item.field) : "" }),
+      t(`editor:issues.${item.code}`, {
+        field: item.field ? field(item.field) : "",
+      }),
     [t, field],
   );
 

@@ -21,7 +21,9 @@ describe("key/value rows", () => {
   });
 
   it("keeps JSON as text for text-only values", () => {
-    expect(recordFromRows([{ name: "a", value: "[1]" }], "text")).toEqual({ a: "[1]" });
+    expect(recordFromRows([{ name: "a", value: "[1]" }], "text")).toEqual({
+      a: "[1]",
+    });
   });
 
   it("starts empty for anything that is not an object", () => {

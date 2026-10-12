@@ -4,12 +4,19 @@ import { useTranslation } from "react-i18next";
 import { cn } from "@/ui/helpers/cn";
 import { toggleWeekday, WEEKDAYS } from "../../domain/schedule-form";
 
-type WeekdayPickerProps = { value: string[]; onChange: (weekdays: string[]) => void };
+type WeekdayPickerProps = {
+  value: string[];
+  onChange: (weekdays: string[]) => void;
+};
 
 export const WeekdayPicker = memo(({ value, onChange }: WeekdayPickerProps) => {
   const { t } = useTranslation("editor");
   return (
-    <div role="group" aria-label={t("schedule.weekdays")} className="flex flex-col gap-1">
+    <div
+      role="group"
+      aria-label={t("schedule.weekdays")}
+      className="flex flex-col gap-1"
+    >
       <span className="text-sm font-medium">{t("schedule.weekdays")}</span>
       <div className="flex flex-wrap gap-1">
         {WEEKDAYS.map((day) => (

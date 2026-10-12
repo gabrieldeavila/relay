@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { expressionOptions } from "../domain/expression-options";
-import type { CatalogNode, WorkflowGraph } from "../domain/types";
-import { useNodeText } from "./useNodeText";
+import type { CatalogNode, WorkflowGraph } from "@/app/flow/domain/types";
+import { useNodeText } from "@/app/flow/hooks/useNodeText";
 
 export interface ExpressionChoice {
   label: string;
@@ -28,8 +28,12 @@ export const useExpressionChoices = (
       (type) => catalog.get(type)?.outputPorts.includes("error") ?? false,
     );
     return options.map((option) => {
-      const node = option.nodeId ? catalog.get(typeOf.get(option.nodeId) ?? "") : undefined;
-      const name = option.nodeId ? `${text.title(node)} (${option.nodeId})` : "";
+      const node = option.nodeId
+        ? catalog.get(typeOf.get(option.nodeId) ?? "")
+        : undefined;
+      const name = option.nodeId
+        ? `${text.title(node)} (${option.nodeId})`
+        : "";
       return {
         label: t(`expressions.${option.labelKey}`, { node: name }),
         expression: option.expression,

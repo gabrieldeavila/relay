@@ -1,4 +1,4 @@
-import type { WorkflowGraph } from "./types";
+import type { WorkflowGraph } from "@/app/flow/domain/types";
 
 export interface ExpressionOption {
   /** Node the value comes from; null for run-level values. */
@@ -19,20 +19,31 @@ export function expressionOptions(
   hasErrorPort: (type: string) => boolean,
 ): ExpressionOption[] {
   const typeOf = new Map(graph.nodes.map((node) => [node.id, node.type]));
-  const options = upstreamOf(graph, nodeId).flatMap((id): ExpressionOption[] => {
-    const type = typeOf.get(id) ?? "";
-    if (isTrigger(type)) {
-      return [{ nodeId: id, labelKey: "triggerData", expression: "{{ trigger }}" }];
-    }
-    const output: ExpressionOption = {
-      nodeId: id,
-      labelKey: "output",
-      expression: `{{ steps.${id}.output }}`,
-    };
-    return hasErrorPort(type)
-      ? [output, { nodeId: id, labelKey: "errorMessage", expression: `{{ steps.${id}.error.message }}` }]
-      : [output];
-  });
+  const options = upstreamOf(graph, nodeId).flatMap(
+    (id): ExpressionOption[] => {
+      const type = typeOf.get(id) ?? "";
+      if (isTrigger(type)) {
+        return [
+          { nodeId: id, labelKey: "triggerData", expression: "{{ trigger }}" },
+        ];
+      }
+      const output: ExpressionOption = {
+        nodeId: id,
+        labelKey: "output",
+        expression: `{{ steps.${id}.output }}`,
+      };
+      return hasErrorPort(type)
+        ? [
+            output,
+            {
+              nodeId: id,
+              labelKey: "errorMessage",
+              expression: `{{ steps.${id}.error.message }}`,
+            },
+          ]
+        : [output];
+    },
+  );
   return [
     ...options,
     { nodeId: null, labelKey: "resumeUrl", expression: "{{ run.resumeUrl }}" },

@@ -7,7 +7,10 @@ export interface KeyValueRow {
 
 export const rowsFromRecord = (record: unknown): KeyValueRow[] =>
   typeof record === "object" && record !== null && !Array.isArray(record)
-    ? Object.entries(record).map(([name, value]) => ({ name, value: formatLooseValue(value) }))
+    ? Object.entries(record).map(([name, value]) => ({
+        name,
+        value: formatLooseValue(value),
+      }))
     : [];
 
 /**

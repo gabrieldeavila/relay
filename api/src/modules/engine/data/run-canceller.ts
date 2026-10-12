@@ -3,6 +3,7 @@ import { and, eq, inArray } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../../database/database.js';
 import { runs, stepRuns } from '../../../database/schema/index.js';
 import type { StepStatus } from '../domain/step-status.js';
+import { RunEvents } from './run-events.js';
 
 const OPEN_STEPS: StepStatus[] = [
   'pending',
@@ -14,7 +15,10 @@ const OPEN_STEPS: StepStatus[] = [
 
 @Injectable()
 export class RunCanceller {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
+  constructor(
+    @Inject(DATABASE) private readonly db: Database,
+    private readonly events: RunEvents,
+  ) {}
 
   /**
    * False when the run had already finished. A worker still running one of
@@ -37,6 +41,7 @@ export class RunCanceller {
         .where(
           and(eq(stepRuns.runId, runId), inArray(stepRuns.status, OPEN_STEPS)),
         );
+      await this.events.notify(tx, [runId]);
       return true;
     });
   }

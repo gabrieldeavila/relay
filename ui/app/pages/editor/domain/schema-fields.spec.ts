@@ -22,7 +22,12 @@ describe("schemaFields", () => {
       }),
     ).toEqual([
       { name: "url", required: true, kind: "text", placeholder: "https://" },
-      { name: "method", required: false, kind: "select", options: ["GET", "POST"] },
+      {
+        name: "method",
+        required: false,
+        kind: "select",
+        options: ["GET", "POST"],
+      },
       { name: "headers", required: false, kind: "keyValue", valueKind: "text" },
       { name: "body", required: false, kind: "any" },
     ]);
@@ -35,7 +40,9 @@ describe("schemaFields", () => {
           amount: { type: "number" },
           fields: { type: "object", additionalProperties: {} },
           schedule: {
-            oneOf: [{ type: "object", properties: { every: { const: "day" } } }],
+            oneOf: [
+              { type: "object", properties: { every: { const: "day" } } },
+            ],
           },
         },
         required: ["amount", "fields", "schedule"],
@@ -53,7 +60,9 @@ describe("loose values", () => {
     expect(parseLooseValue('{"title": "Sale"}')).toEqual({ title: "Sale" });
     expect(parseLooseValue("[1, 2]")).toEqual([1, 2]);
     expect(parseLooseValue("10")).toBe("10");
-    expect(parseLooseValue("{{ steps.a.output }}")).toBe("{{ steps.a.output }}");
+    expect(parseLooseValue("{{ steps.a.output }}")).toBe(
+      "{{ steps.a.output }}",
+    );
     expect(parseLooseValue("{ broken")).toBe("{ broken");
   });
 

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../../database/database.js';
 import type { StepStatus } from '../domain/step-status.js';
+import { RunEvents } from './run-events.js';
 
 export interface ClaimedStep {
   id: string;
@@ -27,7 +28,10 @@ interface ClaimedRow extends Record<string, unknown> {
 /** The step_runs table seen as a work queue. */
 @Injectable()
 export class StepQueue {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
+  constructor(
+    @Inject(DATABASE) private readonly db: Database,
+    private readonly events: RunEvents,
+  ) {}
 
   /**
    * Takes up to `limit` due steps and leases them. SKIP LOCKED lets many
@@ -55,7 +59,13 @@ export class StepQueue {
       WHERE s.id = picked.id AND r.id = s.run_id
       RETURNING s.id, s.run_id, r.workflow_id, r.version_id, s.node_id,
                 s.attempt, picked.previous_status`);
-    return rows.map(toClaimedStep);
+    const claimed = rows.map(toClaimedStep);
+    // Screens show the step as running right away.
+    await this.events.notify(
+      this.db,
+      claimed.map((step) => step.runId),
+    );
+    return claimed;
   }
 
   /** False when the lease was lost (reclaimed by the reaper). */

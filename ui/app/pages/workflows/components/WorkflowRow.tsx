@@ -5,13 +5,17 @@ import { Link } from "react-router";
 
 import { Badge } from "@/ui/components/primitives/badge";
 import type { WorkflowSummary } from "../api/workflows-api";
-import { relativeTime } from "../domain/relative-time";
+import { relativeTime } from "@/app/format/relative-time";
 
 type WorkflowRowProps = { workflow: WorkflowSummary };
 
 export const WorkflowRow = memo(({ workflow }: WorkflowRowProps) => {
   const { t, i18n } = useTranslation("workflows");
-  const updated = relativeTime(new Date(workflow.updatedAt), new Date(), i18n.language);
+  const updated = relativeTime(
+    new Date(workflow.updatedAt),
+    new Date(),
+    i18n.language,
+  );
 
   return (
     <li>
@@ -21,14 +25,21 @@ export const WorkflowRow = memo(({ workflow }: WorkflowRowProps) => {
       >
         <div className="min-w-0 flex-1">
           <p className="truncate font-medium">{workflow.name}</p>
-          <p className="text-sm text-(--color-text-muted)">{t("updated", { when: updated })}</p>
+          <p className="text-sm text-(--color-text-muted)">
+            {t("updated", { when: updated })}
+          </p>
         </div>
         {workflow.latestVersion ? (
-          <Badge variant="success">{t("published", { version: workflow.latestVersion })}</Badge>
+          <Badge variant="success">
+            {t("published", { version: workflow.latestVersion })}
+          </Badge>
         ) : (
           <Badge>{t("draft")}</Badge>
         )}
-        <FiChevronRight aria-hidden="true" className="text-(--color-text-muted)" />
+        <FiChevronRight
+          aria-hidden="true"
+          className="text-(--color-text-muted)"
+        />
       </Link>
     </li>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { fetchCatalog } from "../api/editor-api";
+import { fetchCatalog } from "../api/catalog-api";
 import type { CatalogNode } from "../domain/types";
 
 /** Node types the palette offers, and lookups by type. */
@@ -9,9 +9,14 @@ export const useCatalog = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchCatalog().then(setNodes, (loadError: Error) => setError(loadError.message));
+    fetchCatalog().then(setNodes, (loadError: Error) =>
+      setError(loadError.message),
+    );
   }, []);
 
-  const byType = useMemo(() => new Map(nodes.map((node) => [node.type, node])), [nodes]);
+  const byType = useMemo(
+    () => new Map(nodes.map((node) => [node.type, node])),
+    [nodes],
+  );
   return { nodes, byType, error };
 };

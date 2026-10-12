@@ -42,7 +42,9 @@ const Workflows = memo(() => {
               icon={<FiGitBranch />}
               title={t("empty.title")}
               description={t("empty.description")}
-              action={<Button onClick={() => modal.openWith()}>{t("create")}</Button>}
+              action={
+                <Button onClick={() => modal.openWith()}>{t("create")}</Button>
+              }
             />
           )
         )}

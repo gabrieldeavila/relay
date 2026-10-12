@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { addNode, connect, removeNodes } from "./graph-ops";
 import { nextNodeId } from "./node-id";
-import type { CatalogNode, WorkflowGraph } from "./types";
+import type { CatalogNode, WorkflowGraph } from "@/app/flow/domain/types";
 
 const http: CatalogNode = {
   type: "http.request",
@@ -24,7 +24,9 @@ const empty: WorkflowGraph = { nodes: [], edges: [] };
 describe("nextNodeId", () => {
   it("uses the last part of the type and numbers repeats", () => {
     expect(nextNodeId("http.request", [])).toBe("request");
-    expect(nextNodeId("http.request", ["request", "request-2"])).toBe("request-3");
+    expect(nextNodeId("http.request", ["request", "request-2"])).toBe(
+      "request-3",
+    );
     expect(nextNodeId("flow.wait_for_webhook", [])).toBe("wait_for_webhook");
   });
 });
@@ -48,29 +50,67 @@ describe("connect", () => {
   const isTrigger = (id: string) => id === "start";
 
   it("adds an edge from a port", () => {
-    const graph = connect(twoNodes, { source: "call", sourcePort: "error", target: "start" }, () => false);
+    const graph = connect(
+      twoNodes,
+      { source: "call", sourcePort: "error", target: "start" },
+      () => false,
+    );
     expect(graph.edges).toEqual([
-      { id: "call.error->start", source: "call", sourcePort: "error", target: "start" },
+      {
+        id: "call.error->start",
+        source: "call",
+        sourcePort: "error",
+        target: "start",
+      },
     ]);
   });
 
   it("ignores self loops, edges into the trigger and duplicates", () => {
-    expect(connect(twoNodes, { source: "call", sourcePort: "out", target: "call" }, isTrigger)).toBe(twoNodes);
-    expect(connect(twoNodes, { source: "call", sourcePort: "out", target: "start" }, isTrigger)).toBe(twoNodes);
-    const once = connect(twoNodes, { source: "start", sourcePort: "out", target: "call" }, isTrigger);
-    expect(connect(once, { source: "start", sourcePort: "out", target: "call" }, isTrigger)).toBe(once);
+    expect(
+      connect(
+        twoNodes,
+        { source: "call", sourcePort: "out", target: "call" },
+        isTrigger,
+      ),
+    ).toBe(twoNodes);
+    expect(
+      connect(
+        twoNodes,
+        { source: "call", sourcePort: "out", target: "start" },
+        isTrigger,
+      ),
+    ).toBe(twoNodes);
+    const once = connect(
+      twoNodes,
+      { source: "start", sourcePort: "out", target: "call" },
+      isTrigger,
+    );
+    expect(
+      connect(
+        once,
+        { source: "start", sourcePort: "out", target: "call" },
+        isTrigger,
+      ),
+    ).toBe(once);
   });
 });
 
 describe("removeNodes", () => {
   it("drops the edges touching removed nodes", () => {
     const graph: WorkflowGraph = {
-      nodes: ["a", "b", "c"].map((id) => ({ id, type: "x", config: {}, position: at })),
+      nodes: ["a", "b", "c"].map((id) => ({
+        id,
+        type: "x",
+        config: {},
+        position: at,
+      })),
       edges: [
         { id: "a->b", source: "a", sourcePort: "out", target: "b" },
         { id: "b->c", source: "b", sourcePort: "out", target: "c" },
       ],
     };
-    expect(removeNodes(graph, ["c"]).edges.map((edge) => edge.id)).toEqual(["a->b"]);
+    expect(removeNodes(graph, ["c"]).edges.map((edge) => edge.id)).toEqual([
+      "a->b",
+    ]);
   });
 });

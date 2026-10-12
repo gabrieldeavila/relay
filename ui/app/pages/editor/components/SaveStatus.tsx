@@ -11,7 +11,9 @@ export const SaveStatus = memo(({ state }: { state: SaveState }) => {
       role="status"
       className={cn(
         "text-xs",
-        state === "error" ? "text-(--color-danger)" : "text-(--color-text-muted)",
+        state === "error"
+          ? "text-(--color-danger)"
+          : "text-(--color-text-muted)",
       )}
     >
       {t(`save.${state}`)}
