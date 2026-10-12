@@ -18,8 +18,8 @@ export class PublishWorkflow {
     private readonly triggers: TriggerRegistry,
   ) {}
 
-  async execute(workflowId: string): Promise<PublishResult> {
-    const workflow = await this.repository.find(workflowId);
+  async execute(workflowId: string, ownerId: string): Promise<PublishResult> {
+    const workflow = await this.repository.find(workflowId, ownerId);
     if (!workflow) return { type: 'not_found' };
 
     const issues = validateGraph(workflow.draftGraph, this.findSpec);

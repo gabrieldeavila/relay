@@ -3,7 +3,16 @@
   "subtitle": "Automatize tarefas repetidas com gatilhos e ações.",
   "empty": {
     "title": "Nenhum fluxo ainda",
-    "description": "Comece por um modelo ou monte um fluxo do zero."
+    "description": "Crie um e adicione um gatilho e alguns passos."
   },
-  "create": "Novo fluxo"
+  "create": "Novo fluxo",
+  "updated": "Editado {{when}}",
+  "published": "Publicado v{{version}}",
+  "draft": "Rascunho",
+  "newModal": {
+    "title": "Novo fluxo",
+    "name": "Nome",
+    "placeholder": "ex.: Post semanal no Instagram",
+    "save": "Criar"
+  }
 }

@@ -39,7 +39,7 @@ describe('triggers', () => {
           node('start', 'trigger.schedule', { schedule: MONDAYS_9AM }),
         ),
       );
-      const armed = await engine.triggers.describe(workflowId);
+      const armed = await engine.describeTrigger(workflowId);
       expect(armed).toMatchObject({ kind: 'schedule' });
       const slot = (armed as { nextFireAt: Date }).nextFireAt;
       expect(slot.getTime()).toBeGreaterThan(Date.now());
@@ -56,7 +56,7 @@ describe('triggers', () => {
       expect(await engine.schedules.fireDue(at)).toBe(0);
       expect(await runCount(workflowId)).toBe(1);
 
-      const next = (await engine.triggers.describe(workflowId)) as {
+      const next = (await engine.describeTrigger(workflowId)) as {
         nextFireAt: Date;
       };
       expect(next.nextFireAt.getTime() - slot.getTime()).toBe(7 * 86_400_000);
@@ -79,7 +79,7 @@ describe('triggers', () => {
           node('start', 'trigger.schedule', { schedule: MONDAYS_9AM }),
         ),
       );
-      const { nextFireAt } = (await engine.triggers.describe(workflowId)) as {
+      const { nextFireAt } = (await engine.describeTrigger(workflowId)) as {
         nextFireAt: Date;
       };
       const weeksLater = new Date(
@@ -88,7 +88,7 @@ describe('triggers', () => {
 
       expect(await engine.schedules.fireDue(weeksLater)).toBe(1);
       expect(await engine.schedules.fireDue(weeksLater)).toBe(0);
-      const after = (await engine.triggers.describe(workflowId)) as {
+      const after = (await engine.describeTrigger(workflowId)) as {
         nextFireAt: Date;
       };
       expect(after.nextFireAt.getTime()).toBeGreaterThan(weeksLater.getTime());
@@ -115,13 +115,13 @@ describe('triggers', () => {
     it('starts a run with the request body, keeping the URL across publishes', async () => {
       const graph = flowStartedBy(node('start', 'trigger.webhook'));
       const workflowId = await engine.publish(graph);
-      const { url } = (await engine.triggers.describe(workflowId)) as {
+      const { url } = (await engine.describeTrigger(workflowId)) as {
         url: string;
       };
       expect(url).toMatch(/^http:\/\/localhost:4400\/hooks\/[\w-]{20,}$/);
 
       await engine.publish(graph, workflowId);
-      expect(await engine.triggers.describe(workflowId)).toEqual({
+      expect(await engine.describeTrigger(workflowId)).toEqual({
         kind: 'webhook',
         url,
       });
@@ -145,7 +145,7 @@ describe('triggers', () => {
       const workflowId = await engine.publish(
         flowStartedBy(node('start', 'trigger.webhook')),
       );
-      const { url } = (await engine.triggers.describe(workflowId)) as {
+      const { url } = (await engine.describeTrigger(workflowId)) as {
         url: string;
       };
 
@@ -153,7 +153,7 @@ describe('triggers', () => {
         flowStartedBy(node('start', 'trigger.manual')),
         workflowId,
       );
-      expect(await engine.triggers.describe(workflowId)).toEqual({
+      expect(await engine.describeTrigger(workflowId)).toEqual({
         kind: 'manual',
       });
       await expect(

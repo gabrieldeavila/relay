@@ -14,14 +14,14 @@ pnpm db:start   # Supabase local: Postgres, Auth, Storage, Studio
 pnpm dev        # API + UI
 ```
 
-- UI: http://localhost:5400
+- UI: http://localhost:5400 (create an account on the login page; it exists only locally)
 - API: http://localhost:4400 (`GET /health`)
 - Supabase Studio: http://localhost:54323, Mailpit: http://localhost:54324
 
 ## Test
 
 ```sh
-pnpm test                       # unit specs (pure domain, no database)
+pnpm test                       # unit specs, API and UI (pure rules, no database)
 pnpm --dir api run test:int     # engine against Postgres (needs `pnpm db:start`)
 pnpm typecheck
 ```

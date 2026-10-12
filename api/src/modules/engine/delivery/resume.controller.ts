@@ -10,11 +10,13 @@ import {
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import type { Response } from 'express';
+import { Public } from '../../auth/delivery/public.decorator.js';
 import { EventResumer } from '../data/event-resumer.js';
 import { answerPage, confirmPage, isSafeAction } from './confirm-page.js';
 import { deliveryReply } from './delivery-reply.js';
 
 /** Secret links that resume waiting steps: `/resume/:token/:nodeId[/:action]`. */
+@Public()
 @Controller('resume/:token/:nodeId')
 export class ResumeController {
   constructor(private readonly resumer: EventResumer) {}

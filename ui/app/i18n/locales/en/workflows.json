@@ -3,7 +3,16 @@
   "subtitle": "Automate repeated tasks with triggers and actions.",
   "empty": {
     "title": "No workflows yet",
-    "description": "Start from a template or build a flow from scratch."
+    "description": "Create one and add a trigger and some steps."
   },
-  "create": "New workflow"
+  "create": "New workflow",
+  "updated": "Edited {{when}}",
+  "published": "Published v{{version}}",
+  "draft": "Draft",
+  "newModal": {
+    "title": "New workflow",
+    "name": "Name",
+    "placeholder": "e.g. Weekly Instagram post",
+    "save": "Create"
+  }
 }

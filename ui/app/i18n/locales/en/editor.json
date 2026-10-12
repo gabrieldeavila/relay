@@ -1,0 +1,91 @@
+{
+  "back": "Workflows",
+  "name": "Workflow name",
+  "save": {
+    "saved": "Saved",
+    "unsaved": "Unsaved changes",
+    "saving": "Saving…",
+    "error": "Could not save, retrying on the next change"
+  },
+  "publish": "Publish",
+  "published": "Published v{{version}}",
+  "notPublished": "Not published yet",
+  "run": "Run now",
+  "runStarted": "Run started",
+  "runNeedsPublish": "Publish the flow before running it.",
+  "publishOk": "Published version {{version}}",
+  "publishInvalid": "Fix the marked steps to publish",
+  "palette": {
+    "title": "Add a step",
+    "triggers": "Start",
+    "actions": "Steps"
+  },
+  "canvas": {
+    "empty": "Add a starting point from the left, then the steps that follow."
+  },
+  "panel": {
+    "nothingSelected": "Select a step to set it up.",
+    "stepId": "Step name in values",
+    "remove": "Remove step",
+    "required": "required",
+    "insertValue": "Use a value",
+    "noValues": "Connect earlier steps to use their results.",
+    "addPair": "Add",
+    "pairName": "Name",
+    "pairValue": "Value",
+    "removePair": "Remove"
+  },
+  "expressions": {
+    "triggerData": "Data that started the flow",
+    "output": "Result of {{node}}",
+    "errorMessage": "Error message of {{node}}",
+    "resumeUrl": "Link to answer a waiting step"
+  },
+  "trigger": {
+    "title": "How it starts",
+    "manual": "Only when you press Run now.",
+    "webhook": "When another app calls this secret link:",
+    "schedule": "On its schedule. Next run:",
+    "noNextRun": "not scheduled",
+    "publishFirst": "Publish to turn it on."
+  },
+  "schedule": {
+    "every": "Repeat",
+    "frequency": {
+      "minutes": "Every few minutes",
+      "hours": "Every few hours",
+      "day": "Every day",
+      "week": "Every week",
+      "month": "Every month"
+    },
+    "interval": "Every how many",
+    "minute": "At minute",
+    "time": "At",
+    "weekdays": "On",
+    "day": "On day",
+    "timezone": "Time zone",
+    "weekday": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    }
+  },
+  "issues": {
+    "title": "To publish, fix:",
+    "no_trigger": "Add a starting point (On a schedule, When a web address is called, or Start manually).",
+    "multiple_triggers": "A flow can only have one starting point.",
+    "duplicate_node_id": "Two steps have the same name.",
+    "unknown_node_type": "This step type no longer exists.",
+    "missing_config": "Fill in “{{field}}”.",
+    "invalid_config": "“{{field}}” is not valid.",
+    "edge_unknown_node": "A connection points to a step that was removed.",
+    "invalid_port": "A connection leaves from an exit this step does not have.",
+    "trigger_has_input": "Nothing can connect into the starting point.",
+    "cycle": "These steps go around in a loop.",
+    "unreachable_node": "This step is not connected to the start."
+  }
+}

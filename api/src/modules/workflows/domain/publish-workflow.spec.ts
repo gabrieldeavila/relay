@@ -14,7 +14,10 @@ function memoryRepository(draftGraph: WorkflowGraph) {
     updatedAt: new Date(),
   };
   const repository: Pick<WorkflowRepository, 'find' | 'addVersion'> = {
-    find: (id) => Promise.resolve(id === workflow.id ? workflow : null),
+    find: (id, ownerId) =>
+      Promise.resolve(
+        id === workflow.id && ownerId === 'ana' ? workflow : null,
+      ),
     addVersion: (_id, graph) => Promise.resolve(versions.push(graph)),
   };
   const registered: unknown[] = [];
@@ -37,11 +40,11 @@ describe('PublishWorkflow', () => {
       memoryRepository(graph);
     const publish = new PublishWorkflow(repository, findTestSpec, triggers);
 
-    expect(await publish.execute('wf')).toEqual({
+    expect(await publish.execute('wf', 'ana')).toEqual({
       type: 'published',
       version: 1,
     });
-    expect(await publish.execute('wf')).toEqual({
+    expect(await publish.execute('wf', 'ana')).toEqual({
       type: 'published',
       version: 2,
     });
@@ -56,9 +59,20 @@ describe('PublishWorkflow', () => {
     expect(
       await new PublishWorkflow(repository, findTestSpec, triggers).execute(
         'wf',
+        'ana',
       ),
     ).toEqual({ type: 'invalid', issues: [{ code: 'no_trigger' }] });
     expect(versions).toEqual([]);
+  });
+
+  it('treats someone else’s workflow as missing', async () => {
+    const { repository, triggers } = memoryRepository(testGraph([], []));
+    expect(
+      await new PublishWorkflow(repository, findTestSpec, triggers).execute(
+        'wf',
+        'bia',
+      ),
+    ).toEqual({ type: 'not_found' });
   });
 
   it('reports a missing workflow', async () => {
@@ -66,6 +80,7 @@ describe('PublishWorkflow', () => {
     expect(
       await new PublishWorkflow(repository, findTestSpec, triggers).execute(
         'other',
+        'ana',
       ),
     ).toEqual({ type: 'not_found' });
   });

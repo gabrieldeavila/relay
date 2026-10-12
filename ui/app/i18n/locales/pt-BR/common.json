@@ -4,5 +4,11 @@
     "label": "Idioma",
     "portuguese": "Português",
     "english": "Inglês"
-  }
+  },
+  "cancel": "Cancelar",
+  "save": "Salvar",
+  "delete": "Excluir",
+  "back": "Voltar",
+  "copy": "Copiar",
+  "copied": "Copiado"
 }

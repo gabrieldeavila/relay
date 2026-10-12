@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
+import { CurrentUser } from '../../auth/delivery/current-user.decorator.js';
 import { RunCanceller } from '../data/run-canceller.js';
 import { RunReader } from '../data/run-reader.js';
 import { RunStarter } from '../data/run-starter.js';
@@ -24,9 +25,13 @@ export class RunsController {
   @Post('workflows/:id/runs')
   @HttpCode(202)
   async start(
+    @CurrentUser() userId: string,
     @Param('id', ParseUUIDPipe) workflowId: string,
     @Body() payload: unknown,
   ) {
+    if (!(await this.reader.ownsWorkflow(workflowId, userId))) {
+      throw new NotFoundException('Workflow not found');
+    }
     const runId = await this.starter.startRun(workflowId, payload ?? {});
     if (!runId) {
       throw new NotFoundException('Publish the workflow before running it');
@@ -35,19 +40,31 @@ export class RunsController {
   }
 
   @Get('workflows/:id/runs')
-  list(@Param('id', ParseUUIDPipe) workflowId: string) {
-    return this.reader.listForWorkflow(workflowId);
+  list(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) workflowId: string,
+  ) {
+    return this.reader.listForWorkflow(workflowId, userId);
   }
 
   @Get('runs/:id')
-  async get(@Param('id', ParseUUIDPipe) runId: string) {
-    const run = await this.reader.get(runId);
+  async get(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) runId: string,
+  ) {
+    const run = await this.reader.get(runId, userId);
     if (!run) throw new NotFoundException('Run not found');
     return run;
   }
 
   @Post('runs/:id/cancel')
-  async cancel(@Param('id', ParseUUIDPipe) runId: string) {
+  async cancel(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) runId: string,
+  ) {
+    if (!(await this.reader.get(runId, userId))) {
+      throw new NotFoundException('Run not found');
+    }
     const cancelled = await this.canceller.cancelRun(runId);
     if (!cancelled) throw new NotFoundException('No active run with this id');
     return { cancelled };

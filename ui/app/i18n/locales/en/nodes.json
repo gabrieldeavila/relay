@@ -1,0 +1,86 @@
+{
+  "trigger": {
+    "manual": {
+      "title": "Start manually",
+      "description": "Runs when you press Run now."
+    },
+    "schedule": {
+      "title": "On a schedule",
+      "description": "Runs by itself every few minutes, daily, weekly or monthly."
+    },
+    "webhook": {
+      "title": "When a web address is called",
+      "description": "Runs when another app sends data to this flow’s secret link."
+    }
+  },
+  "http": {
+    "request": {
+      "title": "Call a web address",
+      "description": "Sends a request to another app or site and gets its answer."
+    }
+  },
+  "flow": {
+    "delay": {
+      "title": "Wait",
+      "description": "Waits for a while before going on."
+    },
+    "wait_for_webhook": {
+      "title": "Wait for another app",
+      "description": "Pauses until another app calls this step’s link."
+    },
+    "approval": {
+      "title": "Ask for approval",
+      "description": "Pauses until someone approves or rejects."
+    }
+  },
+  "logic": {
+    "if": {
+      "title": "If",
+      "description": "Goes one way or the other depending on a value."
+    }
+  },
+  "data": {
+    "set": {
+      "title": "Set fields",
+      "description": "Creates named values to use in the next steps."
+    }
+  },
+  "fields": {
+    "url": "Address (URL)",
+    "method": "Method",
+    "headers": "Headers",
+    "body": "Content to send",
+    "amount": "How long",
+    "unit": "Unit",
+    "value": "Value to check",
+    "operator": "Check",
+    "compare": "Compare with",
+    "fields": "Fields",
+    "question": "Question",
+    "timeoutAmount": "Give up after",
+    "timeoutUnit": "Unit",
+    "schedule": "Schedule"
+  },
+  "options": {
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
+    "equals": "is equal to",
+    "not_equals": "is not equal to",
+    "contains": "contains",
+    "greater_than": "is greater than",
+    "less_than": "is less than",
+    "is_empty": "is empty",
+    "is_not_empty": "is not empty"
+  },
+  "ports": {
+    "out": "next",
+    "error": "if it fails",
+    "true": "yes",
+    "false": "no",
+    "timeout": "no answer in time",
+    "approved": "approved",
+    "rejected": "rejected"
+  }
+}

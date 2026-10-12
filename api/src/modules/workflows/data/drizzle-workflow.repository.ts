@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { desc, eq, max, sql } from 'drizzle-orm';
+import { and, desc, eq, max, sql } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../../database/database.js';
 import { workflows, workflowVersions } from '../../../database/schema/index.js';
 import type { WorkflowGraph } from '../domain/graph.js';
@@ -27,33 +27,41 @@ const summaryColumns = {
 export class DrizzleWorkflowRepository implements WorkflowRepository {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  async create(name: string): Promise<Workflow> {
-    const [row] = await this.db.insert(workflows).values({ name }).returning();
+  async create(ownerId: string, name: string): Promise<Workflow> {
+    const [row] = await this.db
+      .insert(workflows)
+      .values({ ownerId, name })
+      .returning();
     return { ...row, latestVersion: null };
   }
 
-  list(): Promise<WorkflowSummary[]> {
+  list(ownerId: string): Promise<WorkflowSummary[]> {
     return this.db
       .select(summaryColumns)
       .from(workflows)
+      .where(eq(workflows.ownerId, ownerId))
       .orderBy(desc(workflows.updatedAt));
   }
 
-  async find(id: string): Promise<Workflow | null> {
+  async find(id: string, ownerId: string): Promise<Workflow | null> {
     const [row] = await this.db
       .select({ ...summaryColumns, draftGraph: workflows.draftGraph })
       .from(workflows)
-      .where(eq(workflows.id, id));
+      .where(owned(id, ownerId));
     return row ?? null;
   }
 
-  async update(id: string, changes: WorkflowChanges): Promise<Workflow | null> {
+  async update(
+    id: string,
+    ownerId: string,
+    changes: WorkflowChanges,
+  ): Promise<Workflow | null> {
     const updated = await this.db
       .update(workflows)
       .set({ ...changes, updatedAt: new Date() })
-      .where(eq(workflows.id, id))
+      .where(owned(id, ownerId))
       .returning({ id: workflows.id });
-    return updated.length ? this.find(id) : null;
+    return updated.length ? this.find(id, ownerId) : null;
   }
 
   /** Locks the workflow row so concurrent publishes get distinct numbers. */
@@ -76,3 +84,6 @@ export class DrizzleWorkflowRepository implements WorkflowRepository {
     });
   }
 }
+
+const owned = (id: string, ownerId: string) =>
+  and(eq(workflows.id, id), eq(workflows.ownerId, ownerId));

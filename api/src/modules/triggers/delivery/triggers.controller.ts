@@ -10,6 +10,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { publicUrl } from '../../../public-url.js';
+import { CurrentUser } from '../../auth/delivery/current-user.decorator.js';
+import { Public } from '../../auth/delivery/public.decorator.js';
 import { RunStarter } from '../../engine/data/run-starter.js';
 import { TriggerReader } from '../data/trigger-reader.js';
 
@@ -22,8 +24,11 @@ export class TriggersController {
 
   /** How the published workflow starts: its webhook URL or next scheduled fire. */
   @Get('workflows/:id/trigger')
-  async describe(@Param('id', ParseUUIDPipe) workflowId: string) {
-    const trigger = await this.reader.forWorkflow(workflowId);
+  async describe(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) workflowId: string,
+  ) {
+    const trigger = await this.reader.forWorkflow(workflowId, userId);
     if (!trigger) return { kind: 'manual' };
     return trigger.kind === 'webhook'
       ? { kind: 'webhook', url: `${publicUrl()}/hooks/${trigger.token}` }
@@ -36,6 +41,7 @@ export class TriggersController {
   }
 
   /** A workflow's secret webhook; body and query become the trigger output. */
+  @Public()
   @Post('hooks/:token')
   @HttpCode(202)
   async hook(

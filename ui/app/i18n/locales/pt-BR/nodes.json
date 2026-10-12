@@ -1,0 +1,86 @@
+{
+  "trigger": {
+    "manual": {
+      "title": "Iniciar manualmente",
+      "description": "Roda quando você clica em Executar agora."
+    },
+    "schedule": {
+      "title": "Na agenda",
+      "description": "Roda sozinho a cada alguns minutos, todo dia, toda semana ou todo mês."
+    },
+    "webhook": {
+      "title": "Quando um endereço for chamado",
+      "description": "Roda quando outro app envia dados para o link secreto deste fluxo."
+    }
+  },
+  "http": {
+    "request": {
+      "title": "Chamar um endereço web",
+      "description": "Envia um pedido para outro app ou site e recebe a resposta."
+    }
+  },
+  "flow": {
+    "delay": {
+      "title": "Esperar",
+      "description": "Espera um tempo antes de continuar."
+    },
+    "wait_for_webhook": {
+      "title": "Esperar outro app",
+      "description": "Pausa até outro app chamar o link deste passo."
+    },
+    "approval": {
+      "title": "Pedir aprovação",
+      "description": "Pausa até alguém aprovar ou recusar."
+    }
+  },
+  "logic": {
+    "if": {
+      "title": "Se",
+      "description": "Segue por um caminho ou outro dependendo de um valor."
+    }
+  },
+  "data": {
+    "set": {
+      "title": "Definir campos",
+      "description": "Cria valores com nome para usar nos próximos passos."
+    }
+  },
+  "fields": {
+    "url": "Endereço (URL)",
+    "method": "Método",
+    "headers": "Cabeçalhos",
+    "body": "Conteúdo a enviar",
+    "amount": "Quanto tempo",
+    "unit": "Unidade",
+    "value": "Valor a verificar",
+    "operator": "Verificar se",
+    "compare": "Comparar com",
+    "fields": "Campos",
+    "question": "Pergunta",
+    "timeoutAmount": "Desistir depois de",
+    "timeoutUnit": "Unidade",
+    "schedule": "Agenda"
+  },
+  "options": {
+    "seconds": "segundos",
+    "minutes": "minutos",
+    "hours": "horas",
+    "days": "dias",
+    "equals": "é igual a",
+    "not_equals": "é diferente de",
+    "contains": "contém",
+    "greater_than": "é maior que",
+    "less_than": "é menor que",
+    "is_empty": "está vazio",
+    "is_not_empty": "não está vazio"
+  },
+  "ports": {
+    "out": "próximo",
+    "error": "se falhar",
+    "true": "sim",
+    "false": "não",
+    "timeout": "sem resposta a tempo",
+    "approved": "aprovado",
+    "rejected": "recusado"
+  }
+}

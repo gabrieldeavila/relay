@@ -65,15 +65,17 @@ any app that serves tools in the Claude format (`GET /api/tools`) becomes a set 
       retries with backoff, per-attempt timeouts, reaper, fenced writes (stale attempts dropped);
       manual / HTTP / delay / if / set-fields nodes; REST for workflows, publish, runs, cancel.
       Verified: `kill -9` mid-step, restart, the run finishes (attempt 2)
-  - [ ] Auth (Supabase local login, `owner_id` on workflows) — moved to phase 4 with the UI
 - [x] **3. Waits and triggers**: schedule trigger (friendly schedule → cron, time zones,
       one catch-up fire after downtime, never twice), webhook trigger (secret URL kept across
       publishes), wait for webhook, approval (confirm page so link previews never answer),
       deadlines with `timeout` port, event inbox (early events kept, duplicates dropped),
       `{{ run.resumeUrl }}` in expressions
   - [ ] Links only work on this machine; reaching them from a phone needs a tunnel (later)
-- [ ] **4. Editor**: React Flow canvas, node palette, schema-driven config forms,
-      inline validation, autosave, publish
+- [x] **4. Editor + local login**: Supabase local sign up / log in (HS256 or JWKS tokens),
+      every workflow owned by its creator; workflows list; React Flow canvas with one handle
+      per exit, click-to-add palette, forms generated from config JSON Schemas (text, number,
+      select, key/value, free value, schedule editor), "Use a value" menu for `{{ }}`,
+      publish issues pinned to steps, autosave, Run now. Verified in a headless browser
 - [ ] **5. Runs view**: live timeline over SSE, input / output / attempts per step,
       re-run from the failed step
 - [ ] **6. Tool providers + Pincel**: import `/api/tools` catalogs as nodes, image outputs

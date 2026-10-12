@@ -10,6 +10,7 @@ import {
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { CurrentUser } from '../../auth/delivery/current-user.decorator.js';
 import { PublishWorkflow } from '../domain/publish-workflow.js';
 import type { WorkflowRepository } from '../domain/workflow.js';
 import {
@@ -29,30 +30,43 @@ export class WorkflowsController {
   ) {}
 
   @Post()
-  create(@Body() body: unknown) {
-    return this.repository.create(parseBody(createWorkflowBody, body).name);
+  create(@CurrentUser() userId: string, @Body() body: unknown) {
+    return this.repository.create(
+      userId,
+      parseBody(createWorkflowBody, body).name,
+    );
   }
 
   @Get()
-  list() {
-    return this.repository.list();
+  list(@CurrentUser() userId: string) {
+    return this.repository.list(userId);
   }
 
   @Get(':id')
-  async get(@Param('id', ParseUUIDPipe) id: string) {
-    return orNotFound(await this.repository.find(id));
+  async get(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return orNotFound(await this.repository.find(id, userId));
   }
 
   /** Saves the draft; running versions are untouched until the next publish. */
   @Patch(':id')
-  async update(@Param('id', ParseUUIDPipe) id: string, @Body() body: unknown) {
+  async update(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: unknown,
+  ) {
     const changes = parseBody(updateWorkflowBody, body);
-    return orNotFound(await this.repository.update(id, changes));
+    return orNotFound(await this.repository.update(id, userId, changes));
   }
 
   @Post(':id/publish')
-  async publish(@Param('id', ParseUUIDPipe) id: string) {
-    const result = await this.publishWorkflow.execute(id);
+  async publish(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const result = await this.publishWorkflow.execute(id, userId);
     if (result.type === 'not_found') throw workflowNotFound();
     if (result.type === 'invalid') {
       throw new UnprocessableEntityException({ issues: result.issues });

@@ -8,7 +8,7 @@
     "db:reset": "supabase db reset",
     "dev": "concurrently -k -n api,ui \"pnpm --dir api run start:dev\" \"pnpm --dir ui run dev\"",
     "build": "pnpm --dir api run build && pnpm --dir ui run build",
-    "test": "pnpm --dir api test",
+    "test": "pnpm --dir api test && pnpm --dir ui test",
     "typecheck": "pnpm --dir api run typecheck && pnpm --dir ui run typecheck"
   },
   "devDependencies": {

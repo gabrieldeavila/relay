@@ -40,6 +40,9 @@ export const edge = (
   target,
 });
 
+/** Every workflow in the tests belongs to this user. */
+export const TEST_OWNER = '00000000-0000-4000-8000-000000000001';
+
 type RunView = NonNullable<Awaited<ReturnType<RunReader['get']>>>;
 
 /** The real app on `relay_test`, with the worker driven by the test. */
@@ -87,6 +90,11 @@ export class EngineHarness {
     return this.module.get(TriggersController);
   }
 
+  /** The workflow's trigger as its owner sees it. */
+  describeTrigger(workflowId: string) {
+    return this.triggers.describe(TEST_OWNER, workflowId);
+  }
+
   async reset() {
     await this.db.execute(sql`DELETE FROM relay.workflows`);
   }
@@ -102,9 +110,12 @@ export class EngineHarness {
   /** Saves the graph as the draft (of a new workflow by default) and publishes. */
   async tryPublish(graph: WorkflowGraph, workflowId?: string) {
     const repository = this.module.get<WorkflowRepository>(WORKFLOW_REPOSITORY);
-    const id = workflowId ?? (await repository.create('Test flow')).id;
-    await repository.update(id, { draftGraph: graph });
-    const result = await this.module.get(PublishWorkflow).execute(id);
+    const id =
+      workflowId ?? (await repository.create(TEST_OWNER, 'Test flow')).id;
+    await repository.update(id, TEST_OWNER, { draftGraph: graph });
+    const result = await this.module
+      .get(PublishWorkflow)
+      .execute(id, TEST_OWNER);
     return { ...result, workflowId: id };
   }
 
@@ -129,7 +140,7 @@ export class EngineHarness {
   }
 
   async run(runId: string): Promise<RunView> {
-    const run = await this.module.get(RunReader).get(runId);
+    const run = await this.module.get(RunReader).get(runId, TEST_OWNER);
     if (!run) throw new Error(`Run ${runId} not found`);
     return run;
   }

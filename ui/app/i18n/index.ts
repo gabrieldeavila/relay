@@ -1,10 +1,17 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-import enCommon from "./locales/en/common.json";
-import enWorkflows from "./locales/en/workflows.json";
-import ptBRCommon from "./locales/pt-BR/common.json";
-import ptBRWorkflows from "./locales/pt-BR/workflows.json";
+/** Every `locales/<language>/<namespace>.json`, loaded at build time. */
+const files = import.meta.glob<Record<string, unknown>>("./locales/*/*.json", {
+  eager: true,
+  import: "default",
+});
+
+const resources: Record<string, Record<string, Record<string, unknown>>> = {};
+for (const [path, messages] of Object.entries(files)) {
+  const [, language, namespace] = path.match(/\.\/locales\/(.+)\/(.+)\.json$/)!;
+  (resources[language] ??= {})[namespace] = messages;
+}
 
 export const supportedLanguages = ["pt-BR", "en"] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
@@ -30,10 +37,7 @@ const initialLanguage: SupportedLanguage = isSupported(storedLanguage)
   : "pt-BR";
 
 void i18n.use(initReactI18next).init({
-  resources: {
-    "pt-BR": { common: ptBRCommon, workflows: ptBRWorkflows },
-    en: { common: enCommon, workflows: enWorkflows },
-  },
+  resources,
   lng: initialLanguage,
   fallbackLng: "en",
   supportedLngs: supportedLanguages,

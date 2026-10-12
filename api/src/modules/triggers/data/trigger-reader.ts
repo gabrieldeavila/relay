@@ -1,18 +1,25 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../../database/database.js';
-import { triggers } from '../../../database/schema/index.js';
+import { triggers, workflows } from '../../../database/schema/index.js';
 
 @Injectable()
 export class TriggerReader {
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
-  async forWorkflow(workflowId: string) {
-    const [trigger] = await this.db
-      .select()
+  /** Null both for a manual start and for someone else's workflow. */
+  async forWorkflow(workflowId: string, ownerId: string) {
+    const [row] = await this.db
+      .select({ trigger: triggers })
       .from(triggers)
-      .where(eq(triggers.workflowId, workflowId));
-    return trigger ?? null;
+      .innerJoin(workflows, eq(workflows.id, triggers.workflowId))
+      .where(
+        and(
+          eq(triggers.workflowId, workflowId),
+          eq(workflows.ownerId, ownerId),
+        ),
+      );
+    return row?.trigger ?? null;
   }
 
   /** The enabled webhook trigger behind a secret token. */
