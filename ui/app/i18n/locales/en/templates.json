@@ -1,0 +1,26 @@
+{
+  "title": "Start from a template",
+  "subtitle": "Ready-made flows: pick one, fill in your files and chats, and publish.",
+  "use": "Use template",
+  "ready": "ready",
+  "missing": "set up",
+  "connectFirst": "Connect the app first",
+  "setUpLater": "Set up accounts",
+  "needs": {
+    "email": "Email",
+    "telegram": "Telegram",
+    "ai": "AI"
+  },
+  "quote-of-the-week": {
+    "title": "Quote of the week",
+    "description": "Every Monday, draws the next quote from your spreadsheet in Pincel, sends you a preview on Telegram to approve, then posts it (to your chat, or a channel you choose)."
+  },
+  "folder-to-email": {
+    "title": "Email new files from a folder",
+    "description": "When a PDF is saved in a folder (scans, invoices, exports), emails it to you as an attachment."
+  },
+  "weekly-sheet-summary": {
+    "title": "Weekly spreadsheet summary",
+    "description": "Every Friday afternoon, AI reads a spreadsheet (sales, expenses, tasks) and emails you a short summary."
+  }
+}

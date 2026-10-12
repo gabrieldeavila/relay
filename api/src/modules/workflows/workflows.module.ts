@@ -34,5 +34,6 @@ import type { WorkflowRepository } from './domain/workflow.js';
         ),
     },
   ],
+  exports: [WORKFLOW_REPOSITORY, PublishWorkflow],
 })
 export class WorkflowsModule {}

@@ -33,6 +33,22 @@ describe("schemaFields", () => {
     ]);
   });
 
+  it("gives long text (emails, prompts) a multi-line field", () => {
+    expect(
+      schemaFields({
+        type: "object",
+        properties: {
+          prompt: { type: "string", widget: "textarea" },
+          subject: { type: "string" },
+        },
+        required: ["prompt", "subject"],
+      }),
+    ).toEqual([
+      { name: "prompt", required: true, kind: "longText" },
+      { name: "subject", required: true, kind: "text" },
+    ]);
+  });
+
   it("recognizes numbers, free records and schedules", () => {
     expect(
       schemaFields({

@@ -4,6 +4,7 @@ import { FiCopy } from "react-icons/fi";
 
 import { Button } from "@/ui/components/primitives/button";
 import type { TriggerInfo } from "../api/editor-api";
+import { FolderTriggerInfo } from "./FolderTriggerInfo";
 
 type TriggerPanelProps = { trigger: TriggerInfo | null; published: boolean };
 
@@ -30,6 +31,8 @@ export const TriggerPanel = memo(
           <p className="text-sm text-(--color-text-muted)">
             {t("trigger.manual")}
           </p>
+        ) : trigger.kind === "folder" ? (
+          <FolderTriggerInfo trigger={trigger} />
         ) : trigger.kind === "webhook" ? (
           <>
             <p className="text-sm text-(--color-text-muted)">

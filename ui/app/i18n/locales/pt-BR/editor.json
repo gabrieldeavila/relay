@@ -41,7 +41,8 @@
     "triggerData": "Dados que iniciaram o fluxo",
     "output": "Resultado de {{node}}",
     "errorMessage": "Mensagem de erro de {{node}}",
-    "resumeUrl": "Link para responder um passo em espera"
+    "resumeUrl": "Link para responder um passo em espera",
+    "runLink": "Link desta execução no Relay"
   },
   "trigger": {
     "title": "Como começa",
@@ -49,7 +50,9 @@
     "webhook": "Quando outro app chamar este link secreto:",
     "schedule": "Na agenda. Próxima execução:",
     "noNextRun": "não agendada",
-    "publishFirst": "Publique para ativar."
+    "publishFirst": "Publique para ativar.",
+    "folder": "Para cada arquivo novo em",
+    "folderMissing": "Esta pasta não existe neste computador, então o fluxo nunca começa. Corrija o caminho e publique de novo."
   },
   "schedule": {
     "every": "Repetir",

@@ -31,6 +31,12 @@ export const useNodeText = () => {
       t(`nodes:fields.${name}`, { defaultValue: humanizeName(name) }),
     [t],
   );
+  /** Help under a built-in step's field; connected apps describe their own. */
+  const hint = useCallback(
+    (name: string): string | undefined =>
+      t(`nodes:hints.${name}`, { defaultValue: "" }) || undefined,
+    [t],
+  );
   const option = useCallback(
     (value: string) => t(`nodes:options.${value}`, { defaultValue: value }),
     [t],
@@ -47,5 +53,5 @@ export const useNodeText = () => {
     [t, field],
   );
 
-  return { title, description, field, option, port, issue };
+  return { title, description, field, hint, option, port, issue };
 };

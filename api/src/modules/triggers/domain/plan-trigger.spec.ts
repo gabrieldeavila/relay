@@ -6,6 +6,7 @@ const specs: NodeSpec[] = [
   'trigger.manual',
   'trigger.schedule',
   'trigger.webhook',
+  'trigger.folder',
 ].map((type) => ({
   type,
   kind: 'trigger',
@@ -29,6 +30,28 @@ describe('planTrigger', () => {
   it('registers a webhook', () => {
     expect(planTrigger(withTrigger('trigger.webhook'), findSpec)).toEqual({
       registration: { kind: 'webhook' },
+    });
+  });
+
+  it('registers a watched folder, every file by default', () => {
+    expect(
+      planTrigger(
+        withTrigger('trigger.folder', { folder: '~/Inbox' }),
+        findSpec,
+      ),
+    ).toEqual({
+      registration: {
+        kind: 'folder',
+        watch: { folder: '~/Inbox', pattern: '*' },
+      },
+    });
+  });
+
+  it('pins a folder that is not a full path to its field', () => {
+    expect(
+      planTrigger(withTrigger('trigger.folder', { folder: 'Inbox' }), findSpec),
+    ).toEqual({
+      issue: { code: 'invalid_config', nodeId: 'start', field: 'folder' },
     });
   });
 

@@ -35,10 +35,11 @@ describe("expressionOptions", () => {
       "{{ steps.call.error.message }}",
       "{{ trigger }}",
       "{{ run.resumeUrl }}",
+      "{{ run.link }}",
     ]);
   });
 
-  it("offers only the resume link to the first step", () => {
+  it("offers only the run's links to the first step", () => {
     expect(
       expressionOptions(
         graph,
@@ -46,6 +47,6 @@ describe("expressionOptions", () => {
         () => true,
         () => false,
       ).map((o) => o.labelKey),
-    ).toEqual(["resumeUrl"]);
+    ).toEqual(["resumeUrl", "runLink"]);
   });
 });

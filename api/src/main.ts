@@ -1,6 +1,7 @@
 import './load-env.js';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
+import { uiUrl } from './ui-url.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,7 +10,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   app.enableCors({
-    origin: [process.env.UI_URL ?? 'http://localhost:5400'],
+    origin: [uiUrl()],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

@@ -88,8 +88,18 @@ any app that serves tools in the Claude format (`GET /api/tools`) becomes a set 
       Verified with the real Pincel (isolated data folder)
   - Files stay on local disk instead of Supabase Storage: local-only app, and a path lets
     local tools (Pincel's `open_image`) pick the file up
-- [ ] **7. Local building blocks**: watch folder, CSV, SMTP email, Telegram, AI step,
-      and the first templates (they need a step that delivers the result)
+- [x] **7. Local building blocks**: folder trigger (polled, survives restarts; files already
+      there at publish are ignored; each file starts one run, again if rewritten; waits for
+      copies to finish), read a spreadsheet (CSV with `,`/`;`/tab, Excel sheets; pick first,
+      last, random, or the next row each week/day), send an email (your own SMTP, attachment,
+      stable Message-ID across retries), send on Telegram (text or picture, chat picked from
+      the bot's recent messages), Ask AI (Claude via the official SDK, refusals fail with the
+      reason, server-side fallback), per-user accounts with secrets encrypted at rest
+      (AES-GCM, key in `.data/secret.key` or `RELAY_SECRET_KEY`), `{{ run.link }}`, and three
+      templates (quote of the week with Pincel + approval + Telegram, folder → email,
+      weekly spreadsheet summary by AI). Verified in a headless browser
+  - The AI step is the one step that sends data off the machine (to Anthropic); the UI says so
+  - Next: approve from Telegram buttons (the approval link only works on this machine)
 - [ ] **8. MCP**: MCP servers as providers; Relay itself exposed over MCP;
       "describe what you want" builder validated by `validate-graph`
 

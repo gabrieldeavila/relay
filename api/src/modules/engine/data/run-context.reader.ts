@@ -3,6 +3,7 @@ import { and, eq, inArray } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../../database/database.js';
 import { runs, stepRuns } from '../../../database/schema/index.js';
 import { publicUrl } from '../../../public-url.js';
+import { uiUrl } from '../../../ui-url.js';
 import type { ExpressionContext } from '../domain/expressions/resolve-expressions.js';
 
 /** The run's links plus outputs and errors of settled steps, for `{{ }}`. */
@@ -12,7 +13,7 @@ export class RunContextReader {
 
   async read(runId: string, triggerNodeId: string): Promise<ExpressionContext> {
     const [run] = await this.db
-      .select({ resumeToken: runs.resumeToken })
+      .select({ resumeToken: runs.resumeToken, workflowId: runs.workflowId })
       .from(runs)
       .where(eq(runs.id, runId));
     const rows = await this.db
@@ -40,6 +41,7 @@ export class RunContextReader {
       run: {
         id: runId,
         resumeUrl: `${publicUrl()}/resume/${run?.resumeToken}`,
+        link: `${uiUrl()}/workflows/${run?.workflowId}/runs/${runId}`,
       },
       steps,
     };

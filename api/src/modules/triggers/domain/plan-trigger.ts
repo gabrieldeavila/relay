@@ -2,8 +2,10 @@ import { findTrigger } from '../../workflows/domain/find-trigger.js';
 import type { WorkflowGraph } from '../../workflows/domain/graph.js';
 import type { GraphIssue } from '../../workflows/domain/graph-issue.js';
 import type { FindNodeSpec } from '../../workflows/domain/node-spec.js';
+import { folderWatchSchema } from './folder-watch.js';
 import { scheduleSchema } from './schedule.js';
 import {
+  FOLDER_TRIGGER,
   SCHEDULE_TRIGGER,
   WEBHOOK_TRIGGER,
   type TriggerRegistration,
@@ -18,16 +20,26 @@ export function planTrigger(
   findSpec: FindNodeSpec,
 ): TriggerPlan {
   const trigger = findTrigger(graph, findSpec);
-  if (trigger?.type === WEBHOOK_TRIGGER) {
-    return { registration: { kind: 'webhook' } };
+  switch (trigger?.type) {
+    case WEBHOOK_TRIGGER:
+      return { registration: { kind: 'webhook' } };
+    case SCHEDULE_TRIGGER: {
+      const parsed = scheduleSchema.safeParse(trigger.config.schedule);
+      return parsed.success
+        ? { registration: { kind: 'schedule', schedule: parsed.data } }
+        : invalidConfig(trigger.id, 'schedule');
+    }
+    case FOLDER_TRIGGER: {
+      const parsed = folderWatchSchema.safeParse(trigger.config);
+      return parsed.success
+        ? { registration: { kind: 'folder', watch: parsed.data } }
+        : invalidConfig(trigger.id, 'folder');
+    }
+    default:
+      return { registration: null };
   }
-  if (trigger?.type !== SCHEDULE_TRIGGER) return { registration: null };
-
-  const parsed = scheduleSchema.safeParse(trigger.config.schedule);
-  if (!parsed.success) {
-    return {
-      issue: { code: 'invalid_config', nodeId: trigger.id, field: 'schedule' },
-    };
-  }
-  return { registration: { kind: 'schedule', schedule: parsed.data } };
 }
+
+const invalidConfig = (nodeId: string, field: string): TriggerPlan => ({
+  issue: { code: 'invalid_config', nodeId, field },
+});

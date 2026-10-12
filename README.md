@@ -25,6 +25,21 @@ Start Pincel (`pnpm dev` in its folder), then in Relay open **Connections** and 
 tool returns are saved under `api/.data/files/<run>/` (set `FILES_DIR` to change it) and
 shown in the runs view; later steps can use their `url` or local `path`.
 
+## Accounts and templates
+
+Steps that deliver results use accounts set up once under **Connections → Accounts**:
+email (your own SMTP server; Gmail, Outlook and iCloud are filled in from the address and
+need an app password), a Telegram bot (token from @BotFather; send it a message, then
+"Find my chat"), and an Anthropic API key for **Ask AI**. Secrets are encrypted with a key
+kept in `api/.data/secret.key` (or `RELAY_SECRET_KEY`, base64 of 32 bytes).
+
+The workflows page offers templates. Using one creates a draft; publishing points at the
+fields only you can fill (a folder, a spreadsheet path).
+
+Steps read local files by full path (`~/` works): **When a file appears in a folder**
+gives later steps `{{ trigger.path }}`, **Read a spreadsheet** reads `.csv` / `.xlsx` and
+gives the rows plus one picked `row` (`{{ steps.<id>.output.row.<column> }}`).
+
 ## Test
 
 ```sh
@@ -53,6 +68,12 @@ supabase migration up            # applies it locally
 | GET / POST | `/providers` | Connected apps; POST `{ name, baseUrl }` reads `<baseUrl>/api/tools` |
 | POST / DELETE | `/providers/:id/refresh`, `/providers/:id` | Re-read an app's tools, disconnect it |
 | GET | `/files/:runId/:name` | A file a run produced (e.g. a Pincel render), owner only |
+| GET | `/accounts` | Email, Telegram and AI accounts (never their secrets) |
+| PUT / DELETE | `/accounts/:kind` | Save `{ settings, secret? }` (no secret keeps the stored one), remove |
+| POST | `/accounts/:kind/check` | Sign in / try the key; answers `{ ok, message }` |
+| GET | `/accounts/telegram/chats` | Chats that wrote to the bot lately |
+| GET | `/templates` | Templates with what each needs and what is set up |
+| POST | `/templates/:id/use` | Create a draft workflow from a template `{ name? }` |
 | POST | `/workflows` | Create `{ name }` |
 | GET | `/workflows`, `/workflows/:id` | List, get with draft graph |
 | PATCH | `/workflows/:id` | Save `{ name?, draftGraph? }` |
@@ -62,7 +83,7 @@ supabase migration up            # applies it locally
 | GET | `/runs/:id/events` | Live run (server-sent events: `run` on every change, `ping`) |
 | POST | `/runs/:id/cancel` | Cancel a running or waiting run |
 | POST | `/runs/:id/retry` | Retry the steps that failed the run, in the same run |
-| GET | `/workflows/:id/trigger` | Manual, webhook URL, or next scheduled fire |
+| GET | `/workflows/:id/trigger` | Manual, webhook URL, next scheduled fire, or watched folder |
 | POST | `/hooks/:token` | Webhook trigger: starts a run with `{ body, query }` |
 | POST | `/resume/:token/:nodeId` | Resume a "wait for another app" step (send `Idempotency-Key`) |
 | GET / POST | `/resume/:token/:nodeId/:action` | Approval link: GET shows a confirm button, POST answers |

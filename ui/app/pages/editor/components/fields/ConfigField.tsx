@@ -5,6 +5,7 @@ import { AnyField } from "./AnyField";
 import { BooleanField } from "./BooleanField";
 import type { FieldProps } from "./field-props";
 import { KeyValueField } from "./KeyValueField";
+import { LongTextField } from "./LongTextField";
 import { NumberField } from "./NumberField";
 import { ScheduleField } from "./ScheduleField";
 import { SelectField } from "./SelectField";
@@ -12,6 +13,7 @@ import { TextField } from "./TextField";
 
 const FIELDS: Record<FieldKind, ComponentType<FieldProps>> = {
   text: TextField,
+  longText: LongTextField,
   number: NumberField,
   select: SelectField,
   boolean: BooleanField,

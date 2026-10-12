@@ -4,13 +4,14 @@ export interface ExpressionOption {
   /** Node the value comes from; null for run-level values. */
   nodeId: string | null;
   /** What the value is, as an i18n key under `editor:expressions`. */
-  labelKey: "triggerData" | "output" | "errorMessage" | "resumeUrl";
+  labelKey: "triggerData" | "output" | "errorMessage" | "resumeUrl" | "runLink";
   expression: string;
 }
 
 /**
  * Values a step can use: the trigger's data and the results of steps that
- * always run before it (upstream), plus the run's resume link.
+ * always run before it (upstream), plus the run's links: the resume link
+ * and the run's page in Relay.
  */
 export function expressionOptions(
   graph: WorkflowGraph,
@@ -47,6 +48,7 @@ export function expressionOptions(
   return [
     ...options,
     { nodeId: null, labelKey: "resumeUrl", expression: "{{ run.resumeUrl }}" },
+    { nodeId: null, labelKey: "runLink", expression: "{{ run.link }}" },
   ];
 }
 

@@ -17,5 +17,49 @@
     "refreshed": "atualizado {{when}}",
     "refresh": "Atualizar ferramentas",
     "remove": "Remover"
+  },
+  "accounts": {
+    "title": "Contas",
+    "subtitle": "Para onde seus fluxos entregam resultados. Senhas e chaves ficam criptografadas, neste computador.",
+    "ready": "Configurada",
+    "notSetUp": "Não configurada",
+    "save": "Salvar e testar",
+    "test": "Testar",
+    "remove": "Remover",
+    "keepSecret": "Salva (deixe vazio para manter)",
+    "email": {
+      "title": "E-mail",
+      "description": "Usado por “Enviar um e-mail”. As mensagens saem da sua própria caixa de e-mail.",
+      "user": "Seu e-mail",
+      "password": "Senha",
+      "passwordHint": "Gmail, Outlook e iCloud pedem uma senha de app (crie nas configurações de segurança da conta), não a sua senha normal.",
+      "host": "Servidor de envio (SMTP)",
+      "port": "Porta",
+      "from": "Nome do remetente (opcional)",
+      "fromPlaceholder": "ex.: Ana <ana@exemplo.com>",
+      "secure": "Conexão segura desde o início (porta 465)"
+    },
+    "telegram": {
+      "title": "Telegram",
+      "description": "Usado por “Enviar no Telegram”. Crie um bot conversando com o @BotFather e cole o token dele aqui.",
+      "token": "Token do bot",
+      "tokenHint": "O @BotFather envia depois do /newbot. Parece com 123456:ABC-DEF…",
+      "noChat": "Para onde vão as mensagens? Mande qualquer mensagem para o seu bot no Telegram e clique em Encontrar minha conversa.",
+      "chatSet": "As mensagens vão para a conversa {{chatId}}, a não ser que um passo indique outra.",
+      "findChat": "Encontrar minha conversa",
+      "noChatsYet": "Ninguém escreveu para o bot ainda. Mande uma mensagem para ele no Telegram e tente de novo.",
+      "chatType": {
+        "private": "você",
+        "group": "grupo",
+        "supergroup": "grupo",
+        "channel": "canal"
+      }
+    },
+    "ai": {
+      "title": "IA (Claude)",
+      "description": "Usada por “Perguntar à IA”. O que o passo pede (com valores dos passos anteriores) é enviado à Anthropic.",
+      "key": "Chave de API da Anthropic",
+      "keyHint": "Crie uma em console.anthropic.com → API keys. O uso é cobrado na sua conta da Anthropic."
+    }
   }
 }

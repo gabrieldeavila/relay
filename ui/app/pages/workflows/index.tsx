@@ -7,6 +7,7 @@ import { Button } from "@/ui/components/primitives/button";
 import { EmptyState } from "@/ui/components/primitives/empty-state";
 import { Spinner } from "@/ui/components/primitives/spinner";
 import { NewWorkflowModal } from "./components/NewWorkflowModal";
+import { TemplatesSection } from "./components/TemplatesSection";
 import { WorkflowRow } from "./components/WorkflowRow";
 import { WorkflowsHeader } from "./components/WorkflowsHeader";
 import { useNewWorkflowModal } from "./hooks/useNewWorkflowModal";
@@ -48,6 +49,7 @@ const Workflows = memo(() => {
             />
           )
         )}
+        <TemplatesSection />
       </div>
       <NewWorkflowModal modal={modal} />
     </main>

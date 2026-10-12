@@ -20,7 +20,8 @@ export type PublishResult =
 export type TriggerInfo =
   | { kind: "manual" }
   | { kind: "webhook"; url: string }
-  | { kind: "schedule"; nextFireAt: string | null; lastFiredAt: string | null };
+  | { kind: "schedule"; nextFireAt: string | null; lastFiredAt: string | null }
+  | { kind: "folder"; folder: string; pattern: string; exists: boolean };
 
 export const fetchWorkflow = (id: string) =>
   apiRequest<Workflow>(`/workflows/${id}`);

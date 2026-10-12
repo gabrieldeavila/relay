@@ -6,8 +6,11 @@ import { stringifyValue } from './stringify-value.js';
 /** What a step's config can refer to. */
 export interface ExpressionContext {
   trigger: unknown;
-  /** `resumeUrl` + `/<nodeId>` resumes a waiting step from another app. */
-  run: { id: string; resumeUrl: string };
+  /**
+   * `resumeUrl` + `/<nodeId>` resumes a waiting step from another app;
+   * `link` opens the run in Relay (e.g. to approve it there).
+   */
+  run: { id: string; resumeUrl: string; link: string };
   /** Settled steps: `output` when they succeeded, `error` when they failed. */
   steps: Record<string, { output: unknown; error?: unknown }>;
 }

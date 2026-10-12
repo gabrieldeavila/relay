@@ -102,6 +102,7 @@ export class StepExecutor {
     const work = definition.run(config, {
       signal,
       step: { runId: step.runId, nodeId: step.nodeId, attempt: step.attempt },
+      ownerId: step.ownerId,
       idempotencyKey: `${step.runId}:${step.nodeId}:${step.attempt}`,
       attempt: step.attempt,
       resumed: step.previousStatus === 'waiting',

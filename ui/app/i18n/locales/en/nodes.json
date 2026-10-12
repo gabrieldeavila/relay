@@ -11,6 +11,10 @@
     "webhook": {
       "title": "When a web address is called",
       "description": "Runs when another app sends data to this flow’s secret link."
+    },
+    "folder": {
+      "title": "When a file appears in a folder",
+      "description": "Runs once for each new file saved in a folder on this computer."
     }
   },
   "http": {
@@ -59,7 +63,21 @@
     "question": "Question",
     "timeoutAmount": "Give up after",
     "timeoutUnit": "Unit",
-    "schedule": "Schedule"
+    "schedule": "Schedule",
+    "folder": "Folder",
+    "pattern": "Which files",
+    "path": "File",
+    "pick": "Row to use",
+    "sheet": "Sheet",
+    "to": "To",
+    "subject": "Subject",
+    "text": "Message",
+    "attachment": "Attach file",
+    "image": "Picture",
+    "chatId": "Chat",
+    "prompt": "What to ask",
+    "instructions": "Instructions",
+    "model": "Model"
   },
   "options": {
     "seconds": "seconds",
@@ -72,7 +90,15 @@
     "greater_than": "is greater than",
     "less_than": "is less than",
     "is_empty": "is empty",
-    "is_not_empty": "is not empty"
+    "is_not_empty": "is not empty",
+    "first": "first row",
+    "last": "last row",
+    "random": "a random row",
+    "weekly": "next row each week",
+    "daily": "next row each day",
+    "claude-opus-5-5": "Claude Opus 5.5 (best)",
+    "claude-sonnet-5-5": "Claude Sonnet 5.5 (faster)",
+    "claude-haiku-5-5": "Claude Haiku 5.5 (cheapest)"
   },
   "ports": {
     "out": "next",
@@ -82,5 +108,41 @@
     "timeout": "no answer in time",
     "approved": "approved",
     "rejected": "rejected"
+  },
+  "file": {
+    "read_table": {
+      "title": "Read a spreadsheet",
+      "description": "Reads the rows of a CSV or Excel file on this computer."
+    }
+  },
+  "email": {
+    "send": {
+      "title": "Send an email",
+      "description": "Sends an email from your account, with an optional file attached."
+    }
+  },
+  "telegram": {
+    "send": {
+      "title": "Send on Telegram",
+      "description": "Your bot sends a message or a picture to you, a group or a channel."
+    }
+  },
+  "ai": {
+    "generate": {
+      "title": "Ask AI",
+      "description": "Claude writes, summarizes or answers using values from earlier steps. The prompt is sent to Anthropic."
+    }
+  },
+  "hints": {
+    "folder": "Full path, e.g. /Users/you/Downloads or ~/Downloads. Files already there are ignored.",
+    "pattern": "e.g. *.pdf, or several: *.jpg, *.png. Leave * for every file.",
+    "path": "Full path of a .csv or .xlsx file, e.g. ~/Documents/quotes.csv. The first row names the columns.",
+    "pick": "Later steps use it as row.<column>. “Next row each week” goes through the list, one row per week.",
+    "sheet": "For Excel files; empty uses the first sheet.",
+    "to": "Addresses separated by commas. Empty sends it to you.",
+    "attachment": "Full path of a file, e.g. a picture made by an earlier step.",
+    "image": "Full path of a picture, e.g. the image made by an earlier step.",
+    "chatId": "Empty sends it to your chat (set in Connections). For a channel, use @channel_name.",
+    "instructions": "Optional: how to answer (tone, length, language)."
   }
 }

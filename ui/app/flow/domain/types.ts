@@ -23,6 +23,8 @@ export type JsonSchema = {
   description?: string;
   anyOf?: JsonSchema[];
   format?: string;
+  /** Relay's own hint for the form, e.g. `textarea` for long text. */
+  widget?: string;
   enum?: unknown[];
   const?: unknown;
   default?: unknown;

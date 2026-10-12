@@ -41,7 +41,8 @@
     "triggerData": "Data that started the flow",
     "output": "Result of {{node}}",
     "errorMessage": "Error message of {{node}}",
-    "resumeUrl": "Link to answer a waiting step"
+    "resumeUrl": "Link to answer a waiting step",
+    "runLink": "Link to this run in Relay"
   },
   "trigger": {
     "title": "How it starts",
@@ -49,7 +50,9 @@
     "webhook": "When another app calls this secret link:",
     "schedule": "On its schedule. Next run:",
     "noNextRun": "not scheduled",
-    "publishFirst": "Publish to turn it on."
+    "publishFirst": "Publish to turn it on.",
+    "folder": "For each new file in",
+    "folderMissing": "This folder does not exist on this computer, so the flow never starts. Fix the path and publish again."
   },
   "schedule": {
     "every": "Repeat",

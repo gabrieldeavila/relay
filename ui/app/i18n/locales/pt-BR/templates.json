@@ -1,0 +1,26 @@
+{
+  "title": "Comece por um modelo",
+  "subtitle": "Fluxos prontos: escolha um, preencha seus arquivos e conversas e publique.",
+  "use": "Usar modelo",
+  "ready": "pronto",
+  "missing": "configurar",
+  "connectFirst": "Conecte o app primeiro",
+  "setUpLater": "Configurar contas",
+  "needs": {
+    "email": "E-mail",
+    "telegram": "Telegram",
+    "ai": "IA"
+  },
+  "quote-of-the-week": {
+    "title": "Citação da semana",
+    "description": "Toda segunda, desenha no Pincel a próxima citação da sua planilha, manda uma prévia no Telegram para você aprovar e depois publica (na sua conversa ou num canal que você escolher)."
+  },
+  "folder-to-email": {
+    "title": "Enviar por e-mail arquivos novos de uma pasta",
+    "description": "Quando um PDF é salvo numa pasta (digitalizações, notas fiscais, exportações), envia para você por e-mail como anexo."
+  },
+  "weekly-sheet-summary": {
+    "title": "Resumo semanal da planilha",
+    "description": "Toda sexta à tarde, a IA lê uma planilha (vendas, despesas, tarefas) e envia um resumo curto por e-mail."
+  }
+}

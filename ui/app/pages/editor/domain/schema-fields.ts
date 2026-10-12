@@ -1,7 +1,14 @@
 import type { JsonSchema } from "@/app/flow/domain/types";
 
 export type FieldKind =
-  "text" | "number" | "select" | "boolean" | "keyValue" | "schedule" | "any";
+  | "text"
+  | "longText"
+  | "number"
+  | "select"
+  | "boolean"
+  | "keyValue"
+  | "schedule"
+  | "any";
 
 export interface FieldDescriptor {
   name: string;
@@ -35,6 +42,7 @@ function describe(
   if (field.enum) return { kind: "select", options: field.enum.map(String) };
   switch (field.type) {
     case "string":
+      if (field.widget === "textarea") return { kind: "longText" };
       return field.format === "uri"
         ? { kind: "text", placeholder: "https://" }
         : { kind: "text" };

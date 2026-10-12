@@ -7,7 +7,11 @@ import {
 
 const context: ExpressionContext = {
   trigger: { body: { name: 'Ana', tags: ['promo', 'fall'] } },
-  run: { id: 'r1', resumeUrl: 'http://localhost:4400/resume/abc' },
+  run: {
+    id: 'r1',
+    resumeUrl: 'http://localhost:4400/resume/abc',
+    link: 'http://localhost:5400/workflows/w1/runs/r1',
+  },
   steps: {
     render: {
       output: { url: 'file:///post.png', width: 1080, meta: { a: 1 } },

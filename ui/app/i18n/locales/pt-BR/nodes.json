@@ -11,6 +11,10 @@
     "webhook": {
       "title": "Quando um endereço for chamado",
       "description": "Roda quando outro app envia dados para o link secreto deste fluxo."
+    },
+    "folder": {
+      "title": "Quando um arquivo aparecer numa pasta",
+      "description": "Roda uma vez para cada arquivo novo salvo numa pasta deste computador."
     }
   },
   "http": {
@@ -59,7 +63,21 @@
     "question": "Pergunta",
     "timeoutAmount": "Desistir depois de",
     "timeoutUnit": "Unidade",
-    "schedule": "Agenda"
+    "schedule": "Agenda",
+    "folder": "Pasta",
+    "pattern": "Quais arquivos",
+    "path": "Arquivo",
+    "pick": "Linha a usar",
+    "sheet": "Aba",
+    "to": "Para",
+    "subject": "Assunto",
+    "text": "Mensagem",
+    "attachment": "Anexar arquivo",
+    "image": "Imagem",
+    "chatId": "Conversa",
+    "prompt": "O que pedir",
+    "instructions": "Instruções",
+    "model": "Modelo"
   },
   "options": {
     "seconds": "segundos",
@@ -72,7 +90,15 @@
     "greater_than": "é maior que",
     "less_than": "é menor que",
     "is_empty": "está vazio",
-    "is_not_empty": "não está vazio"
+    "is_not_empty": "não está vazio",
+    "first": "primeira linha",
+    "last": "última linha",
+    "random": "uma linha qualquer",
+    "weekly": "a próxima linha a cada semana",
+    "daily": "a próxima linha a cada dia",
+    "claude-opus-5-5": "Claude Opus 5.5 (melhor)",
+    "claude-sonnet-5-5": "Claude Sonnet 5.5 (mais rápido)",
+    "claude-haiku-5-5": "Claude Haiku 5.5 (mais barato)"
   },
   "ports": {
     "out": "próximo",
@@ -82,5 +108,41 @@
     "timeout": "sem resposta a tempo",
     "approved": "aprovado",
     "rejected": "recusado"
+  },
+  "file": {
+    "read_table": {
+      "title": "Ler uma planilha",
+      "description": "Lê as linhas de um arquivo CSV ou Excel deste computador."
+    }
+  },
+  "email": {
+    "send": {
+      "title": "Enviar um e-mail",
+      "description": "Envia um e-mail da sua conta, com um arquivo anexo se quiser."
+    }
+  },
+  "telegram": {
+    "send": {
+      "title": "Enviar no Telegram",
+      "description": "Seu bot envia uma mensagem ou imagem para você, um grupo ou um canal."
+    }
+  },
+  "ai": {
+    "generate": {
+      "title": "Perguntar à IA",
+      "description": "O Claude escreve, resume ou responde usando valores dos passos anteriores. O texto é enviado à Anthropic."
+    }
+  },
+  "hints": {
+    "folder": "Caminho completo, ex.: /Users/voce/Downloads ou ~/Downloads. Arquivos que já estão lá são ignorados.",
+    "pattern": "Ex.: *.pdf, ou vários: *.jpg, *.png. Deixe * para todos os arquivos.",
+    "path": "Caminho completo de um arquivo .csv ou .xlsx, ex.: ~/Documentos/citacoes.csv. A primeira linha dá nome às colunas.",
+    "pick": "Os próximos passos usam como row.<coluna>. “A próxima linha a cada semana” percorre a lista, uma linha por semana.",
+    "sheet": "Para arquivos Excel; vazio usa a primeira aba.",
+    "to": "Endereços separados por vírgula. Vazio envia para você.",
+    "attachment": "Caminho completo de um arquivo, ex.: uma imagem feita num passo anterior.",
+    "image": "Caminho completo de uma imagem, ex.: a imagem feita num passo anterior.",
+    "chatId": "Vazio envia para a sua conversa (definida em Conexões). Para um canal, use @nome_do_canal.",
+    "instructions": "Opcional: como responder (tom, tamanho, idioma)."
   }
 }

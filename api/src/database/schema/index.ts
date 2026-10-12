@@ -7,3 +7,5 @@ export * from './step-attempts.table.js';
 export * from './triggers.table.js';
 export * from './event-inbox.table.js';
 export * from './tool-providers.table.js';
+export * from './seen-files.table.js';
+export * from './accounts.table.js';

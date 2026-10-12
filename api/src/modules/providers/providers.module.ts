@@ -9,6 +9,6 @@ import { ProvidersController } from './delivery/providers.controller.js';
   imports: [FilesModule],
   controllers: [ProvidersController],
   providers: [ProviderRepository, ToolProviderClient, ToolNodes],
-  exports: [ToolNodes],
+  exports: [ToolNodes, ProviderRepository],
 })
 export class ProvidersModule {}

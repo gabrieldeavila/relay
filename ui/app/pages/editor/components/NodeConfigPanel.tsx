@@ -13,6 +13,7 @@ import type {
 } from "@/app/flow/domain/types";
 import { useExpressionChoices } from "../hooks/useExpressionChoices";
 import { useNodeText } from "@/app/flow/hooks/useNodeText";
+import { isToolType } from "@/app/flow/domain/humanize-name";
 import { ConfigField } from "./fields/ConfigField";
 
 type NodeConfigPanelProps = {
@@ -29,10 +30,14 @@ export const NodeConfigPanel = memo((props: NodeConfigPanelProps) => {
   const { t } = useTranslation("editor");
   const text = useNodeText();
   const entry = catalog.get(node.type);
-  const fields = useMemo(
-    () => (entry ? schemaFields(entry.configSchema) : []),
-    [entry],
-  );
+  const { hint } = text;
+  const fields = useMemo(() => {
+    if (!entry) return [];
+    const described = schemaFields(entry.configSchema);
+    return isToolType(entry.type)
+      ? described
+      : described.map((f) => ({ ...f, description: hint(f.name) }));
+  }, [entry, hint]);
   const choices = useExpressionChoices(props.graph, node.id, catalog);
 
   const setField = (name: string, value: unknown) => {

@@ -5,6 +5,7 @@ import { Link } from "react-router";
 
 import { Alert } from "@/ui/components/primitives/alert";
 import { Spinner } from "@/ui/components/primitives/spinner";
+import { AccountsSection } from "./components/AccountsSection";
 import { AddConnectionForm } from "./components/AddConnectionForm";
 import { ConnectionRow } from "./components/ConnectionRow";
 import { useConnections } from "./hooks/useConnections";
@@ -52,6 +53,7 @@ const Connections = memo(() => {
             ))}
           </ul>
         )}
+        <AccountsSection />
       </div>
     </main>
   );
