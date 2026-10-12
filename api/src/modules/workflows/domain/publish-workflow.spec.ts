@@ -1,6 +1,8 @@
 import type { WorkflowGraph } from './graph.js';
 import { PublishWorkflow } from './publish-workflow.js';
 import { findTestSpec, testGraph } from './test-graph.js';
+
+const specsFor = () => Promise.resolve(findTestSpec);
 import type { Workflow, WorkflowRepository } from './workflow.js';
 
 function memoryRepository(draftGraph: WorkflowGraph) {
@@ -38,7 +40,7 @@ describe('PublishWorkflow', () => {
     const graph = testGraph(['t:manual', 'a:log'], ['t->a']);
     const { repository, versions, triggers, registered } =
       memoryRepository(graph);
-    const publish = new PublishWorkflow(repository, findTestSpec, triggers);
+    const publish = new PublishWorkflow(repository, specsFor, triggers);
 
     expect(await publish.execute('wf', 'ana')).toEqual({
       type: 'published',
@@ -57,7 +59,7 @@ describe('PublishWorkflow', () => {
       testGraph(['a:log'], []),
     );
     expect(
-      await new PublishWorkflow(repository, findTestSpec, triggers).execute(
+      await new PublishWorkflow(repository, specsFor, triggers).execute(
         'wf',
         'ana',
       ),
@@ -68,7 +70,7 @@ describe('PublishWorkflow', () => {
   it('treats someone else’s workflow as missing', async () => {
     const { repository, triggers } = memoryRepository(testGraph([], []));
     expect(
-      await new PublishWorkflow(repository, findTestSpec, triggers).execute(
+      await new PublishWorkflow(repository, specsFor, triggers).execute(
         'wf',
         'bia',
       ),
@@ -78,7 +80,7 @@ describe('PublishWorkflow', () => {
   it('reports a missing workflow', async () => {
     const { repository, triggers } = memoryRepository(testGraph([], []));
     expect(
-      await new PublishWorkflow(repository, findTestSpec, triggers).execute(
+      await new PublishWorkflow(repository, specsFor, triggers).execute(
         'other',
         'ana',
       ),

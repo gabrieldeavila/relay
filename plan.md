@@ -80,9 +80,16 @@ any app that serves tools in the Claude format (`GET /api/tools`) becomes a set 
       the screen), read-only canvas colored by step status, step details (attempts in order,
       errors, data in and out), approve / reject from the screen, Cancel, Run again, and
       Retry failed step (same run; finished steps keep their results). Verified in a browser
-- [ ] **6. Tool providers + Pincel**: import `/api/tools` catalogs as nodes, image outputs
-      saved to Storage, first templates
-- [ ] **7. Local building blocks**: watch folder, CSV, SMTP email, Telegram, AI step
+- [x] **6. Tool providers + Pincel**: connect any app serving `/api/tools` (per user,
+      catalog cached, refresh on demand); each tool is a node (`tool:<provider>:<tool>`) whose
+      JSON Schema drives validation and the form; calls to one app never overlap; returned
+      images saved as run files on this machine (`FILES_DIR`, served to the owner) with a link
+      and an absolute path for local tools; Connections page, palette search, image preview.
+      Verified with the real Pincel (isolated data folder)
+  - Files stay on local disk instead of Supabase Storage: local-only app, and a path lets
+    local tools (Pincel's `open_image`) pick the file up
+- [ ] **7. Local building blocks**: watch folder, CSV, SMTP email, Telegram, AI step,
+      and the first templates (they need a step that delivers the result)
 - [ ] **8. MCP**: MCP servers as providers; Relay itself exposed over MCP;
       "describe what you want" builder validated by `validate-graph`
 

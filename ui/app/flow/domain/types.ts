@@ -20,6 +20,8 @@ export interface WorkflowGraph {
 
 export type JsonSchema = {
   type?: string;
+  description?: string;
+  anyOf?: JsonSchema[];
   format?: string;
   enum?: unknown[];
   const?: unknown;
@@ -34,6 +36,8 @@ export type JsonSchema = {
 export interface CatalogNode {
   type: string;
   kind: "trigger" | "action";
+  /** Connected app the node comes from; null for built-in nodes. */
+  group: string | null;
   title: string;
   description: string;
   outputPorts: string[];

@@ -1,19 +1,24 @@
 import { Controller, Get } from '@nestjs/common';
 import { z } from 'zod';
-import { NODES } from '../data/node-catalog.js';
+import { CurrentUser } from '../../auth/delivery/current-user.decorator.js';
+import { NodeResolver } from '../data/node-resolver.js';
 
 /** Node catalog for the editor palette and its config forms. */
 @Controller('nodes')
 export class NodesController {
+  constructor(private readonly resolver: NodeResolver) {}
+
   @Get()
-  list() {
-    return NODES.map((node) => ({
+  async list(@CurrentUser() userId: string) {
+    return (await this.resolver.catalogFor(userId)).map((node) => ({
       type: node.type,
       kind: node.kind,
       title: node.title,
       description: node.description,
+      group: node.group ?? null,
       outputPorts: node.outputPorts,
-      configSchema: z.toJSONSchema(node.config, { io: 'input' }),
+      configSchema:
+        node.configJsonSchema ?? z.toJSONSchema(node.config, { io: 'input' }),
     }));
   }
 }

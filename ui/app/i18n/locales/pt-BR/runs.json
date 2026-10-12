@@ -44,7 +44,10 @@
     "went": "Seguiu: {{port}}",
     "pending": "Este passo ainda não começou.",
     "not_reached": "A execução terminou antes deste passo.",
-    "skipped": "Pulado: o fluxo seguiu outro caminho."
+    "skipped": "Pulado: o fluxo seguiu outro caminho.",
+    "image": "Imagem",
+    "imageAlt": "Imagem produzida por este passo",
+    "imageMissing": "O arquivo da imagem não está mais neste computador."
   },
   "waiting": {
     "timer": "Pausado até {{when}}.",

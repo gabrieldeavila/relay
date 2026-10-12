@@ -18,6 +18,13 @@ pnpm dev        # API + UI
 - API: http://localhost:4400 (`GET /health`)
 - Supabase Studio: http://localhost:54323, Mailpit: http://localhost:54324
 
+## Connect Pincel
+
+Start Pincel (`pnpm dev` in its folder), then in Relay open **Connections** and connect
+`http://localhost:4300`. Its tools show up in the editor palette under "Pincel". Images a
+tool returns are saved under `api/.data/files/<run>/` (set `FILES_DIR` to change it) and
+shown in the runs view; later steps can use their `url` or local `path`.
+
 ## Test
 
 ```sh
@@ -42,7 +49,10 @@ supabase migration up            # applies it locally
 
 | Method | Path | |
 |---|---|---|
-| GET | `/nodes` | Node catalog with config JSON Schemas |
+| GET | `/nodes` | Node catalog (built-in + connected apps' tools) with config JSON Schemas |
+| GET / POST | `/providers` | Connected apps; POST `{ name, baseUrl }` reads `<baseUrl>/api/tools` |
+| POST / DELETE | `/providers/:id/refresh`, `/providers/:id` | Re-read an app's tools, disconnect it |
+| GET | `/files/:runId/:name` | A file a run produced (e.g. a Pincel render), owner only |
 | POST | `/workflows` | Create `{ name }` |
 | GET | `/workflows`, `/workflows/:id` | List, get with draft graph |
 | PATCH | `/workflows/:id` | Save `{ name?, draftGraph? }` |

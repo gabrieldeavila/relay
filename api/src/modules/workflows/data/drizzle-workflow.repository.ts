@@ -10,10 +10,12 @@ import type {
   WorkflowSummary,
 } from '../domain/workflow.js';
 
+// Written out in full: inside a select, Drizzle prints columns without their
+// table, and an unqualified "id" here would match workflow_versions.id.
 const latestVersion = sql<number | null>`(
-  SELECT max(${workflowVersions.version}) FROM ${workflowVersions}
-  WHERE ${workflowVersions.workflowId} = ${workflows.id}
-)`;
+  SELECT max(v.version) FROM relay.workflow_versions v
+  WHERE v.workflow_id = "relay"."workflows"."id"
+)`.mapWith((value) => (value === null ? null : Number(value)));
 
 const summaryColumns = {
   id: workflows.id,

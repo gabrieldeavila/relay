@@ -22,7 +22,16 @@ const FIELDS: Record<FieldKind, ComponentType<FieldProps>> = {
 
 export const ConfigField = memo((props: FieldProps) => {
   const Field = FIELDS[props.field.kind];
-  return <Field {...props} />;
+  return (
+    <div className="flex flex-col gap-1">
+      <Field {...props} />
+      {props.field.description && (
+        <p className="text-xs text-(--color-text-muted)">
+          {props.field.description}
+        </p>
+      )}
+    </div>
+  );
 });
 
 ConfigField.displayName = "ConfigField";

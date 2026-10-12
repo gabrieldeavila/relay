@@ -8,6 +8,8 @@ export interface ClaimedStep {
   id: string;
   runId: string;
   workflowId: string;
+  /** Owner of the workflow: provider tools resolve only for them. */
+  ownerId: string;
   versionId: string;
   nodeId: string;
   attempt: number;
@@ -19,6 +21,7 @@ interface ClaimedRow extends Record<string, unknown> {
   id: string;
   run_id: string;
   workflow_id: string;
+  owner_id: string;
   version_id: string;
   node_id: string;
   attempt: number;
@@ -55,9 +58,9 @@ export class StepQueue {
           attempt = s.attempt + CASE WHEN picked.previous_status = 'waiting' THEN 0 ELSE 1 END,
           lease_until = now() + make_interval(secs => ${leaseMs / 1000}),
           updated_at = now()
-      FROM picked, relay.runs r
-      WHERE s.id = picked.id AND r.id = s.run_id
-      RETURNING s.id, s.run_id, r.workflow_id, r.version_id, s.node_id,
+      FROM picked, relay.runs r, relay.workflows w
+      WHERE s.id = picked.id AND r.id = s.run_id AND w.id = r.workflow_id
+      RETURNING s.id, s.run_id, r.workflow_id, w.owner_id, r.version_id, s.node_id,
                 s.attempt, picked.previous_status`);
     const claimed = rows.map(toClaimedStep);
     // Screens show the step as running right away.
@@ -94,6 +97,7 @@ function toClaimedStep(row: ClaimedRow): ClaimedStep {
     id: row.id,
     runId: row.run_id,
     workflowId: row.workflow_id,
+    ownerId: row.owner_id,
     versionId: row.version_id,
     nodeId: row.node_id,
     attempt: row.attempt,

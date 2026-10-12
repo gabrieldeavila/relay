@@ -7,6 +7,7 @@ import type { CatalogNode, WorkflowGraph } from "@/app/flow/domain/types";
 const http: CatalogNode = {
   type: "http.request",
   kind: "action",
+  group: null,
   title: "Call a web address",
   description: "",
   outputPorts: ["out", "error"],
@@ -28,6 +29,7 @@ describe("nextNodeId", () => {
       "request-3",
     );
     expect(nextNodeId("flow.wait_for_webhook", [])).toBe("wait_for_webhook");
+    expect(nextNodeId("tool:0f3a-uuid:draw_text", [])).toBe("draw_text");
   });
 });
 

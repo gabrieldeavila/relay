@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { NodesModule } from '../nodes/nodes.module.js';
 import {
   DEFAULT_ENGINE_CONFIG,
   ENGINE_CONFIG,
@@ -22,6 +23,7 @@ import { ResumeController } from './delivery/resume.controller.js';
 import { RunsController } from './delivery/runs.controller.js';
 
 @Module({
+  imports: [NodesModule],
   controllers: [RunsController, ResumeController],
   providers: [
     {

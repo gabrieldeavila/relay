@@ -6,3 +6,4 @@ export * from './step-runs.table.js';
 export * from './step-attempts.table.js';
 export * from './triggers.table.js';
 export * from './event-inbox.table.js';
+export * from './tool-providers.table.js';

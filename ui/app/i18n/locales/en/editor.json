@@ -17,7 +17,10 @@
   "palette": {
     "title": "Add a step",
     "triggers": "Start",
-    "actions": "Steps"
+    "actions": "Steps",
+    "search": "Search steps",
+    "noMatch": "No step matches.",
+    "connect": "Connect an app (e.g. Pincel)"
   },
   "canvas": {
     "empty": "Add a starting point from the left, then the steps that follow."

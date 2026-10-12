@@ -98,6 +98,10 @@ export class EngineHarness {
     return this.module.get(TriggersController);
   }
 
+  get workflows() {
+    return this.module.get<WorkflowRepository>(WORKFLOW_REPOSITORY);
+  }
+
   /** The workflow's trigger as its owner sees it. */
   describeTrigger(workflowId: string) {
     return this.triggers.describe(TEST_OWNER, workflowId);

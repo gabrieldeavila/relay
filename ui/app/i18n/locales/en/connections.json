@@ -1,0 +1,21 @@
+{
+  "back": "Workflows",
+  "title": "Connections",
+  "subtitle": "Apps whose tools can be steps in your flows. Each tool shows up in the editor.",
+  "empty": "No apps connected yet.",
+  "add": {
+    "title": "Connect an app",
+    "description": "The app must list its tools at <address>/api/tools, like Pincel does.",
+    "name": "Name",
+    "url": "Address",
+    "urlHint": "Pincel runs at http://localhost:4300 (start it with pnpm dev).",
+    "submit": "Connect"
+  },
+  "row": {
+    "tools_one": "{{count}} tool",
+    "tools_other": "{{count}} tools",
+    "refreshed": "updated {{when}}",
+    "refresh": "Refresh tools",
+    "remove": "Remove"
+  }
+}

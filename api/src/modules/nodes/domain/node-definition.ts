@@ -11,6 +11,10 @@ export interface NodeDefinition<Config extends z.ZodObject = z.ZodObject> {
   description: string;
   /** Validated after expressions are resolved; also drives the editor form. */
   config: Config;
+  /** The form's JSON Schema when it comes from elsewhere (a provider's catalog). */
+  configJsonSchema?: Record<string, unknown>;
+  /** Palette section, e.g. the provider's name. */
+  group?: string;
   outputPorts: readonly string[];
   retry?: Partial<RetryPolicy>;
   /** Per-attempt limit; the attempt is aborted and retried after it. */

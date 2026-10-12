@@ -11,6 +11,8 @@ export interface FieldDescriptor {
   /** For `keyValue`: whether values are plain text or free values. */
   valueKind?: "text" | "any";
   placeholder?: string;
+  /** Help text from the schema (connected apps describe their fields). */
+  description?: string;
 }
 
 /** Turns a node's config JSON Schema into the fields of its form, in order. */
@@ -19,6 +21,7 @@ export function schemaFields(schema: JsonSchema): FieldDescriptor[] {
   return Object.entries(schema.properties ?? {}).map(([name, field]) => ({
     name,
     required: required.has(name) && field.default === undefined,
+    description: field.description,
     ...describe(field),
   }));
 }

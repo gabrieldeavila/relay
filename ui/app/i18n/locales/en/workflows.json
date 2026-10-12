@@ -14,5 +14,6 @@
     "name": "Name",
     "placeholder": "e.g. Weekly Instagram post",
     "save": "Create"
-  }
+  },
+  "connections": "Connections"
 }

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { findNode } from '../../nodes/data/node-catalog.js';
+import { NodeResolver } from '../../nodes/data/node-resolver.js';
 import type { NodeDefinition } from '../../nodes/domain/node-definition.js';
 import { StepFailure } from '../../nodes/domain/step-failure.js';
 import { applyNodeResult } from '../domain/apply-node-result.js';
@@ -27,6 +27,7 @@ export class StepExecutor {
     private readonly queue: StepQueue,
     private readonly advancer: RunAdvancer,
     private readonly resumer: EventResumer,
+    private readonly nodes: NodeResolver,
   ) {}
 
   async execute(step: ClaimedStep, shutdown: AbortSignal): Promise<void> {
@@ -51,7 +52,8 @@ export class StepExecutor {
     shutdown: AbortSignal,
   ): Promise<StepChange> {
     const node = index.nodes.get(step.nodeId);
-    const definition = node && findNode(node.type);
+    const definition =
+      node && (await this.nodes.resolve(node.type, step.ownerId));
     const policy = { ...DEFAULT_RETRY_POLICY, ...definition?.retry };
     const timeoutMs = definition?.timeoutMs ?? this.config.defaultTimeoutMs;
     const timeout = new AbortController();
@@ -99,6 +101,7 @@ export class StepExecutor {
     const config = definition.config.parse(input);
     const work = definition.run(config, {
       signal,
+      step: { runId: step.runId, nodeId: step.nodeId, attempt: step.attempt },
       idempotencyKey: `${step.runId}:${step.nodeId}:${step.attempt}`,
       attempt: step.attempt,
       resumed: step.previousStatus === 'waiting',

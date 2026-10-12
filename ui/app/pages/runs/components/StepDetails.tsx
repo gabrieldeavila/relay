@@ -6,12 +6,14 @@ import { Badge } from "@/ui/components/primitives/badge";
 import { API_URL } from "@/app/api/api-request";
 import type { CatalogNode } from "@/app/flow/domain/types";
 import { useNodeText } from "@/app/flow/hooks/useNodeText";
+import { outputImage } from "../domain/output-image";
 import { statusTone } from "../domain/status-tone";
 import { stepStatuses } from "../domain/step-statuses";
 import type { RunDetail } from "../domain/types";
 import { waitingAction } from "../domain/waiting-action";
 import { AttemptsList } from "./AttemptsList";
 import { JsonBlock } from "./JsonBlock";
+import { RunImage } from "./RunImage";
 import { WaitingPanel } from "./WaitingPanel";
 
 type StepDetailsProps = {
@@ -32,6 +34,8 @@ export const StepDetails = memo(
     const status = stepStatuses(run).get(nodeId) ?? "pending";
     const action =
       step && node ? waitingAction(run, step, node.type, API_URL) : null;
+    const image =
+      step?.status === "succeeded" ? outputImage(step.output) : null;
 
     return (
       <div className="flex flex-col gap-4 p-4">
@@ -65,6 +69,7 @@ export const StepDetails = memo(
             {t(`step.${status}`)}
           </p>
         )}
+        {image && <RunImage key={image.url} image={image} />}
         {step && <AttemptsList attempts={step.attempts} />}
         {step?.input !== undefined && step?.input !== null && (
           <section className="flex flex-col gap-1">

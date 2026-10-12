@@ -44,7 +44,10 @@
     "went": "Went: {{port}}",
     "pending": "This step has not started yet.",
     "not_reached": "The run ended before this step.",
-    "skipped": "Skipped: the flow went another way."
+    "skipped": "Skipped: the flow went another way.",
+    "image": "Image",
+    "imageAlt": "Image produced by this step",
+    "imageMissing": "The image file is no longer on this computer."
   },
   "waiting": {
     "timer": "Paused until {{when}}.",

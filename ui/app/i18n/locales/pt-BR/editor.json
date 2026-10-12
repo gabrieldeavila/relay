@@ -17,7 +17,10 @@
   "palette": {
     "title": "Adicionar passo",
     "triggers": "Início",
-    "actions": "Passos"
+    "actions": "Passos",
+    "search": "Buscar passos",
+    "noMatch": "Nenhum passo encontrado.",
+    "connect": "Conectar um app (ex.: Pincel)"
   },
   "canvas": {
     "empty": "Adicione um ponto de partida à esquerda e depois os passos seguintes."

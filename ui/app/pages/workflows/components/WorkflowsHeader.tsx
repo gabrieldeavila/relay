@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { FiLogOut, FiPlus } from "react-icons/fi";
+import { FiLink, FiLogOut, FiPlus } from "react-icons/fi";
+import { Link } from "react-router";
 
 import { Button } from "@/ui/components/primitives/button";
 import { supabase } from "@/app/auth/api/supabase-client";
@@ -19,6 +20,13 @@ export const WorkflowsHeader = memo(({ onCreate }: WorkflowsHeaderProps) => {
       </div>
       <div className="flex items-center gap-2">
         <LanguageSelect />
+        <Link
+          to="/connections"
+          className="inline-flex items-center gap-1 px-2 text-sm text-(--color-text-muted) hover:text-(--color-text)"
+        >
+          <FiLink aria-hidden="true" />
+          {t("connections")}
+        </Link>
         <Button
           variant="ghost"
           leftIcon={<FiLogOut aria-hidden="true" />}

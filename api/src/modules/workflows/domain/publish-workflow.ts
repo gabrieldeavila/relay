@@ -14,7 +14,8 @@ export type PublishResult =
 export class PublishWorkflow {
   constructor(
     private readonly repository: WorkflowRepository,
-    private readonly findSpec: FindNodeSpec,
+    /** Built-in node types plus the tools of the owner's connected apps. */
+    private readonly specsFor: (ownerId: string) => Promise<FindNodeSpec>,
     private readonly triggers: TriggerRegistry,
   ) {}
 
@@ -22,9 +23,10 @@ export class PublishWorkflow {
     const workflow = await this.repository.find(workflowId, ownerId);
     if (!workflow) return { type: 'not_found' };
 
-    const issues = validateGraph(workflow.draftGraph, this.findSpec);
+    const findSpec = await this.specsFor(ownerId);
+    const issues = validateGraph(workflow.draftGraph, findSpec);
     if (issues.length) return { type: 'invalid', issues };
-    const trigger = planTrigger(workflow.draftGraph, this.findSpec);
+    const trigger = planTrigger(workflow.draftGraph, findSpec);
     if ('issue' in trigger) return { type: 'invalid', issues: [trigger.issue] };
 
     const version = await this.repository.addVersion(

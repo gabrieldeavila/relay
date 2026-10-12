@@ -1,0 +1,21 @@
+{
+  "back": "Fluxos",
+  "title": "Conexões",
+  "subtitle": "Apps cujas ferramentas podem virar passos nos seus fluxos. Cada ferramenta aparece no editor.",
+  "empty": "Nenhum app conectado ainda.",
+  "add": {
+    "title": "Conectar um app",
+    "description": "O app precisa listar suas ferramentas em <endereço>/api/tools, como o Pincel faz.",
+    "name": "Nome",
+    "url": "Endereço",
+    "urlHint": "O Pincel roda em http://localhost:4300 (inicie com pnpm dev).",
+    "submit": "Conectar"
+  },
+  "row": {
+    "tools_one": "{{count}} ferramenta",
+    "tools_other": "{{count}} ferramentas",
+    "refreshed": "atualizado {{when}}",
+    "refresh": "Atualizar ferramentas",
+    "remove": "Remover"
+  }
+}

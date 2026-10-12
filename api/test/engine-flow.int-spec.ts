@@ -1,4 +1,9 @@
-import { edge, EngineHarness, node } from './support/engine-harness';
+import {
+  edge,
+  EngineHarness,
+  node,
+  TEST_OWNER,
+} from './support/engine-harness';
 import { TestServer } from './support/test-server';
 
 describe('engine: flows', () => {
@@ -14,6 +19,27 @@ describe('engine: flows', () => {
     await engine.close();
   });
   beforeEach(() => engine.reset());
+
+  it('reports the latest published version in the list and the detail', async () => {
+    const graph = {
+      nodes: [node('start', 'trigger.manual')],
+      edges: [],
+    };
+    const workflowId = await engine.publish(graph);
+    await engine.publish(graph, workflowId);
+
+    expect(
+      (await engine.workflows.find(workflowId, TEST_OWNER))?.latestVersion,
+    ).toBe(2);
+    expect(
+      (await engine.workflows.list(TEST_OWNER)).find((w) => w.id === workflowId)
+        ?.latestVersion,
+    ).toBe(2);
+    const draft = await engine.workflows.create(TEST_OWNER, 'Draft only');
+    expect(
+      (await engine.workflows.find(draft.id, TEST_OWNER))?.latestVersion,
+    ).toBeNull();
+  });
 
   it('passes data between steps through expressions', async () => {
     server.reply({ status: 200, body: { saved: true } });
