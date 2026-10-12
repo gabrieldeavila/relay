@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ConflictException,
   Controller,
@@ -14,12 +15,25 @@ import {
 import { z } from 'zod';
 import { CurrentUser } from '../../auth/delivery/current-user.decorator.js';
 import { parseBody } from '../../workflows/delivery/workflow-bodies.js';
-import { ProviderRepository } from '../data/drizzle-provider.repository.js';
-import { ToolProviderClient } from '../data/tool-provider.client.js';
+import {
+  ProviderRepository,
+  type ToolProvider,
+} from '../data/drizzle-provider.repository.js';
+import { ToolCaller } from '../data/tool-caller.js';
+import { endpointFromInput } from '../domain/endpoint-from-input.js';
+import {
+  describeEndpoint,
+  endpointOf,
+  PROVIDER_KINDS,
+  type ProviderEndpoint,
+} from '../domain/provider-endpoint.js';
 
 const createBody = z.object({
   name: z.string().trim().min(1).max(60),
-  baseUrl: z.url().transform((url) => url.replace(/\/+$/, '')),
+  /** Without a kind, a Pincel-style app (`/api/tools`) as before. */
+  kind: z.enum(PROVIDER_KINDS).default('tools_api'),
+  baseUrl: z.string().optional(),
+  command: z.string().max(2000).optional(),
 });
 
 /** Apps whose tools become nodes ("connections" in the UI). */
@@ -27,7 +41,7 @@ const createBody = z.object({
 export class ProvidersController {
   constructor(
     private readonly providers: ProviderRepository,
-    private readonly client: ToolProviderClient,
+    private readonly caller: ToolCaller,
   ) {}
 
   @Get()
@@ -38,11 +52,13 @@ export class ProvidersController {
   /** Reads the app's catalog first, so a wrong address fails right away. */
   @Post()
   async create(@CurrentUser() userId: string, @Body() body: unknown) {
-    const { name, baseUrl } = parseBody(createBody, body);
-    const tools = await this.readCatalog(baseUrl);
+    const { name, ...input } = parseBody(createBody, body);
+    const read = endpointFromInput(input);
+    if (!read.ok) throw new BadRequestException(read.message);
+    const tools = await this.readCatalog(read.endpoint);
     const provider = await this.providers.create(userId, {
       name,
-      baseUrl,
+      endpoint: read.endpoint,
       tools,
     });
     if (!provider) throw new ConflictException('This app is already connected');
@@ -56,7 +72,9 @@ export class ProvidersController {
   ) {
     const provider = await this.providers.find(id, userId);
     if (!provider) throw new NotFoundException('Connection not found');
-    const tools = await this.readCatalog(provider.baseUrl);
+    // A restarted server may have new tools: start from a fresh connection.
+    await this.caller.release(id);
+    const tools = await this.readCatalog(endpointOf(provider));
     const updated = await this.providers.updateTools(id, userId, tools);
     // Removed while its catalog was being read.
     if (!updated) throw new NotFoundException('Connection not found');
@@ -72,26 +90,29 @@ export class ProvidersController {
     if (!(await this.providers.remove(id, userId))) {
       throw new NotFoundException('Connection not found');
     }
+    await this.caller.release(id);
   }
 
-  private async readCatalog(baseUrl: string) {
+  private async readCatalog(endpoint: ProviderEndpoint) {
     try {
-      return await this.client.catalog(baseUrl);
+      return await this.caller.catalog(endpoint);
     } catch (error) {
       throw new UnprocessableEntityException(
-        `Could not read the tools of ${baseUrl}: ${(error as Error).message}`,
+        `Could not read the tools of ${describeEndpoint(endpoint)}: ${(error as Error).message}`,
       );
     }
   }
 }
 
-function summary(provider: {
-  id: string;
-  name: string;
-  baseUrl: string;
-  tools: unknown[];
-  refreshedAt: Date;
-}) {
-  const { id, name, baseUrl, refreshedAt } = provider;
-  return { id, name, baseUrl, toolCount: provider.tools.length, refreshedAt };
+function summary(provider: ToolProvider) {
+  const { id, name, kind, baseUrl, refreshedAt } = provider;
+  return {
+    id,
+    name,
+    kind,
+    baseUrl,
+    address: describeEndpoint(endpointOf(provider)),
+    toolCount: provider.tools.length,
+    refreshedAt,
+  };
 }

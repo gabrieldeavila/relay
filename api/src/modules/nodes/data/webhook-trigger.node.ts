@@ -10,6 +10,7 @@ export const webhookTriggerNode = defineNode({
   title: 'When a web address is called',
   description: 'Runs when another app sends data to this flow’s secret link.',
   config: z.object({}),
+  output: '`{ body, query }` of the request to the secret URL',
   outputPorts: ['out'],
   run: () => Promise.resolve(done(null)),
 });

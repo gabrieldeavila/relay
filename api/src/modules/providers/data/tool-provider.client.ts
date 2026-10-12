@@ -4,16 +4,9 @@ import {
   parseToolCatalog,
   type ToolDescriptor,
 } from '../domain/tool-catalog.js';
+import type { ToolReply } from '../domain/tool-reply.js';
 
-/** What a tool call answers (Pincel's REST format). */
-export interface ToolReply {
-  text?: string;
-  data?: unknown;
-  /** Base64 PNG, e.g. from render_image. */
-  image?: string;
-}
-
-/** HTTP side of a provider: its catalog and tool calls. */
+/** Pincel's REST format: `GET /api/tools` and `POST /api/tools/<name>`. */
 @Injectable()
 export class ToolProviderClient {
   async catalog(baseUrl: string): Promise<ToolDescriptor[]> {

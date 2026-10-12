@@ -10,6 +10,7 @@ export const waitForWebhookNode = defineNode({
   title: 'Wait for another app',
   description: 'Pauses until another app calls this step’s link.',
   config: z.object(waitTimeoutFields),
+  output: 'The JSON body the other app sent',
   outputPorts: ['out', 'timeout'],
   run: (config, ctx) =>
     Promise.resolve(waitForEvent(waitDeadline(ctx.now(), config))),

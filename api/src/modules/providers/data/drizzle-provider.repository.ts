@@ -2,6 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { and, asc, eq } from 'drizzle-orm';
 import { DATABASE, type Database } from '../../../database/database.js';
 import { toolProviders } from '../../../database/schema/index.js';
+import {
+  toStoredEndpoint,
+  type ProviderEndpoint,
+} from '../domain/provider-endpoint.js';
 import type { ToolDescriptor } from '../domain/tool-catalog.js';
 
 export type ToolProvider = typeof toolProviders.$inferSelect;
@@ -13,11 +17,16 @@ export class ProviderRepository {
 
   async create(
     ownerId: string,
-    provider: { name: string; baseUrl: string; tools: ToolDescriptor[] },
+    provider: {
+      name: string;
+      endpoint: ProviderEndpoint;
+      tools: ToolDescriptor[];
+    },
   ): Promise<ToolProvider | null> {
+    const { name, endpoint, tools } = provider;
     const [row] = await this.db
       .insert(toolProviders)
-      .values({ ownerId, ...provider })
+      .values({ ownerId, name, tools, ...toStoredEndpoint(endpoint) })
       .onConflictDoNothing()
       .returning();
     return row ?? null;

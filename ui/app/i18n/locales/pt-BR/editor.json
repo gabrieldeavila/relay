@@ -91,7 +91,9 @@
     "invalid_port": "Uma conexão sai por uma saída que este passo não tem.",
     "trigger_has_input": "Nada pode se conectar ao ponto de partida.",
     "cycle": "Estes passos andam em círculo.",
-    "unreachable_node": "Este passo não está ligado ao início."
+    "unreachable_node": "Este passo não está ligado ao início.",
+    "unknown_config": "“{{field}}” não é uma configuração deste passo.",
+    "bad_reference": "“{{field}}” não existe aqui."
   },
   "runs": "Execuções"
 }

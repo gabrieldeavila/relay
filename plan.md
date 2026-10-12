@@ -100,8 +100,22 @@ any app that serves tools in the Claude format (`GET /api/tools`) becomes a set 
       weekly spreadsheet summary by AI). Verified in a headless browser
   - The AI step is the one step that sends data off the machine (to Anthropic); the UI says so
   - Next: approve from Telegram buttons (the approval link only works on this machine)
-- [ ] **8. MCP**: MCP servers as providers; Relay itself exposed over MCP;
-      "describe what you want" builder validated by `validate-graph`
+- [x] **8. MCP**: MCP servers as providers, by address (Streamable HTTP) or by command
+      (stdio, split like a shell but never run through one; one process kept per server,
+      dropped on errors, stopped on disconnect; its stderr explains a failed start); tool
+      results map to `{ text, data, image }` like Pincel's, `isError` fails without retry.
+      Relay as an MCP server at `/mcp` (official SDK v2, stateless): personal access tokens
+      (hashed, shown once, revocable), localhost origins only; tools `list_workflows`,
+      `get_workflow`, `list_step_types`, `save_workflow` (drafts only, answers the issues
+      left), `publish_workflow`, `run_workflow`, `get_run`. "Describe what you want": Claude
+      (user's key, structured output) drafts steps + links from the catalog, now with each
+      step's output fields; Relay checks it with `validate-graph` plus unknown settings and
+      `{{ }}` values that cannot resolve, sends problems back (3 rounds, best draft wins),
+      lays it out and saves a draft; blanks for personal details are expected
+  - Not verified with a real Claude call or in a browser yet: covered by integration tests
+    against a fake Anthropic API and a real MCP client
+  - Next: env vars / secrets for command-started servers (sealed like accounts), OAuth for
+    remote MCP servers, editing an existing workflow by description
 
 ## Normie UX principles
 

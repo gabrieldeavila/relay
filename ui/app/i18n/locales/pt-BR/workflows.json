@@ -15,5 +15,16 @@
     "placeholder": "ex.: Post semanal no Instagram",
     "save": "Criar"
   },
-  "connections": "Conexões"
+  "connections": "Conexões",
+  "describe": {
+    "title": "Descreva o que você quer",
+    "subtitle": "Diga com suas palavras. O Claude monta os passos, o Relay confere, e você completa os detalhes antes de publicar.",
+    "label": "O que deve acontecer?",
+    "placeholder": "ex.: Toda segunda às 9h, ler a próxima linha da minha planilha de frases, fazer um post com ela no Pincel, me pedir aprovação e me mandar no Telegram.",
+    "submit": "Montar",
+    "drafting": "Montando…",
+    "privacy": "Usa sua chave da Anthropic (Conexões). Sua descrição e a lista de passos disponíveis vão para a Anthropic.",
+    "left": "Falta preencher:",
+    "open": "Abrir no editor"
+  }
 }

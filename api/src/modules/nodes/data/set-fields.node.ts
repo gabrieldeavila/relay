@@ -9,6 +9,7 @@ export const setFieldsNode = defineNode({
   title: 'Set fields',
   description: 'Creates named values to use in the next steps.',
   config: z.object({ fields: z.record(z.string(), z.unknown()) }),
+  output: 'The fields themselves, by name',
   outputPorts: ['out'],
   run: ({ fields }) => Promise.resolve(done(fields)),
 });

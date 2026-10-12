@@ -6,15 +6,23 @@ import { Alert } from "@/ui/components/primitives/alert";
 import { Button } from "@/ui/components/primitives/button";
 import { Card } from "@/ui/components/primitives/card";
 import { Input } from "@/ui/components/primitives/input";
+import { RadioGroup } from "@/ui/components/primitives/radio-group";
+import {
+  CONNECTION_KINDS,
+  isCommand,
+  type ConnectionKind,
+  type NewConnection,
+} from "../domain/connection-kinds";
 import { useAddConnectionForm } from "../hooks/useAddConnectionForm";
 
 type AddConnectionFormProps = {
-  onAdd: (name: string, baseUrl: string) => Promise<void>;
+  onAdd: (connection: NewConnection) => Promise<void>;
 };
 
 export const AddConnectionForm = memo(({ onAdd }: AddConnectionFormProps) => {
   const { t } = useTranslation("connections");
   const form = useAddConnectionForm(onAdd);
+  const command = isCommand(form.kind);
 
   return (
     <Card>
@@ -26,6 +34,16 @@ export const AddConnectionForm = memo(({ onAdd }: AddConnectionFormProps) => {
           </p>
         </Card.Header>
         <Card.Body className="grid gap-3 sm:grid-cols-[1fr_2fr]">
+          <RadioGroup
+            className="sm:col-span-2"
+            label={t("add.kind")}
+            value={form.kind}
+            onChange={(value) => form.setKind(value as ConnectionKind)}
+            options={CONNECTION_KINDS.map((kind) => ({
+              value: kind,
+              label: t(`add.kinds.${kind}`),
+            }))}
+          />
           <Input
             label={t("add.name")}
             required
@@ -33,13 +51,21 @@ export const AddConnectionForm = memo(({ onAdd }: AddConnectionFormProps) => {
             onChange={(e) => form.setName(e.target.value)}
           />
           <Input
-            label={t("add.url")}
-            type="url"
+            label={t(command ? "add.command" : "add.url")}
+            type={command ? "text" : "url"}
             required
-            hint={t("add.urlHint")}
-            value={form.baseUrl}
-            onChange={(e) => form.setBaseUrl(e.target.value)}
+            spellCheck={false}
+            className="font-mono"
+            placeholder={t(`add.placeholders.${form.kind}`)}
+            hint={t(`add.hints.${form.kind}`)}
+            value={form.address}
+            onChange={(e) => form.setAddress(e.target.value)}
           />
+          {command && (
+            <Alert variant="warning" className="sm:col-span-2">
+              {t("add.commandWarning")}
+            </Alert>
+          )}
           {form.error && (
             <Alert variant="danger" className="sm:col-span-2">
               {form.error}

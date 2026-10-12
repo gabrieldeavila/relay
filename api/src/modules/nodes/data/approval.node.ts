@@ -17,6 +17,8 @@ export const approvalNode = defineNode({
     question: z.string().default('Approve?'),
     ...waitTimeoutFields,
   }),
+  output:
+    '`{ decision, comment, decidedAt }`; goes on through `approved`, `rejected` or `timeout`',
   outputPorts: ['approved', 'rejected', 'timeout'],
   run: (config, ctx) =>
     Promise.resolve(waitForEvent(waitDeadline(ctx.now(), config))),

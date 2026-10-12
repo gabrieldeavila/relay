@@ -1,22 +1,44 @@
 {
   "back": "Workflows",
   "title": "Connections",
-  "subtitle": "Apps whose tools can be steps in your flows. Each tool shows up in the editor.",
+  "subtitle": "Apps and MCP servers whose tools can be steps in your flows. Each tool shows up in the editor.",
   "empty": "No apps connected yet.",
   "add": {
     "title": "Connect an app",
-    "description": "The app must list its tools at <address>/api/tools, like Pincel does.",
+    "description": "Every tool the app offers becomes a step in the editor.",
     "name": "Name",
     "url": "Address",
-    "urlHint": "Pincel runs at http://localhost:4300 (start it with pnpm dev).",
-    "submit": "Connect"
+    "submit": "Connect",
+    "kind": "What kind of app?",
+    "kinds": {
+      "tools_api": "An app like Pincel (address)",
+      "mcp_http": "MCP server (address)",
+      "mcp_stdio": "MCP server (command)"
+    },
+    "command": "Command",
+    "placeholders": {
+      "tools_api": "http://localhost:4300",
+      "mcp_http": "http://localhost:3000/mcp",
+      "mcp_stdio": "npx -y @modelcontextprotocol/server-filesystem ~/Documents"
+    },
+    "hints": {
+      "tools_api": "The app lists its tools at <address>/api/tools. Pincel runs at http://localhost:4300 (start it with pnpm dev).",
+      "mcp_http": "The server's MCP address, usually ending in /mcp.",
+      "mcp_stdio": "Exactly what the server's instructions say to run. Relay starts it when a step needs it and keeps it running."
+    },
+    "commandWarning": "Relay will run this command on your computer with your permissions. Only add servers you trust."
   },
   "row": {
     "tools_one": "{{count}} tool",
     "tools_other": "{{count}} tools",
     "refreshed": "updated {{when}}",
     "refresh": "Refresh tools",
-    "remove": "Remove"
+    "remove": "Remove",
+    "kinds": {
+      "tools_api": "App",
+      "mcp_http": "MCP",
+      "mcp_stdio": "MCP · command"
+    }
   },
   "accounts": {
     "title": "Accounts",
@@ -61,5 +83,20 @@
       "key": "Anthropic API key",
       "keyHint": "Create one at console.anthropic.com → API keys. Usage is billed to your Anthropic account."
     }
+  },
+  "mcp": {
+    "title": "Use Relay from Claude",
+    "subtitle": "Claude Code, Claude Desktop and other MCP apps can list your workflows, build drafts, publish and run them. Each app signs in with its own token, which you can revoke here.",
+    "create": "Create a token",
+    "onlyOnce": "Copy it now: the token is shown only this once. Anyone with it can run your workflows.",
+    "claudeCode": "Claude Code: run this in a terminal",
+    "address": "Other apps: MCP address (Streamable HTTP)",
+    "header": "…with this Authorization header",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "I copied it",
+    "used": "used {{when}}",
+    "neverUsed": "never used",
+    "revoke": "Revoke"
   }
 }

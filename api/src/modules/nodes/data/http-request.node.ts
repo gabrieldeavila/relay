@@ -14,6 +14,7 @@ export const httpRequestNode = defineNode({
     headers: z.record(z.string(), z.string()).default({}),
     body: z.unknown().optional(),
   }),
+  output: '`{ status, body }`',
   outputPorts: ['out', 'error'],
   timeoutMs: 30_000,
   async run({ url, method, headers, body }, ctx) {

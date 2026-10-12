@@ -21,6 +21,8 @@ export const readTableNode = defineNode({
     pick: z.enum(ROW_PICKS).default('first'),
     sheet: z.string().optional(),
   }),
+  output:
+    '`{ rows, count, columns, row, truncated }`; `row` is the picked row, by column name',
   outputPorts: ['out', 'error'],
   timeoutMs: 60_000,
   async run({ path, pick, sheet }, ctx) {

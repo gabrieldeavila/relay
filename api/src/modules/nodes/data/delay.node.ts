@@ -13,6 +13,7 @@ export const delayNode = defineNode({
     amount: z.coerce.number().positive(),
     unit: z.enum(DURATION_UNITS).default('minutes'),
   }),
+  output: '`{ resumedAt }`',
   outputPorts: ['out'],
   run({ amount, unit }, ctx) {
     const now = ctx.now();

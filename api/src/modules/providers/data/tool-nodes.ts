@@ -8,7 +8,7 @@ import {
   type ToolProvider,
 } from './drizzle-provider.repository.js';
 import { toolNode } from './tool-node.factory.js';
-import { ToolProviderClient } from './tool-provider.client.js';
+import { ToolCaller } from './tool-caller.js';
 
 /** Nodes for every tool of a user's providers, built once per catalog version. */
 @Injectable()
@@ -18,7 +18,7 @@ export class ToolNodes {
 
   constructor(
     private readonly providers: ProviderRepository,
-    private readonly client: ToolProviderClient,
+    private readonly caller: ToolCaller,
     private readonly files: RunFileStore,
   ) {}
 
@@ -45,7 +45,7 @@ export class ToolNodes {
         if (stale.startsWith(`${provider.id}@`)) this.built.delete(stale);
       }
       const deps = {
-        client: this.client,
+        caller: this.caller,
         files: this.files,
         serial: this.serial,
       };

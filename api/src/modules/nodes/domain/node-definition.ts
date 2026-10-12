@@ -13,6 +13,11 @@ export interface NodeDefinition<Config extends z.ZodObject = z.ZodObject> {
   config: Config;
   /** The form's JSON Schema when it comes from elsewhere (a provider's catalog). */
   configJsonSchema?: Record<string, unknown>;
+  /**
+   * What later steps can use as `{{ steps.<id>.output… }}`, in short
+   * (e.g. "`{ text, model }`"). Read by the flow builder and MCP clients.
+   */
+  output?: string;
   /** Palette section, e.g. the provider's name. */
   group?: string;
   outputPorts: readonly string[];

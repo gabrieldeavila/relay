@@ -25,6 +25,7 @@ export class TelegramNode {
       image: z.string().optional(),
       chatId: z.string().default(''),
     }),
+    output: '`{ chatId, messageIds }`',
     outputPorts: ['out', 'error'],
     timeoutMs: 60_000,
     run: async ({ text, image, chatId }, ctx) => {

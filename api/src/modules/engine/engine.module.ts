@@ -54,6 +54,7 @@ import { RunsController } from './delivery/runs.controller.js';
   exports: [
     RunAdvancer,
     RunStarter,
+    RunReader,
     RunCanceller,
     EventResumer,
     DeadlineSweeper,

@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { FiRefreshCw, FiTrash2 } from "react-icons/fi";
 
+import { Badge } from "@/ui/components/primitives/badge";
 import { Button } from "@/ui/components/primitives/button";
 import { relativeTime } from "@/app/format/relative-time";
 import type { Connection } from "../api/connections-api";
@@ -25,9 +26,12 @@ export const ConnectionRow = memo(
     return (
       <li className="flex flex-wrap items-center gap-3 rounded-(--radius-md) border border-(--color-border) bg-(--color-surface) px-4 py-3">
         <div className="min-w-0 flex-1">
-          <p className="font-medium">{connection.name}</p>
+          <p className="flex items-center gap-2 font-medium">
+            {connection.name}
+            <Badge>{t(`row.kinds.${connection.kind}`)}</Badge>
+          </p>
           <p className="truncate font-mono text-xs text-(--color-text-muted)">
-            {connection.baseUrl}
+            {connection.address}
           </p>
           <p className="text-sm text-(--color-text-muted)">
             {t("row.tools", { count: connection.toolCount })} ·{" "}

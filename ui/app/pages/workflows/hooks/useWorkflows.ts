@@ -31,5 +31,5 @@ export const useWorkflows = () => {
     void navigate(`/workflows/${workflow.id}`);
   };
 
-  return { workflows, error, create };
+  return { workflows, error, create, reload };
 };

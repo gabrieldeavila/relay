@@ -1,22 +1,42 @@
 import { useState, type FormEvent } from "react";
 
-/** Pincel's default address is prefilled: it is the first app most people connect. */
+import {
+  connectionDefaults,
+  newConnection,
+  type ConnectionKind,
+  type NewConnection,
+} from "../domain/connection-kinds";
+
+/** The add form: which kind of app, its name, and its address or command. */
 export const useAddConnectionForm = (
-  add: (name: string, baseUrl: string) => Promise<void>,
+  add: (connection: NewConnection) => Promise<void>,
 ) => {
-  const [name, setName] = useState("Pincel");
-  const [baseUrl, setBaseUrl] = useState("http://localhost:4300");
+  const [kind, setKindState] = useState<ConnectionKind>("tools_api");
+  const [name, setName] = useState(connectionDefaults("tools_api").name);
+  const [address, setAddress] = useState(
+    connectionDefaults("tools_api").address,
+  );
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  /** Switching kind swaps the prefilled values, never what the user typed. */
+  const setKind = (next: ConnectionKind) => {
+    const before = connectionDefaults(kind);
+    const after = connectionDefaults(next);
+    if (name === before.name) setName(after.name);
+    if (address === before.address) setAddress(after.address);
+    setKindState(next);
+    setError(null);
+  };
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setSaving(true);
     setError(null);
     try {
-      await add(name.trim(), baseUrl.trim());
+      await add(newConnection(kind, name, address));
       setName("");
-      setBaseUrl("");
+      setAddress("");
     } catch (addError) {
       setError((addError as Error).message);
     } finally {
@@ -24,5 +44,15 @@ export const useAddConnectionForm = (
     }
   };
 
-  return { name, setName, baseUrl, setBaseUrl, error, saving, submit };
+  return {
+    kind,
+    setKind,
+    name,
+    setName,
+    address,
+    setAddress,
+    error,
+    saving,
+    submit,
+  };
 };

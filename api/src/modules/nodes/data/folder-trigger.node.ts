@@ -17,6 +17,7 @@ export const folderTriggerNode = defineNode({
     folder: z.string().min(1),
     pattern: z.string().default('*'),
   }),
+  output: '`{ name, path, folder, bytes, modifiedAt }` of the new file',
   outputPorts: ['out'],
   run: () => Promise.resolve(done(null)),
 });

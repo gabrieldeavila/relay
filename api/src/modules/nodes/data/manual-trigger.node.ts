@@ -9,6 +9,7 @@ export const manualTriggerNode = defineNode({
   title: 'Start manually',
   description: 'Runs when you press Run, with optional sample data.',
   config: z.object({}),
+  output: 'The data given when the run starts (any JSON).',
   outputPorts: ['out'],
   run: () => Promise.resolve(done(null)),
 });

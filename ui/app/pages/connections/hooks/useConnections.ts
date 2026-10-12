@@ -7,6 +7,7 @@ import {
   removeConnection,
   type Connection,
 } from "../api/connections-api";
+import type { NewConnection } from "../domain/connection-kinds";
 
 /** Connected apps and what can be done with them; errors come back as text. */
 export const useConnections = () => {
@@ -44,8 +45,8 @@ export const useConnections = () => {
     error,
     busyId,
     /** Throws so the form can show the problem next to its fields. */
-    add: async (name: string, baseUrl: string) => {
-      await addConnection(name, baseUrl);
+    add: async (connection: NewConnection) => {
+      await addConnection(connection);
       await reload();
     },
     refresh: (id: string) => act(id, () => refreshConnection(id)),

@@ -1,22 +1,44 @@
 {
   "back": "Fluxos",
   "title": "Conexões",
-  "subtitle": "Apps cujas ferramentas podem virar passos nos seus fluxos. Cada ferramenta aparece no editor.",
+  "subtitle": "Apps e servidores MCP cujas ferramentas viram passos nos seus fluxos. Cada ferramenta aparece no editor.",
   "empty": "Nenhum app conectado ainda.",
   "add": {
     "title": "Conectar um app",
-    "description": "O app precisa listar suas ferramentas em <endereço>/api/tools, como o Pincel faz.",
+    "description": "Cada ferramenta do app vira um passo no editor.",
     "name": "Nome",
     "url": "Endereço",
-    "urlHint": "O Pincel roda em http://localhost:4300 (inicie com pnpm dev).",
-    "submit": "Conectar"
+    "submit": "Conectar",
+    "kind": "Que tipo de app?",
+    "kinds": {
+      "tools_api": "Um app como o Pincel (endereço)",
+      "mcp_http": "Servidor MCP (endereço)",
+      "mcp_stdio": "Servidor MCP (comando)"
+    },
+    "command": "Comando",
+    "placeholders": {
+      "tools_api": "http://localhost:4300",
+      "mcp_http": "http://localhost:3000/mcp",
+      "mcp_stdio": "npx -y @modelcontextprotocol/server-filesystem ~/Documents"
+    },
+    "hints": {
+      "tools_api": "O app lista as ferramentas em <endereço>/api/tools. O Pincel roda em http://localhost:4300 (inicie com pnpm dev).",
+      "mcp_http": "O endereço MCP do servidor, que normalmente termina em /mcp.",
+      "mcp_stdio": "Exatamente o que as instruções do servidor mandam rodar. O Relay inicia quando um passo precisa e o mantém rodando."
+    },
+    "commandWarning": "O Relay vai rodar este comando no seu computador, com as suas permissões. Só adicione servidores em que você confia."
   },
   "row": {
     "tools_one": "{{count}} ferramenta",
     "tools_other": "{{count}} ferramentas",
     "refreshed": "atualizado {{when}}",
     "refresh": "Atualizar ferramentas",
-    "remove": "Remover"
+    "remove": "Remover",
+    "kinds": {
+      "tools_api": "App",
+      "mcp_http": "MCP",
+      "mcp_stdio": "MCP · comando"
+    }
   },
   "accounts": {
     "title": "Contas",
@@ -61,5 +83,20 @@
       "key": "Chave de API da Anthropic",
       "keyHint": "Crie uma em console.anthropic.com → API keys. O uso é cobrado na sua conta da Anthropic."
     }
+  },
+  "mcp": {
+    "title": "Usar o Relay pelo Claude",
+    "subtitle": "O Claude Code, o Claude Desktop e outros apps MCP podem listar seus fluxos, montar rascunhos, publicar e rodar. Cada app entra com o próprio token, que você pode revogar aqui.",
+    "create": "Criar um token",
+    "onlyOnce": "Copie agora: o token só aparece desta vez. Quem tiver o token consegue rodar seus fluxos.",
+    "claudeCode": "Claude Code: rode isto num terminal",
+    "address": "Outros apps: endereço MCP (Streamable HTTP)",
+    "header": "…com este cabeçalho Authorization",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "done": "Já copiei",
+    "used": "usado {{when}}",
+    "neverUsed": "nunca usado",
+    "revoke": "Revogar"
   }
 }

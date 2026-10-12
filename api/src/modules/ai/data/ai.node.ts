@@ -24,6 +24,7 @@ export class AiNode {
       instructions: z.string().optional().meta({ widget: 'textarea' }),
       model: z.enum(AI_MODELS).default('claude-opus-5-5'),
     }),
+    output: '`{ text, truncated, model, usage }`',
     outputPorts: ['out', 'error'],
     timeoutMs: 300_000,
     run: async (config, ctx) => {

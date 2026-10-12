@@ -27,6 +27,7 @@ export class EmailNode {
       text: z.string().min(1).meta({ widget: 'textarea' }),
       attachment: z.string().optional(),
     }),
+    output: '`{ messageId, to, accepted, rejected }`',
     outputPorts: ['out', 'error'],
     timeoutMs: 120_000,
     run: async ({ to, subject, text, attachment }, ctx) => {

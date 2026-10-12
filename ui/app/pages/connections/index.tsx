@@ -8,6 +8,7 @@ import { Spinner } from "@/ui/components/primitives/spinner";
 import { AccountsSection } from "./components/AccountsSection";
 import { AddConnectionForm } from "./components/AddConnectionForm";
 import { ConnectionRow } from "./components/ConnectionRow";
+import { McpAccessSection } from "./components/McpAccessSection";
 import { useConnections } from "./hooks/useConnections";
 
 export function meta() {
@@ -54,6 +55,7 @@ const Connections = memo(() => {
           </ul>
         )}
         <AccountsSection />
+        <McpAccessSection />
       </div>
     </main>
   );

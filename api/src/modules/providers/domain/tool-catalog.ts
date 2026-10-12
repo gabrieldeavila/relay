@@ -3,7 +3,10 @@ import { z } from 'zod';
 const toolSchema = z.object({
   name: z
     .string()
-    .regex(/^[A-Za-z0-9_-]{1,64}$/, 'Tool names are letters, digits, _ and -'),
+    .regex(
+      /^[A-Za-z0-9_.-]{1,128}$/,
+      'Tool names are letters, digits, _, - and .',
+    ),
   description: z.string().default(''),
   input_schema: z.record(z.string(), z.unknown()),
 });

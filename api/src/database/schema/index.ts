@@ -9,3 +9,4 @@ export * from './event-inbox.table.js';
 export * from './tool-providers.table.js';
 export * from './seen-files.table.js';
 export * from './accounts.table.js';
+export * from './access-tokens.table.js';

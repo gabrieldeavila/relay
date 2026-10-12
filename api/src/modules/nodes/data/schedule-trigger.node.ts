@@ -11,6 +11,7 @@ export const scheduleTriggerNode = defineNode({
   title: 'On a schedule',
   description: 'Runs by itself every few minutes, daily, weekly or monthly.',
   config: z.object({ schedule: scheduleSchema }),
+  output: '`{ scheduledFor, firedAt, late }`',
   outputPorts: ['out'],
   run: () => Promise.resolve(done(null)),
 });

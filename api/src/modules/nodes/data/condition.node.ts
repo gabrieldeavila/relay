@@ -16,6 +16,7 @@ export const conditionNode = defineNode({
     operator: z.enum(CONDITION_OPERATORS),
     compare: z.unknown().optional(),
   }),
+  output: '`{ passed }`; goes on through `true` or `false`',
   outputPorts: ['true', 'false'],
   run({ value, operator, compare }) {
     const passed = evaluateCondition(value, operator, compare);

@@ -5,14 +5,17 @@ import {
   type NodeDefinition,
 } from '../../nodes/domain/node-definition.js';
 import { done } from '../../nodes/domain/node-result.js';
+import { endpointOf } from '../domain/provider-endpoint.js';
 import type { SerialPerKey } from '../domain/serial-per-key.js';
 import type { ToolDescriptor } from '../domain/tool-catalog.js';
 import { toolNodeType, toolTitle } from '../domain/tool-node-type.js';
 import type { ToolProvider } from './drizzle-provider.repository.js';
-import type { ToolProviderClient } from './tool-provider.client.js';
+import type { ToolCaller } from './tool-caller.js';
+
+const TIMEOUT_MS = 120_000;
 
 export interface ToolNodeDeps {
-  client: ToolProviderClient;
+  caller: ToolCaller;
   files: RunFileStore;
   /** Calls to one provider never overlap (Pincel edits a single document). */
   serial: SerialPerKey;
@@ -28,6 +31,7 @@ export function toolNode(
   tool: ToolDescriptor,
   deps: ToolNodeDeps,
 ): NodeDefinition {
+  const endpoint = endpointOf(provider);
   return defineNode({
     type: toolNodeType(provider.id, tool.name),
     kind: 'action',
@@ -36,18 +40,22 @@ export function toolNode(
     group: provider.name,
     config: configSchema(tool),
     configJsonSchema: tool.input_schema,
+    output: '`{ text, data, image: { url, path, mimeType, bytes } | null }`',
     outputPorts: ['out', 'error'],
-    timeoutMs: 120_000,
+    timeoutMs: TIMEOUT_MS,
     async run(config, ctx) {
       const reply = await deps.serial.run(provider.id, () =>
-        deps.client.call(provider.baseUrl, tool.name, config, ctx),
+        deps.caller.call(provider.id, endpoint, tool.name, config, {
+          ...ctx,
+          timeoutMs: TIMEOUT_MS,
+        }),
       );
       const image = reply.image
         ? await deps.files.save(
             ctx.step.runId,
             ctx.step,
             Buffer.from(reply.image, 'base64'),
-            'image/png',
+            reply.imageMimeType ?? 'image/png',
           )
         : null;
       return done({ text: reply.text ?? '', data: reply.data ?? null, image });

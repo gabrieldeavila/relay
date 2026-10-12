@@ -1,20 +1,20 @@
 import { apiRequest } from "@/app/api/api-request";
+import type { ConnectionKind, NewConnection } from "../domain/connection-kinds";
 
 export interface Connection {
   id: string;
   name: string;
-  baseUrl: string;
+  kind: ConnectionKind;
+  /** The URL, or the command for servers Relay starts. */
+  address: string;
   toolCount: number;
   refreshedAt: string;
 }
 
 export const listConnections = () => apiRequest<Connection[]>("/providers");
 
-export const addConnection = (name: string, baseUrl: string) =>
-  apiRequest<Connection>("/providers", {
-    method: "POST",
-    body: { name, baseUrl },
-  });
+export const addConnection = (connection: NewConnection) =>
+  apiRequest<Connection>("/providers", { method: "POST", body: connection });
 
 export const refreshConnection = (id: string) =>
   apiRequest<Connection>(`/providers/${id}/refresh`, { method: "POST" });

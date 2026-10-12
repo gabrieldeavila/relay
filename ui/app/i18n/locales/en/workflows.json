@@ -15,5 +15,16 @@
     "placeholder": "e.g. Weekly Instagram post",
     "save": "Create"
   },
-  "connections": "Connections"
+  "connections": "Connections",
+  "describe": {
+    "title": "Describe what you want",
+    "subtitle": "Say it in your own words. Claude drafts the steps, Relay checks them, and you fill in the details before publishing.",
+    "label": "What should happen?",
+    "placeholder": "e.g. Every Monday at 9, read the next row of my quotes spreadsheet, have Pincel make a post with it, ask me to approve, then send it to me on Telegram.",
+    "submit": "Draft it",
+    "drafting": "Drafting…",
+    "privacy": "Uses your Anthropic key (Connections). Your description and the list of steps you can use are sent to Anthropic.",
+    "left": "Still to fill in:",
+    "open": "Open in the editor"
+  }
 }

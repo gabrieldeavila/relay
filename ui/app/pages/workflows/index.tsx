@@ -6,6 +6,7 @@ import { Alert } from "@/ui/components/primitives/alert";
 import { Button } from "@/ui/components/primitives/button";
 import { EmptyState } from "@/ui/components/primitives/empty-state";
 import { Spinner } from "@/ui/components/primitives/spinner";
+import { DescribeFlowCard } from "./components/DescribeFlowCard";
 import { NewWorkflowModal } from "./components/NewWorkflowModal";
 import { TemplatesSection } from "./components/TemplatesSection";
 import { WorkflowRow } from "./components/WorkflowRow";
@@ -19,13 +20,14 @@ export function meta() {
 
 const Workflows = memo(() => {
   const { t } = useTranslation("workflows");
-  const { workflows, error, create } = useWorkflows();
+  const { workflows, error, create, reload } = useWorkflows();
   const modal = useNewWorkflowModal(create);
 
   return (
     <main className="min-h-[100dvh] bg-(--color-bg) text-(--color-text)">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8 sm:px-6">
         <WorkflowsHeader onCreate={() => modal.openWith()} />
+        <DescribeFlowCard onDrafted={() => void reload()} />
         {error && <Alert variant="danger">{error}</Alert>}
         {!workflows && !error ? (
           <div className="flex justify-center py-16">

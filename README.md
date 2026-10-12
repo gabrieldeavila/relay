@@ -40,6 +40,35 @@ Steps read local files by full path (`~/` works): **When a file appears in a fol
 gives later steps `{{ trigger.path }}`, **Read a spreadsheet** reads `.csv` / `.xlsx` and
 gives the rows plus one picked `row` (`{{ steps.<id>.output.row.<column> }}`).
 
+## MCP servers
+
+**Connections** also takes MCP servers: by address (Streamable HTTP, e.g.
+`http://localhost:3000/mcp`) or by the command that starts one, typed as the server's
+instructions say (`npx -y @modelcontextprotocol/server-filesystem ~/Documents`). Relay
+runs the command directly (never through a shell), keeps it running while steps use it,
+and stops it when the connection is removed. Each tool becomes a step like Pincel's.
+
+## Use Relay from Claude
+
+Relay is an MCP server at `http://localhost:4400/mcp`. Create a token under
+**Connections → Use Relay from Claude**, then, for Claude Code:
+
+```sh
+claude mcp add --transport http relay http://localhost:4400/mcp --header "Authorization: Bearer relay_…"
+```
+
+Claude can then list workflows and step types, save drafts (each answer lists what still
+keeps it from publishing), publish, run, and read runs. Tokens are stored hashed; revoke
+them on the same page. Only requests from this machine are accepted.
+
+## Describe what you want
+
+The workflows page drafts a workflow from a few sentences using your Anthropic key:
+Claude picks steps from your catalog, Relay checks the draft like publishing would
+(plus unknown settings and `{{ }}` values that can never resolve), sends any problems
+back for up to three rounds, and saves the result as a draft. Personal details are left
+blank for you to fill in.
+
 ## Test
 
 ```sh
@@ -65,7 +94,7 @@ supabase migration up            # applies it locally
 | Method | Path | |
 |---|---|---|
 | GET | `/nodes` | Node catalog (built-in + connected apps' tools) with config JSON Schemas |
-| GET / POST | `/providers` | Connected apps; POST `{ name, baseUrl }` reads `<baseUrl>/api/tools` |
+| GET / POST | `/providers` | Connected apps; POST `{ name, kind?, baseUrl?, command? }` reads the tools (`kind`: `tools_api` = `<baseUrl>/api/tools`, `mcp_http`, `mcp_stdio`) |
 | POST / DELETE | `/providers/:id/refresh`, `/providers/:id` | Re-read an app's tools, disconnect it |
 | GET | `/files/:runId/:name` | A file a run produced (e.g. a Pincel render), owner only |
 | GET | `/accounts` | Email, Telegram and AI accounts (never their secrets) |
@@ -74,6 +103,9 @@ supabase migration up            # applies it locally
 | GET | `/accounts/telegram/chats` | Chats that wrote to the bot lately |
 | GET | `/templates` | Templates with what each needs and what is set up |
 | POST | `/templates/:id/use` | Create a draft workflow from a template `{ name? }` |
+| GET / POST / DELETE | `/access-tokens`, `/access-tokens/:id` | Tokens for MCP clients (the token is answered once, on POST) |
+| POST / GET / DELETE | `/mcp` | Relay as an MCP server (Streamable HTTP), `Authorization: Bearer <access token>` |
+| POST | `/workflows/build` | Draft a workflow from `{ description }` with Claude (never publishes) |
 | POST | `/workflows` | Create `{ name }` |
 | GET | `/workflows`, `/workflows/:id` | List, get with draft graph |
 | PATCH | `/workflows/:id` | Save `{ name?, draftGraph? }` |

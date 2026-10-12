@@ -91,7 +91,9 @@
     "invalid_port": "A connection leaves from an exit this step does not have.",
     "trigger_has_input": "Nothing can connect into the starting point.",
     "cycle": "These steps go around in a loop.",
-    "unreachable_node": "This step is not connected to the start."
+    "unreachable_node": "This step is not connected to the start.",
+    "unknown_config": "“{{field}}” is not a setting of this step.",
+    "bad_reference": "“{{field}}” does not exist here."
   },
   "runs": "Runs"
 }
