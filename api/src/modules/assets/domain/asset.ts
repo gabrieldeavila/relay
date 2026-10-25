@@ -1,7 +1,7 @@
 export type AssetKind = 'image' | 'video' | 'audio';
 
-/** Where an asset came from: brought in by the user/AI, or rendered by Relay. */
-export type AssetSource = 'import' | 'export';
+/** Where an asset came from: brought in, rendered by Relay, or made by an image AI. */
+export type AssetSource = 'import' | 'export' | 'generated';
 
 /** A media file Relay keeps on disk, usable by both images and videos. */
 export interface Asset {

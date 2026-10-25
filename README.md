@@ -37,6 +37,27 @@ claude mcp add --transport http relay http://localhost:4400/mcp
 Then ask, for example: "make a 1080x1920 cover that says BEACH DAY, then a vertical video
 from ~/Movies/beach.mov with the cover as the first 2 seconds and a caption".
 
+## Optional: image AI
+
+Relay works fully without it. To let Claude generate elements that are hard to draw
+(realistic objects, stickers, textures), pick a provider in `api/.env` and restart:
+
+| `IMAGE_AI_PROVIDER` | Key | Default model | Transparent PNG |
+|---|---|---|---|
+| `openai` | `OPENAI_API_KEY` | `gpt-image-1` | yes |
+| `gemini` | `GEMINI_API_KEY` | `gemini-2.5-flash-image` | no |
+| `replicate` | `REPLICATE_API_TOKEN` | `black-forest-labs/flux-schnell` | no |
+| `fal` | `FAL_KEY` | `fal-ai/flux/schnell` | no |
+
+`IMAGE_AI_MODEL` picks another model from the same provider. For Replicate and fal, that
+model needs to take a prompt plus an aspect ratio or image size, as FLUX models do.
+
+This adds a `generate_image` tool that saves the result as an asset for Claude to place
+and compose. Providers without transparency return the element on plain white, and the
+tool tells Claude how to cut it out with Relay's selection tools. Without a provider the
+tool isn't offered at all. Each generation is billed by the provider and sends the prompt
+to them.
+
 ## How it works
 
 - **Assets** (`api/src/modules/assets`): every photo, video or audio file Relay uses is

@@ -1,5 +1,5 @@
 /** Sent to MCP clients on connect so the model knows how Relay thinks. */
-export const SERVER_INSTRUCTIONS = `Relay is a studio on the user's computer with two editors: Images (layers, like a small Photoshop) and Videos (a timeline, like a small CapCut).
+const BASE_INSTRUCTIONS = `Relay is a studio on the user's computer with two editors: Images (layers, like a small Photoshop) and Videos (a timeline, like a small CapCut).
 
 Files
 - Photos, videos and audio become assets (import_media, or pass a path/url to any tool that takes a file). Originals are never changed. list_assets finds them again.
@@ -22,3 +22,16 @@ Videos (videoId from create_video or list_videos)
 - export_video only when the person asks or approves; then poll get_export.
 
 The person may be watching both editors in the Relay app while you work.`;
+
+const GENERATION_INSTRUCTIONS = `
+
+Image AI
+- generate_image makes things that are hard to draw (realistic objects, props, stickers, textures, backgrounds) as an image asset, transparent by default. Place it with place_image and match it to the scene (scale, position, filters, a soft shadow layer).
+- Compose with Relay, don't generate whole designs: words, layout and exact colors are more reliable with draw_text and shapes. Each generation costs money.`;
+
+/** The instructions, mentioning image generation only when it is set up. */
+export function serverInstructions({ canGenerate }: { canGenerate: boolean }) {
+  return canGenerate
+    ? BASE_INSTRUCTIONS + GENERATION_INSTRUCTIONS
+    : BASE_INSTRUCTIONS;
+}
