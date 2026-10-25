@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Inject,
   NotFoundException,
   Param,
@@ -12,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { CurrentUser } from '../../auth/delivery/current-user.decorator.js';
 import { PublishWorkflow } from '../domain/publish-workflow.js';
+import { StartDraftTest } from '../domain/start-draft-test.js';
 import type { WorkflowRepository } from '../domain/workflow.js';
 import {
   createWorkflowBody,
@@ -27,6 +29,7 @@ export class WorkflowsController {
     @Inject(WORKFLOW_REPOSITORY)
     private readonly repository: WorkflowRepository,
     private readonly publishWorkflow: PublishWorkflow,
+    private readonly startDraftTest: StartDraftTest,
   ) {}
 
   @Post()
@@ -72,6 +75,22 @@ export class WorkflowsController {
       throw new UnprocessableEntityException({ issues: result.issues });
     }
     return { version: result.version };
+  }
+
+  /** Runs the saved draft without publishing it; the body is the trigger payload. */
+  @Post(':id/test-runs')
+  @HttpCode(202)
+  async testDraft(
+    @CurrentUser() userId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() payload: unknown,
+  ) {
+    const result = await this.startDraftTest.execute(id, userId, payload ?? {});
+    if (result.type === 'not_found') throw workflowNotFound();
+    if (result.type === 'invalid') {
+      throw new UnprocessableEntityException({ issues: result.issues });
+    }
+    return { id: result.runId };
   }
 }
 

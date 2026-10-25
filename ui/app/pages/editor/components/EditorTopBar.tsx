@@ -1,6 +1,12 @@
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { FiArrowLeft, FiList, FiPlay, FiUploadCloud } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiList,
+  FiPlay,
+  FiUploadCloud,
+  FiZap,
+} from "react-icons/fi";
 import { Link } from "react-router";
 
 import { Badge } from "@/ui/components/primitives/badge";
@@ -15,9 +21,11 @@ type EditorTopBarProps = {
   latestVersion: number | null;
   saveState: SaveState;
   publishing: boolean;
+  testing: boolean;
   running: boolean;
   onRename: (name: string) => void;
   onPublish: () => void;
+  onTest: () => void;
   onRun: () => void;
 };
 
@@ -56,13 +64,25 @@ export const EditorTopBar = memo((props: EditorTopBarProps) => {
           <FiList aria-hidden="true" />
           {t("runs")}
         </Link>
+        {props.latestVersion !== null && (
+          <Button
+            variant="ghost"
+            leftIcon={<FiPlay aria-hidden="true" />}
+            isLoading={props.running}
+            onClick={props.onRun}
+            title={t("runHint", { version: props.latestVersion })}
+          >
+            {t("run")}
+          </Button>
+        )}
         <Button
           variant="secondary"
-          leftIcon={<FiPlay aria-hidden="true" />}
-          isLoading={props.running}
-          onClick={props.onRun}
+          leftIcon={<FiZap aria-hidden="true" />}
+          isLoading={props.testing}
+          onClick={props.onTest}
+          title={t("testHint")}
         >
-          {t("run")}
+          {t("test")}
         </Button>
         <Button
           leftIcon={<FiUploadCloud aria-hidden="true" />}

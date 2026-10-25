@@ -23,6 +23,7 @@ export const RunHeader = memo(
       dateStyle: "medium",
       timeStyle: "medium",
     });
+    const isTest = run.version === null;
 
     return (
       <div className="flex flex-wrap items-center gap-3 border-b border-(--color-border) px-4 py-2">
@@ -30,7 +31,7 @@ export const RunHeader = memo(
           {t(`status.${run.status}`)}
         </Badge>
         <span className="text-sm text-(--color-text-muted)">
-          {t("header.summary", {
+          {t(isTest ? "header.testSummary" : "header.summary", {
             version: run.version,
             started,
             duration: formatDuration(
@@ -67,7 +68,7 @@ export const RunHeader = memo(
             leftIcon={<FiPlay aria-hidden="true" />}
             onClick={onRunAgain}
           >
-            {t("actions.runAgain")}
+            {t(isTest ? "actions.testAgain" : "actions.runAgain")}
           </Button>
         </div>
       </div>

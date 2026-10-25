@@ -1,0 +1,1 @@
+ALTER TABLE "relay"."workflow_versions" ALTER COLUMN "version" DROP NOT NULL;

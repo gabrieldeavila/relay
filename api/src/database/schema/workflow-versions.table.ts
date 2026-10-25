@@ -3,7 +3,10 @@ import type { WorkflowGraph } from '../../modules/workflows/domain/graph.js';
 import { relay } from './relay-schema.js';
 import { workflows } from './workflows.table.js';
 
-/** Immutable snapshot published from a draft; runs are pinned to one. */
+/**
+ * Immutable snapshot of a draft; runs are pinned to one. Published versions
+ * are numbered 1, 2, …; a test of the draft is stored without a number.
+ */
 export const workflowVersions = relay.table(
   'workflow_versions',
   {
@@ -11,7 +14,7 @@ export const workflowVersions = relay.table(
     workflowId: uuid('workflow_id')
       .notNull()
       .references(() => workflows.id, { onDelete: 'cascade' }),
-    version: integer('version').notNull(),
+    version: integer('version'),
     graph: jsonb('graph').$type<WorkflowGraph>().notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()

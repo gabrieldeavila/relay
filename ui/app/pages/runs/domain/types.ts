@@ -52,7 +52,8 @@ export interface RunSummary {
   id: string;
   workflowId: string;
   status: RunStatus;
-  version: number;
+  /** Null for a test of the draft, which is never published. */
+  version: number | null;
   triggerPayload: unknown;
   createdAt: string;
   finishedAt: string | null;

@@ -5,7 +5,7 @@ interface RunLike {
   id: string;
   workflowId: string;
   status: string;
-  version: number;
+  version: number | null;
   createdAt: Date;
   finishedAt: Date | null;
   steps: {

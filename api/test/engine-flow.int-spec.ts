@@ -5,6 +5,8 @@ import {
   TEST_OWNER,
 } from './support/engine-harness';
 import { TestServer } from './support/test-server';
+import { RunReader } from '../src/modules/engine/data/run-reader';
+import { StartDraftTest } from '../src/modules/workflows/domain/start-draft-test';
 
 describe('engine: flows', () => {
   let engine: EngineHarness;
@@ -39,6 +41,58 @@ describe('engine: flows', () => {
     expect(
       (await engine.workflows.find(draft.id, TEST_OWNER))?.latestVersion,
     ).toBeNull();
+  });
+
+  it('tests the draft without publishing it or touching the published flow', async () => {
+    const published = {
+      nodes: [node('start', 'trigger.manual'), node('a', 'data.set', { fields: { n: 1 } })],
+      edges: [edge('start', 'a')],
+    };
+    const workflowId = await engine.publish(published);
+    const draft = {
+      nodes: [...published.nodes, node('b', 'data.set', { fields: { n: 2 } })],
+      edges: [...published.edges, edge('a', 'b')],
+    };
+    await engine.workflows.update(workflowId, TEST_OWNER, {
+      draftGraph: draft,
+    });
+
+    const test = await engine
+      .get(StartDraftTest)
+      .execute(workflowId, TEST_OWNER, {});
+    if (test.type !== 'started') throw new Error(JSON.stringify(test));
+    const realRunId = await engine.start(workflowId);
+    await engine.worker.drain();
+
+    expect((await engine.statuses(test.runId)).steps).toEqual({
+      start: 'succeeded',
+      a: 'succeeded',
+      b: 'succeeded',
+    });
+    expect(Object.keys((await engine.statuses(realRunId)).steps)).toEqual([
+      'start',
+      'a',
+    ]);
+    expect(
+      (await engine.workflows.find(workflowId, TEST_OWNER))?.latestVersion,
+    ).toBe(1);
+    const listed = await engine
+      .get(RunReader)
+      .listForWorkflow(workflowId, TEST_OWNER);
+    expect(listed.map((run) => [run.id, run.version])).toEqual(
+      expect.arrayContaining([
+        [test.runId, null],
+        [realRunId, 1],
+      ]),
+    );
+  });
+
+  it('refuses to test a draft that cannot run', async () => {
+    const { id } = await engine.workflows.create(TEST_OWNER, 'Empty');
+
+    expect(
+      (await engine.get(StartDraftTest).execute(id, TEST_OWNER, {})).type,
+    ).toBe('invalid');
   });
 
   it('passes data between steps through expressions', async () => {

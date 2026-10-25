@@ -11,6 +11,10 @@
   "published": "Published v{{version}}",
   "notPublished": "Not published yet",
   "run": "Run now",
+  "runHint": "Runs the published version (v{{version}})",
+  "test": "Test",
+  "testHint": "Runs the flow as it is now, without publishing",
+  "testInvalid": "Fix the marked steps to test",
   "runNeedsPublish": "Publish the flow before running it.",
   "publishOk": "Published version {{version}}",
   "publishInvalid": "Fix the marked steps to publish",
@@ -46,7 +50,7 @@
   },
   "trigger": {
     "title": "How it starts",
-    "manual": "Only when you press Run now.",
+    "manual": "Only when you press Test or Run now.",
     "webhook": "When another app calls this secret link:",
     "schedule": "On its schedule. Next run:",
     "noNextRun": "not scheduled",
@@ -80,7 +84,7 @@
     }
   },
   "issues": {
-    "title": "To publish, fix:",
+    "title": "To run the flow, fix:",
     "no_trigger": "Add a starting point (On a schedule, When a web address is called, or Start manually).",
     "multiple_triggers": "A flow can only have one starting point.",
     "duplicate_node_id": "Two steps have the same name.",

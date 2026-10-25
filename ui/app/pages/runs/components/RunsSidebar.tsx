@@ -36,8 +36,13 @@ export const RunsSidebar = memo(
               run.id === activeId && "bg-(--color-surface-2)",
             )}
           >
-            <span className="text-(--color-text-muted)">
+            <span className="flex items-center gap-1.5 text-(--color-text-muted)">
               {relativeTime(new Date(run.createdAt), now, i18n.language)}
+              {run.version === null && (
+                <Badge size="sm" variant="info">
+                  {t("list.test")}
+                </Badge>
+              )}
             </span>
             <Badge size="sm" variant={statusTone(run.status)}>
               {t(`status.${run.status}`)}

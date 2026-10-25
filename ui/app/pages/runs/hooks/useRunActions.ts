@@ -3,12 +3,21 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 
 import type { useToasts } from "@/app/hooks/useToasts";
-import { answerApproval, cancelRun, retryRun, startRun } from "../api/runs-api";
+import {
+  answerApproval,
+  cancelRun,
+  retryRun,
+  startRun,
+  testDraft,
+} from "../api/runs-api";
 import type { RunDetail } from "../domain/types";
 
 type Toasts = ReturnType<typeof useToasts>;
 
-/** Cancel, Retry, Run again and approval answers, reported through toasts. */
+/**
+ * Cancel, Retry, Run again and approval answers, reported through toasts.
+ * Running a test again tests the draft as it is now, with the same payload.
+ */
 export const useRunActions = (
   run: RunDetail | null,
   onChanged: () => void,
@@ -39,8 +48,11 @@ export const useRunActions = (
     runAgain: () =>
       run &&
       perform("runAgain", async () => {
-        const { id } = await startRun(run.workflowId, run.triggerPayload);
-        void navigate(`/workflows/${run.workflowId}/runs/${id}`);
+        const again = run.version === null ? testDraft : startRun;
+        const started = await again(run.workflowId, run.triggerPayload);
+        if (!started)
+          return toasts.push({ variant: "warning", title: t("testInvalid") });
+        void navigate(`/workflows/${run.workflowId}/runs/${started.id}`);
       }),
     answer: (url: string) =>
       perform("answer", async () => {

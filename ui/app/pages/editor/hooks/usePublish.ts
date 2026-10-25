@@ -1,42 +1,28 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { publishWorkflow } from "../api/editor-api";
 import type { GraphIssue } from "@/app/flow/domain/types";
 
-/** Saves pending edits, then publishes; keeps the issues of a refused publish. */
+/** Saves pending edits, then publishes; hands back the issues of a refused publish. */
 export const usePublish = (
   id: string,
   flush: () => Promise<void>,
   onPublished: (version: number) => void,
+  onInvalid: (issues: GraphIssue[]) => void,
 ) => {
   const [publishing, setPublishing] = useState(false);
-  const [issues, setIssues] = useState<GraphIssue[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
-  const publish = async (): Promise<boolean> => {
+  const publish = async (): Promise<void> => {
     setPublishing(true);
-    setError(null);
     try {
       await flush();
       const result = await publishWorkflow(id);
-      if (result.type === "invalid") {
-        setIssues(result.issues);
-        return false;
-      }
-      setIssues([]);
-      onPublished(result.version);
-      return true;
-    } catch (publishError) {
-      setError((publishError as Error).message);
-      return false;
+      if (result.type === "invalid") onInvalid(result.issues);
+      else onPublished(result.version);
     } finally {
       setPublishing(false);
     }
   };
 
-  const clearIssues = useCallback(
-    () => setIssues((current) => (current.length ? [] : current)),
-    [],
-  );
-  return { publish, publishing, issues, error, clearIssues };
+  return { publish, publishing };
 };

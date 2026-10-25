@@ -71,7 +71,7 @@ const EditorLoaded = memo(
     const actions = useEditorActions(id, draft, reload, toasts);
     const graph = workflow.draftGraph;
     const { clearIssues } = actions;
-    // Issues describe the last publish attempt; any edit makes them stale.
+    // Issues describe the last test or publish attempt; any edit makes them stale.
     useEffect(clearIssues, [graph, clearIssues]);
     const grouped = useMemo(
       () => groupIssues(actions.issues, graph),
@@ -95,9 +95,11 @@ const EditorLoaded = memo(
           latestVersion={workflow.latestVersion}
           saveState={draft.saveState}
           publishing={actions.publishing}
+          testing={actions.testing}
           running={actions.running}
           onRename={draft.rename}
           onPublish={() => void actions.publish()}
+          onTest={() => void actions.test()}
           onRun={() => void actions.run()}
         />
         <div className="grid min-h-0 flex-1 grid-cols-[240px_1fr_340px]">

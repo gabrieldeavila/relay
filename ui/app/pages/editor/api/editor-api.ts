@@ -17,6 +17,10 @@ export type PublishResult =
   | { type: "published"; version: number }
   | { type: "invalid"; issues: GraphIssue[] };
 
+export type DraftTestResult =
+  | { type: "started"; runId: string }
+  | { type: "invalid"; issues: GraphIssue[] };
+
 export type TriggerInfo =
   | { kind: "manual" }
   | { kind: "webhook"; url: string }
@@ -50,10 +54,33 @@ export async function publishWorkflow(id: string): Promise<PublishResult> {
     );
     return { type: "published", version };
   } catch (error) {
-    const issues = (error as ApiError).body as { issues?: GraphIssue[] } | null;
-    if (error instanceof ApiError && error.status === 422 && issues?.issues) {
-      return { type: "invalid", issues: issues.issues };
-    }
-    throw error;
+    return invalidOrThrow(error);
   }
+}
+
+/** Runs the saved draft once without publishing it; same 422 as publishing. */
+export async function testDraft(
+  id: string,
+  payload: unknown = {},
+): Promise<DraftTestResult> {
+  try {
+    const { id: runId } = await apiRequest<{ id: string }>(
+      `/workflows/${id}/test-runs`,
+      { method: "POST", body: payload },
+    );
+    return { type: "started", runId };
+  } catch (error) {
+    return invalidOrThrow(error);
+  }
+}
+
+function invalidOrThrow(error: unknown): {
+  type: "invalid";
+  issues: GraphIssue[];
+} {
+  const body = (error as ApiError).body as { issues?: GraphIssue[] } | null;
+  if (error instanceof ApiError && error.status === 422 && body?.issues) {
+    return { type: "invalid", issues: body.issues };
+  }
+  throw error;
 }

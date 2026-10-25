@@ -11,6 +11,10 @@
   "published": "Publicado v{{version}}",
   "notPublished": "Ainda não publicado",
   "run": "Executar agora",
+  "runHint": "Executa a versão publicada (v{{version}})",
+  "test": "Testar",
+  "testHint": "Roda o fluxo como está agora, sem publicar",
+  "testInvalid": "Corrija os passos marcados para testar",
   "runNeedsPublish": "Publique o fluxo antes de executar.",
   "publishOk": "Versão {{version}} publicada",
   "publishInvalid": "Corrija os passos marcados para publicar",
@@ -46,7 +50,7 @@
   },
   "trigger": {
     "title": "Como começa",
-    "manual": "Só quando você clica em Executar agora.",
+    "manual": "Só quando você clica em Testar ou Executar agora.",
     "webhook": "Quando outro app chamar este link secreto:",
     "schedule": "Na agenda. Próxima execução:",
     "noNextRun": "não agendada",
@@ -80,7 +84,7 @@
     }
   },
   "issues": {
-    "title": "Para publicar, corrija:",
+    "title": "Para rodar o fluxo, corrija:",
     "no_trigger": "Adicione um ponto de partida (Na agenda, Quando um endereço for chamado ou Iniciar manualmente).",
     "multiple_triggers": "Um fluxo só pode ter um ponto de partida.",
     "duplicate_node_id": "Dois passos têm o mesmo nome.",

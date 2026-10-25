@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq, isNotNull } from 'drizzle-orm';
 import {
   DATABASE,
   type Database,
@@ -11,11 +11,14 @@ import {
   workflowVersions,
 } from '../../../database/schema/index.js';
 import { newSecretToken } from '../../../security/new-secret-token.js';
-import { DEFAULT_PORT } from '../../workflows/domain/graph.js';
+import {
+  DEFAULT_PORT,
+  type WorkflowGraph,
+} from '../../workflows/domain/graph.js';
 import { RunAdvancer } from './run-advancer.js';
 import { VersionGraphs } from './version-graphs.js';
 
-/** Starts runs of a workflow's latest published version. */
+/** Starts runs of a workflow's latest published version, or tests of its draft. */
 @Injectable()
 export class RunStarter {
   constructor(
@@ -40,17 +43,50 @@ export class RunStarter {
     const [version] = await tx
       .select({ id: workflowVersions.id })
       .from(workflowVersions)
-      .where(eq(workflowVersions.workflowId, workflowId))
+      .where(
+        and(
+          eq(workflowVersions.workflowId, workflowId),
+          isNotNull(workflowVersions.version),
+        ),
+      )
       .orderBy(desc(workflowVersions.version))
       .limit(1);
     if (!version) return null;
+    return this.startVersionIn(tx, workflowId, version.id, payload);
+  }
 
-    const { trigger } = await this.versions.get(version.id);
+  /**
+   * Runs a snapshot of the draft without publishing it: no version number,
+   * no trigger armed. Check that the graph is valid first.
+   */
+  startTestRun(
+    workflowId: string,
+    graph: WorkflowGraph,
+    payload: unknown,
+  ): Promise<string> {
+    return this.db.transaction(async (tx) => {
+      const [snapshot] = await tx
+        .insert(workflowVersions)
+        .values({ workflowId, version: null, graph })
+        .returning({ id: workflowVersions.id });
+      // Steps read graphs outside this transaction, before it commits.
+      this.versions.remember(snapshot.id, graph);
+      return this.startVersionIn(tx, workflowId, snapshot.id, payload);
+    });
+  }
+
+  private async startVersionIn(
+    tx: Transaction,
+    workflowId: string,
+    versionId: string,
+    payload: unknown,
+  ): Promise<string> {
+    const { trigger } = await this.versions.get(versionId);
     const [run] = await tx
       .insert(runs)
       .values({
         workflowId,
-        versionId: version.id,
+        versionId,
         triggerPayload: payload,
         resumeToken: newSecretToken(),
       })
@@ -64,7 +100,7 @@ export class RunStarter {
       input: payload,
       output: payload,
     });
-    await this.advancer.advanceIn(tx, run.id, version.id);
+    await this.advancer.advanceIn(tx, run.id, versionId);
     return run.id;
   }
 }

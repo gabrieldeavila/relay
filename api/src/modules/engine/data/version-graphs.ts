@@ -31,12 +31,19 @@ export class VersionGraphs {
       .select({ graph: workflowVersions.graph })
       .from(workflowVersions)
       .where(eq(workflowVersions.id, versionId));
-    const trigger = row && findTrigger(row.graph, findNodeSpec);
-    if (!row || !trigger) {
-      throw new NotFoundException(`Version ${versionId} not found`);
-    }
-    const loaded = { graph: row.graph, index: indexGraph(row.graph), trigger };
+    if (!row) throw versionNotFound(versionId);
+    return this.remember(versionId, row.graph);
+  }
+
+  /** Caches a graph just stored, for readers that cannot see it yet. */
+  remember(versionId: string, graph: WorkflowGraph): VersionGraph {
+    const trigger = findTrigger(graph, findNodeSpec);
+    if (!trigger) throw versionNotFound(versionId);
+    const loaded = { graph, index: indexGraph(graph), trigger };
     this.cache.set(versionId, loaded);
     return loaded;
   }
 }
+
+const versionNotFound = (versionId: string) =>
+  new NotFoundException(`Version ${versionId} not found`);
