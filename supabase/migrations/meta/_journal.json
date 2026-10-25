@@ -50,6 +50,20 @@
       "when": 1791844028218,
       "tag": "20261012222708_draft_test_runs",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792949942522,
+      "tag": "20261025173902_drop_workflow_engine",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792949947790,
+      "tag": "20261025173907_studio_tables",
+      "breakpoints": true
     }
   ]
 }

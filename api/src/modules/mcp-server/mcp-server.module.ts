@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AccessTokensModule } from '../access-tokens/access-tokens.module.js';
-import { BuilderModule } from '../builder/builder.module.js';
-import { EngineModule } from '../engine/engine.module.js';
-import { WorkflowsModule } from '../workflows/workflows.module.js';
+import { AssetsModule } from '../assets/assets.module.js';
+import { ImagesModule } from '../images/images.module.js';
+import { VideosModule } from '../videos/videos.module.js';
 import { RelayMcpServer } from './data/relay-mcp-server.js';
-import { RelayToolDeps } from './data/relay-tool-deps.js';
 import { McpController } from './delivery/mcp.controller.js';
 
 @Module({
-  imports: [AccessTokensModule, BuilderModule, EngineModule, WorkflowsModule],
+  imports: [AssetsModule, ImagesModule, VideosModule],
   controllers: [McpController],
-  providers: [RelayToolDeps, RelayMcpServer],
+  providers: [RelayMcpServer],
 })
 export class McpServerModule {}

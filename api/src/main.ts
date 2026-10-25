@@ -6,7 +6,7 @@ import { uiUrl } from './ui-url.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Lets the worker loop finish or hand back its steps on Ctrl+C.
+  // Closes MCP sessions and the database cleanly on Ctrl+C.
   app.enableShutdownHooks();
 
   app.enableCors({

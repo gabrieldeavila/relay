@@ -1,17 +1,1 @@
 @import "@/ui/styles/globals.css";
-
-/* Flow editor: React Flow reads these overrides before its own defaults. */
-.react-flow {
-  --xy-edge-stroke: var(--color-text-muted);
-  --xy-edge-stroke-width: 2;
-  --xy-edge-stroke-selected: var(--color-primary);
-  --xy-edge-label-background-color: var(--color-surface-2);
-  --xy-edge-label-color: var(--color-text);
-  --xy-handle-background-color: var(--color-text-muted);
-  --xy-handle-border-color: var(--color-surface);
-}
-
-.react-flow__handle {
-  width: 10px;
-  height: 10px;
-}

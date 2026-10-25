@@ -1,0 +1,21 @@
+{
+  "title": "Relay",
+  "subtitle": "Seu estúdio de imagens e vídeos. Peça ao Claude para criar e editar; acompanhe o resultado aqui.",
+  "updated": "editado {{when}}",
+  "connect": {
+    "title": "Use o Relay pelo Claude",
+    "description": "As ferramentas de imagem e vídeo do Relay funcionam em qualquer cliente MCP. Com o Relay rodando, adicione uma vez:",
+    "claudeCode": "Claude Code",
+    "address": "Endereço MCP (outros clientes)"
+  },
+  "images": {
+    "tab": "Imagens",
+    "emptyTitle": "Nenhuma imagem ainda",
+    "emptyDescription": "Peça ao Claude algo como \"faça um pôster 1080×1350 para minha padaria\" ou \"abra ~/Pictures/eu.jpg e deixe mais quente\"."
+  },
+  "videos": {
+    "tab": "Vídeos",
+    "emptyTitle": "Nenhum vídeo ainda",
+    "emptyDescription": "Peça ao Claude algo como \"corte ~/Movies/viagem.mov em um vídeo vertical de 15 s com um título\"."
+  }
+}

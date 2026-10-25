@@ -5,10 +5,8 @@
     "portuguese": "Portuguese",
     "english": "English"
   },
-  "cancel": "Cancel",
-  "save": "Save",
-  "delete": "Delete",
   "back": "Back",
   "copy": "Copy",
-  "copied": "Copied"
+  "copied": "Copied",
+  "loading": "Loading…"
 }
