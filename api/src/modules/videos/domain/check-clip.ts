@@ -1,5 +1,6 @@
 import { clipDuration } from './clip-timing.js';
-import type { Clip, VideoSetup } from './timeline-types.js';
+import { countWords } from './locate-word.js';
+import type { Clip, TextClip, VideoSetup } from './timeline-types.js';
 
 /** Problems with a clip's own numbers, as messages an AI can act on. */
 export function clipProblems(clip: Clip): string[] {
@@ -23,8 +24,21 @@ export function clipProblems(clip: Clip): string[] {
   if (clip.fadeIn + clip.fadeOut > clipDuration(clip) + 1e-9) {
     problems.push('fadeIn + fadeOut must fit in the clip');
   }
-  if (clip.kind === 'text' && !clip.text.trim()) problems.push('text is empty');
+  if (clip.kind === 'text') problems.push(...textProblems(clip));
   return problems;
+}
+
+function textProblems(clip: TextClip): string[] {
+  if (!clip.text.trim()) return ['text is empty'];
+  const word = clip.highlight?.word;
+  if (word === undefined) return [];
+  if (!Number.isInteger(word) || word < 0) {
+    return ['highlight.word must be a whole number, 0 or more'];
+  }
+  const words = countWords(clip.text);
+  return word >= words
+    ? [`highlight.word ${word} is past the last word (the text has ${words})`]
+    : [];
 }
 
 export function assertValidClip(clip: Clip): void {

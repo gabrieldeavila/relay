@@ -29,9 +29,21 @@ Image AI
 - generate_image makes things that are hard to draw (realistic objects, props, stickers, textures, backgrounds) as an image asset, transparent by default. Place it with place_image and match it to the scene (scale, position, filters, a soft shadow layer).
 - Compose with Relay, don't generate whole designs: words, layout and exact colors are more reliable with draw_text and shapes. Each generation costs money.`;
 
-/** The instructions, mentioning image generation only when it is set up. */
-export function serverInstructions({ canGenerate }: { canGenerate: boolean }) {
-  return canGenerate
-    ? BASE_INSTRUCTIONS + GENERATION_INSTRUCTIONS
-    : BASE_INSTRUCTIONS;
+const TRANSCRIPTION_INSTRUCTIONS = `
+
+Speech to text
+- auto_captions transcribes a video's speech on this computer and adds CapCut-style captions (a few words at a time, in sync, the word being said highlighted) as text clips on their own layer. Pick a style and maybe load_font a bold Google Font first; check with preview_strip.
+- transcribe_video gives the transcript sentence by sentence with source times: use it to find the best moments and cut them into a short with add_clip in/out.
+- The first transcription of a long file takes a while; later calls reuse it.`;
+
+/** The instructions, mentioning optional features only when they are set up. */
+export function serverInstructions(features: {
+  canGenerate: boolean;
+  canTranscribe: boolean;
+}) {
+  return [
+    BASE_INSTRUCTIONS,
+    features.canGenerate ? GENERATION_INSTRUCTIONS : '',
+    features.canTranscribe ? TRANSCRIPTION_INSTRUCTIONS : '',
+  ].join('');
 }

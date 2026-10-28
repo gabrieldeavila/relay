@@ -85,3 +85,33 @@ The integration tests use a separate `relay_test` database, so they never touch 
 
 Schema changes: edit `api/src/database/schema/*.table.ts`, then
 `pnpm --dir api run db:generate`.
+
+## Optional: speech to text (auto captions)
+
+Relay can transcribe speech on your machine with [whisper.cpp](https://github.com/ggml-org/whisper.cpp).
+Nothing is sent anywhere. Install it, download a model, and set it in `api/.env`:
+
+```sh
+brew install whisper-cpp
+curl -L -o ~/models/ggml-small.bin --create-dirs \
+  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin
+```
+
+```sh
+WHISPER_MODEL_PATH=~/models/ggml-small.bin
+WHISPER_LANGUAGE=pt   # or en, ...; "auto" (the default) detects it
+# WHISPER_CLI_PATH=/path/to/whisper-cli   if it is not on PATH
+```
+
+This adds two tools:
+
+- `auto_captions` adds CapCut-style captions to a video: a few words at a time, timed to the
+  voice, with the word being said highlighted (a color, or a box behind it), in a style preset
+  (`bold`, `yellow`, `boxed`, `clean`). They are ordinary text clips, so you can fix a word or
+  restyle them, and the whole thing is one undo step. `add_text` and `update_clip` take the same
+  `highlight` for single titles.
+- `transcribe_video` returns the transcript sentence by sentence with times, for finding the
+  best moments to cut into a short.
+
+Transcripts are cached next to each asset, so a file is only transcribed once per model and
+language.

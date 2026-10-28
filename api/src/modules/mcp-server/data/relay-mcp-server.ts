@@ -9,6 +9,11 @@ import {
 import { generationMcpTools } from '../../generation/delivery/generation-mcp-tools.js';
 import { ImageDocuments } from '../../images/data/image-documents.js';
 import { imageMcpTools } from '../../images/delivery/image-mcp-tools.js';
+import {
+  TRANSCRIBER,
+  type Transcriber,
+} from '../../transcription/data/transcriber.js';
+import { transcriptionMcpTools } from '../../transcription/delivery/transcription-mcp-tools.js';
 import { VideoExports } from '../../videos/data/video-exports.js';
 import { VideoProjects } from '../../videos/data/video-projects.js';
 import { VideoRenderer } from '../../videos/data/video-renderer.js';
@@ -30,15 +35,21 @@ export class RelayMcpServer {
     renderer: VideoRenderer,
     exports: VideoExports,
     @Inject(IMAGE_GENERATOR) generator: ImageGenerator | null,
+    @Inject(TRANSCRIBER) transcriber: Transcriber | null,
   ) {
+    const videos = { projects, renderer, exports, assets };
     this.tools = [
       ...assetMcpTools(assets),
       ...imageMcpTools(images),
       ...generationMcpTools(generator, assets),
-      ...videoMcpTools({ projects, renderer, exports, assets }),
+      ...videoMcpTools(videos),
+      ...transcriptionMcpTools(transcriber, videos),
     ];
     assertUniqueNames(this.tools);
-    this.instructions = serverInstructions({ canGenerate: Boolean(generator) });
+    this.instructions = serverInstructions({
+      canGenerate: Boolean(generator),
+      canTranscribe: Boolean(transcriber),
+    });
   }
 
   create(): McpServer {

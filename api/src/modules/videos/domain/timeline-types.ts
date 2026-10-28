@@ -69,6 +69,15 @@ export interface TextStyle {
   fit: 'none' | 'shrink';
 }
 
+/** One word of a text clip drawn differently, e.g. the word being spoken in a caption. */
+export interface TextHighlight {
+  /** 0-based, counting words separated by spaces or line breaks. */
+  word: number;
+  color: string;
+  /** A rounded box behind the word; null for none. */
+  background: string | null;
+}
+
 /** Text drawn inside `box` for `duration` seconds (titles, captions). */
 export interface TextClip extends ClipBase {
   kind: 'text';
@@ -76,6 +85,8 @@ export interface TextClip extends ClipBase {
   duration: number;
   box: Box;
   style: TextStyle;
+  /** Absent on clips saved before highlights existed. */
+  highlight?: TextHighlight | null;
 }
 
 export type Clip = MediaClip | ImageClip | TextClip;

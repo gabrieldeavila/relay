@@ -6,6 +6,7 @@ import {
   boxField,
   clipIdField,
   fitField,
+  highlightField,
   layerField,
   textStyleFields,
 } from './video-fields.js';
@@ -21,7 +22,7 @@ export const editClipTools = [
     name: 'update_clip',
     title: 'Change clip',
     description:
-      'Moves, trims or restyles a clip: pass only what changes. start moves it on the timeline; in/out trim video/audio inside the source; duration sets how long images and text last; layer changes what is on top. Text clips also take text and style.',
+      'Moves, trims or restyles a clip: pass only what changes. start moves it on the timeline; in/out trim video/audio inside the source; duration sets how long images and text last; layer changes what is on top. Text clips also take text, style and highlight (null removes it).',
     input: {
       clipId: clipIdField,
       start: z.number().min(0).optional(),
@@ -37,13 +38,17 @@ export const editClipTools = [
       box: boxField.nullable().optional(),
       text: z.string().min(1).optional(),
       style: styleChanges.optional(),
+      highlight: highlightField.nullable().optional(),
     },
     plan({ clipId, ...changes }, timeline) {
       const clip = findClip(timeline, clipId);
       const given = Object.fromEntries(
         Object.entries(changes).filter(([, value]) => value !== undefined),
       );
-      const misplaced = Object.keys(given).filter((key) => !(key in clip));
+      const misplaced = Object.keys(given).filter(
+        (key) =>
+          !(key in clip) && !(key === 'highlight' && clip.kind === 'text'),
+      );
       if (misplaced.length > 0) {
         throw new Error(`A ${clip.kind} clip has no ${misplaced.join(', ')}`);
       }

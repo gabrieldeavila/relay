@@ -70,3 +70,17 @@ export const videoIdField = z
 export const clipIdField = z
   .string()
   .describe('Clip id from get_video, e.g. "clip_3"');
+
+export const highlightField = z
+  .object({
+    word: z
+      .number()
+      .int()
+      .min(0)
+      .describe('Which word, 0-based, counting words separated by spaces'),
+    color: colorText('Color of that word'),
+    background: colorText('A rounded box behind the word')
+      .nullable()
+      .default(null),
+  })
+  .describe('Draws one word differently, e.g. the word being spoken');

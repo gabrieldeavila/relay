@@ -7,6 +7,7 @@ import { textNotes } from '../../data/render-text-overlay.js';
 import {
   boxField,
   clipTimingFields,
+  highlightField,
   layerField,
   textStyleFields,
 } from './video-fields.js';
@@ -17,7 +18,7 @@ const TEXT_LAYER = 10;
 export const addTextTool = defineVideoEdit({
   name: 'add_text',
   title: 'Add text',
-  description: `Shows text (a title, a caption) for \`duration\` seconds. It is laid out inside box (default: a caption area in the lower part of the frame), wrapped to its width; fit="shrink" makes long text fit. Text goes on layer ${TEXT_LAYER} by default so it stays above the footage. Use load_font for Google Fonts; a stroke or a background keeps it readable on busy footage. Check it with preview_frame.`,
+  description: `Shows text (a title, a caption) for \`duration\` seconds. It is laid out inside box (default: a caption area in the lower part of the frame), wrapped to its width; fit="shrink" makes long text fit. Text goes on layer ${TEXT_LAYER} by default so it stays above the footage. Use load_font for Google Fonts; a stroke or a background keeps it readable on busy footage. highlight colors one word (karaoke-style captions). Check it with preview_frame.`,
   input: {
     text: z.string().min(1),
     start: z
@@ -42,6 +43,7 @@ export const addTextTool = defineVideoEdit({
     strokeWidth: textStyleFields.strokeWidth.default(4),
     background: textStyleFields.background.default(null),
     fit: textStyleFields.fit.default('shrink'),
+    highlight: highlightField.nullable().default(null),
     ...clipTimingFields,
   },
   plan(input, timeline) {
@@ -54,6 +56,7 @@ export const addTextTool = defineVideoEdit({
       fadeIn,
       fadeOut,
       opacity,
+      highlight,
       ...style
     } = input;
     const clip: TextClip = {
@@ -68,6 +71,7 @@ export const addTextTool = defineVideoEdit({
       text,
       box: box ?? defaultTextBox(timeline.setup),
       style,
+      highlight,
     };
     const notes = textNotes(clip);
     return {
