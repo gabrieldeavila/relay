@@ -20,3 +20,11 @@ export type VideoDetails = {
   clipsByLayer: TimelineClip[];
   latestExport: ExportedAsset | null;
 };
+
+/** A small mp4 of the timeline for playing in the editor (url once done). */
+export type VideoPreview = {
+  status: "running" | "done" | "failed";
+  progress: number;
+  error: string | null;
+  url: string | null;
+};

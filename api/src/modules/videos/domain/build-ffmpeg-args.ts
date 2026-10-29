@@ -1,12 +1,23 @@
 import { audioChain, mixAudio } from './audio-filters.js';
 import { clipDuration, timelineDuration } from './clip-timing.js';
 import { seconds, type RenderInputs } from './render-inputs.js';
+import {
+  textRunChain,
+  textRunInputArgs,
+  textRunOverlay,
+} from './text-run-filters.js';
+import type { PreviewSize } from './preview-size.js';
+import { groupTextRuns } from './text-runs.js';
 import type { Clip, MediaClip, Timeline } from './timeline-types.js';
 import { overlayOptions, pictureChain } from './video-filters.js';
 
-/** An mp4 of the whole timeline, or a PNG of its first frame (see frameTimeline). */
+/**
+ * An mp4 of the whole timeline (`preview` makes a small, fast-to-encode one
+ * for playback in the editor), or a PNG of its first frame (see frameTimeline).
+ */
 export type RenderTarget =
-  { kind: 'video'; path: string } | { kind: 'frame'; path: string };
+  | { kind: 'video'; path: string; preview?: PreviewSize }
+  | { kind: 'frame'; path: string };
 
 /** ffmpeg arguments that render a timeline. Pure: every file it needs is in `inputs`. */
 export function buildFfmpegArgs(
@@ -27,8 +38,15 @@ export function buildFfmpegArgs(
   const graph: string[] = [];
   let frame = '[0:v]';
   const audio: string[] = [];
-  orderedClips(timeline).forEach((clip, i) => {
+  groupTextRuns(orderedClips(timeline)).forEach((clip, i) => {
     const input = i + 1;
+    if (clip.kind === 'textRun') {
+      args.push(...textRunInputArgs(textRunPath(clip.id, inputs)));
+      graph.push(`[${input}:v]${textRunChain(clip).join(',')}[p${i}]`);
+      graph.push(`${frame}[p${i}]${textRunOverlay(clip)}[o${i}]`);
+      frame = `[o${i}]`;
+      return;
+    }
     args.push(...inputArgs(clip, inputs, setup.fps));
     if (hasPicture(clip, inputs)) {
       graph.push(`[${input}:v]${pictureChain(clip, setup).join(',')}[p${i}]`);
@@ -40,7 +58,11 @@ export function buildFfmpegArgs(
       audio.push(`[a${i}]`);
     }
   });
-  graph.push(`${frame}format=yuv420p[vout]`);
+  const scale =
+    target.kind === 'video' && target.preview
+      ? `scale=${target.preview.width}:${target.preview.height},`
+      : '';
+  graph.push(`${frame}${scale}format=yuv420p[vout]`);
   if (audio.length > 0) graph.push(mixAudio(audio));
 
   args.push('-filter_complex', graph.join(';'), '-map', '[vout]');
@@ -52,10 +74,15 @@ export function buildFfmpegArgs(
   }
   return [
     ...args,
-    ...['-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20'],
+    ...videoCodecArgs(target.preview),
     ...['-pix_fmt', 'yuv420p', '-r', String(setup.fps)],
     ...['-t', seconds(total), '-movflags', '+faststart', target.path],
   ];
+}
+
+function videoCodecArgs(preview: PreviewSize | undefined) {
+  const [preset, crf] = preview ? ['ultrafast', '28'] : ['veryfast', '20'];
+  return ['-c:v', 'libx264', '-preset', preset, '-crf', crf];
 }
 
 /** Bottom layer first; within a layer, earlier clips first. */
@@ -99,6 +126,12 @@ function mediaFile(assetId: string, inputs: RenderInputs) {
   const file = inputs.media[assetId];
   if (!file) throw new Error(`Missing file for asset ${assetId}`);
   return file;
+}
+
+function textRunPath(runId: string, inputs: RenderInputs) {
+  const path = inputs.textRuns[runId];
+  if (!path) throw new Error(`Missing text run list for ${runId}`);
+  return path;
 }
 
 function textImage(clipId: string, inputs: RenderInputs) {

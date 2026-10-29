@@ -87,4 +87,5 @@ export const INPUTS: RenderInputs = {
     logo: { path: '/logo.png', hasVideo: true, hasAudio: false },
   },
   textImages: { clip_3: '/text-3.png' },
+  textRuns: {},
 };

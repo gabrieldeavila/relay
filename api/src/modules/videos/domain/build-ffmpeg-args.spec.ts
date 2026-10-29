@@ -89,6 +89,44 @@ describe('buildFfmpegArgs', () => {
     );
   });
 
+  it('encodes a small, fast preview when asked', () => {
+    const args = buildFfmpegArgs(timeline(media()), INPUTS, {
+      kind: 'video',
+      path: '/p.mp4',
+      preview: { width: 480, height: 854 },
+    });
+    expect(graphOf(args)).toContain('[o0]scale=480:854,format=yuv420p[vout]');
+    expect(args).toEqual(
+      expect.arrayContaining(['-preset', 'ultrafast', '-crf', '28']),
+    );
+  });
+
+  it('reads back-to-back captions as one concat input', () => {
+    const args = buildFfmpegArgs(
+      timeline(
+        media(),
+        text({ id: 'c1', start: 0.5, duration: 1 }),
+        text({ id: 'c2', start: 1.5, duration: 1 }),
+      ),
+      { ...INPUTS, textRuns: { c1: '/run-c1.ffconcat' } },
+      { kind: 'video', path: '/out.mp4' },
+    );
+    expect(args.filter((arg) => arg === '-i')).toHaveLength(3);
+    expect(args).toEqual(
+      expect.arrayContaining([
+        '-f',
+        'concat',
+        '-safe',
+        '0',
+        '-i',
+        '/run-c1.ffconcat',
+      ]),
+    );
+    expect(graphOf(args)).toContain(
+      "[o0][p1]overlay=x=0:y=0:eof_action=pass:enable='gte(t,0.5)*lt(t,2.5)'[o1]",
+    );
+  });
+
   it('renders a single PNG frame without audio, even of an empty moment', () => {
     const args = buildFfmpegArgs(timeline(), INPUTS, {
       kind: 'frame',

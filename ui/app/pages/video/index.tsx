@@ -8,8 +8,11 @@ import { PageHeader } from "@/app/components/PageHeader";
 import { formatSeconds } from "@/app/format/format-seconds";
 import { ExportPanel } from "./components/ExportPanel";
 import { FramePreview } from "./components/FramePreview";
+import { PlayerControls } from "./components/PlayerControls";
 import { Timeline } from "./components/Timeline";
+import { usePlayback } from "./hooks/usePlayback";
 import { usePlayhead } from "./hooks/usePlayhead";
+import { usePreviewVideo } from "./hooks/usePreviewVideo";
 import { useVideoProject } from "./hooks/useVideoProject";
 
 export function meta() {
@@ -20,7 +23,10 @@ const VideoPage = memo(() => {
   const { t } = useTranslation("video");
   const { id = "" } = useParams();
   const { data: video, error, version } = useVideoProject(id);
-  const playhead = usePlayhead(video?.durationSeconds ?? 0);
+  const duration = video?.durationSeconds ?? 0;
+  const playhead = usePlayhead(duration);
+  const { preview, request } = usePreviewVideo(id, version);
+  const playback = usePlayback(preview, request, playhead, duration);
 
   return (
     <main className="min-h-[100dvh] bg-(--color-bg) text-(--color-text)">
@@ -42,21 +48,36 @@ const VideoPage = memo(() => {
         {video && (
           <>
             <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-              <FramePreview
-                id={video.id}
-                time={playhead.time}
-                version={version}
-                width={video.width}
-                height={video.height}
-                isEmpty={video.durationSeconds === 0}
-              />
+              <div className="flex flex-col gap-3">
+                <FramePreview
+                  id={video.id}
+                  time={playhead.time}
+                  frameTime={playback.stillTime}
+                  version={version}
+                  width={video.width}
+                  height={video.height}
+                  isEmpty={video.durationSeconds === 0}
+                  videoUrl={playback.url}
+                  videoRef={playback.videoRef}
+                  isPlaying={playback.isPlaying}
+                  onEnded={playback.onEnded}
+                />
+                {video.durationSeconds > 0 && (
+                  <PlayerControls
+                    isPlaying={playback.isPlaying}
+                    isWaiting={playback.isWaiting}
+                    preview={preview}
+                    onToggle={playback.toggle}
+                  />
+                )}
+              </div>
               <ExportPanel exported={video.latestExport} />
             </div>
             <Timeline
               clips={video.clipsByLayer}
               duration={video.durationSeconds}
               time={playhead.time}
-              onSeek={playhead.setTime}
+              onSeek={playback.seek}
             />
           </>
         )}

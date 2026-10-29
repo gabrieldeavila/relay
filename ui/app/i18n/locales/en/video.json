@@ -2,10 +2,16 @@
   "title": "Video",
   "empty": "The timeline is empty. Ask Claude to add clips.",
   "frameAt": "Frame at {{time}}",
-  "timeline": "Timeline (click to preview a moment)",
+  "timeline": "Timeline (click to jump to a moment)",
   "layer": "Layer {{layer}}",
   "export": {
     "title": "Latest export",
     "none": "Not exported yet. Ask Claude to export when you like the previews."
+  },
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "preparing": "Preparing the preview… {{progress}}%",
+    "failed": "Couldn't make the preview: {{error}}"
   }
 }

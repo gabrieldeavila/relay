@@ -2,10 +2,16 @@
   "title": "Vídeo",
   "empty": "A linha do tempo está vazia. Peça ao Claude para adicionar clipes.",
   "frameAt": "Quadro em {{time}}",
-  "timeline": "Linha do tempo (clique para ver um momento)",
+  "timeline": "Linha do tempo (clique para ir a um momento)",
   "layer": "Camada {{layer}}",
   "export": {
     "title": "Última exportação",
     "none": "Ainda não exportado. Peça ao Claude para exportar quando gostar das prévias."
+  },
+  "player": {
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "preparing": "Preparando a prévia… {{progress}}%",
+    "failed": "Não deu para gerar a prévia: {{error}}"
   }
 }

@@ -11,6 +11,8 @@ export interface RenderInputs {
   media: Record<string, MediaFile>;
   /** Transparent full-frame PNG of each text clip, by clip id. */
   textImages: Record<string, string>;
+  /** ffconcat list of each text run (see groupTextRuns), by run id. */
+  textRuns: Record<string, string>;
 }
 
 /** Seconds as ffmpeg likes them: plain decimals, at most milliseconds. */

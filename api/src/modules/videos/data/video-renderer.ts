@@ -3,8 +3,11 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { AssetStore } from '../../assets/data/asset-store.js';
 import {
   buildFfmpegArgs,
+  orderedClips,
   type RenderTarget,
 } from '../domain/build-ffmpeg-args.js';
+import { previewSize } from '../domain/preview-size.js';
+import { groupTextRuns } from '../domain/text-runs.js';
 import { clipAssetProblems } from '../domain/clip-asset-problems.js';
 import { timelineDuration } from '../domain/clip-timing.js';
 import { frameTimeline, stripTimes } from '../domain/frame-timeline.js';
@@ -15,6 +18,7 @@ import { runFfmpeg } from './ffmpeg-runner.js';
 import { composeStrip } from './compose-strip.js';
 import { renderTextOverlay } from './render-text-overlay.js';
 import { withRenderFolder } from './render-workspace.js';
+import { writeTextRuns } from './write-text-runs.js';
 
 const FRAME_TIMEOUT_MS = 60_000;
 
@@ -43,15 +47,20 @@ export class VideoRenderer {
     });
   }
 
-  /** Writes the whole video as an mp4 to `path`. */
+  /** Writes the whole video as an mp4 to `path`; `preview` makes it small and quick. */
   toFile(
     timeline: Timeline,
     path: string,
     onProgress: (progress: number) => void,
+    { preview = false } = {},
   ): Promise<void> {
     return withRenderFolder(async (fileIn) => {
       const inputs = await this.inputsFor(timeline, fileIn);
-      const target: RenderTarget = { kind: 'video', path };
+      const target: RenderTarget = {
+        kind: 'video',
+        path,
+        preview: preview ? previewSize(timeline.setup) : undefined,
+      };
       await runFfmpeg(buildFfmpegArgs(timeline, inputs, target), {
         totalSeconds: timelineDuration(timeline),
         onProgress,
@@ -90,7 +99,7 @@ export class VideoRenderer {
     const problems = await this.problems(timeline);
     if (problems.length > 0) throw new Error(problems.join('\n'));
     const assets = await this.assetsOf(timeline);
-    const inputs: RenderInputs = { media: {}, textImages: {} };
+    const inputs: RenderInputs = { media: {}, textImages: {}, textRuns: {} };
     for (const asset of assets.values()) {
       inputs.media[asset.id] = {
         path: asset.path,
@@ -104,6 +113,12 @@ export class VideoRenderer {
       await writeFile(path, renderTextOverlay(clip, timeline.setup));
       inputs.textImages[clip.id] = path;
     }
+    inputs.textRuns = await writeTextRuns(
+      groupTextRuns(orderedClips(timeline)),
+      inputs.textImages,
+      timeline.setup,
+      fileIn,
+    );
     return inputs;
   }
 
