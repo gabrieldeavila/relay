@@ -8,3 +8,13 @@ export function nextClipId(timeline: Timeline, taken: string[] = []): string {
     .map(Number);
   return `clip_${Math.max(0, ...numbers) + 1}`;
 }
+
+/** Hands out fresh ids one after another, for edits that add several clips. */
+export function clipIdSequence(timeline: Timeline): () => string {
+  const taken: string[] = [];
+  return () => {
+    const id = nextClipId(timeline, taken);
+    taken.push(id);
+    return id;
+  };
+}

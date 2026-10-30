@@ -1,7 +1,11 @@
 import { z } from 'zod';
 import { applyVideoCommand } from '../../domain/apply-video-command.js';
 import type { VideoCommand } from '../../domain/video-command-types.js';
-import { defineVideoEdit, type VideoEditTool } from './video-edit-tool.js';
+import {
+  defineVideoEdit,
+  type EditPlanResult,
+  type VideoEditTool,
+} from './video-edit-tool.js';
 
 const MAX_STEPS = 100;
 
@@ -31,6 +35,7 @@ export function createBatchVideoTool(tools: VideoEditTool[]): VideoEditTool {
       let current = timeline;
       const commands: VideoCommand[] = [];
       const lines: string[] = [];
+      const afters: NonNullable<EditPlanResult['after']>[] = [];
       for (const [i, call] of calls.entries()) {
         const tool = tools.find((t) => t.name === call.tool)!;
         try {
@@ -38,6 +43,7 @@ export function createBatchVideoTool(tools: VideoEditTool[]): VideoEditTool {
           const step = await tool.plan(input, current, deps);
           current = step.commands.reduce(applyVideoCommand, current);
           commands.push(...step.commands);
+          if (step.after) afters.push(step.after);
           lines.push(`${i + 1}. ${tool.name}: ${step.text}`);
         } catch (error) {
           const message =
@@ -49,7 +55,22 @@ export function createBatchVideoTool(tools: VideoEditTool[]): VideoEditTool {
           );
         }
       }
-      return { commands, text: lines.join('\n') };
+      return {
+        commands,
+        text: lines.join('\n'),
+        after: afters.length ? () => runInOrder(afters) : undefined,
+      };
     },
   });
+}
+
+async function runInOrder(
+  afters: NonNullable<EditPlanResult['after']>[],
+): Promise<string | null> {
+  const notes: string[] = [];
+  for (const after of afters) {
+    const note = await after();
+    if (note) notes.push(note);
+  }
+  return notes.join('\n') || null;
 }

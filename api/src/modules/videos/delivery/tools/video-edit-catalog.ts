@@ -1,5 +1,7 @@
+import { captionEditTools } from '../../../captions/delivery/caption-edit-tools.js';
 import { addClipTool } from './add-clip-tool.js';
 import { addTextTool } from './add-text-tool.js';
+import { applyTextTemplateTool } from './apply-text-template-tool.js';
 import { createBatchVideoTool } from './batch-video-tool.js';
 import { editClipTools } from './edit-clip-tools.js';
 import type { VideoEditTool } from './video-edit-tool.js';
@@ -7,7 +9,9 @@ import type { VideoEditTool } from './video-edit-tool.js';
 const SINGLE_EDITS: VideoEditTool[] = [
   addClipTool,
   addTextTool,
+  applyTextTemplateTool,
   ...editClipTools,
+  ...captionEditTools,
 ];
 
 /** Every tool that changes a timeline, batch included. */

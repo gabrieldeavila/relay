@@ -1,5 +1,7 @@
 import { z } from 'zod';
+import { CAPTION_LAYER } from '../../captions/domain/caption-phrases.js';
 import type { McpTool } from '../../mcp-server/domain/mcp-tool.js';
+import { templateField } from '../../text-templates/delivery/text-template-fields.js';
 import type {
   MediaClip,
   Timeline,
@@ -20,8 +22,6 @@ import {
   languageField,
 } from './transcription-fields.js';
 
-const CAPTION_LAYER = 11;
-
 const INPUT = {
   videoId: videoIdField,
   clipIds: z
@@ -32,6 +32,11 @@ const INPUT = {
     ),
   language: languageField,
   style: captionStyleField,
+  template: templateField
+    .optional()
+    .describe(
+      'Text template for the captions, used instead of style (list_text_templates). Its font downloads automatically',
+    ),
   position: captionPositionField,
   maxWords: z
     .number()
@@ -42,9 +47,9 @@ const INPUT = {
     .describe('Words per caption; 1 = one word at a time'),
   font: z
     .string()
-    .default('sans-serif')
+    .optional()
     .describe(
-      'CSS font family; load_font a Google Font first, e.g. "Montserrat"',
+      'CSS font family, overrides the template\'s; load_font a Google Font first, e.g. "Montserrat". Default sans-serif',
     ),
   size: z
     .number()
@@ -72,11 +77,22 @@ export function autoCaptionsTool(
   return {
     name: 'auto_captions',
     title: 'Auto captions',
-    description: `Transcribes the speech in a video's clips (on this computer) and adds it as short timed captions, CapCut style: a few words at a time, in sync with the voice, with the word being said highlighted (one text clip per word; highlight="none" for one clip per caption). Captions are ordinary text clips on layer ${CAPTION_LAYER}, so update_clip can fix a word or restyle them, and the whole thing is one undo step. Trims are respected: only words inside each clip's in/out are shown. Check the result with preview_strip.`,
+    description: `Transcribes the speech in a video's clips (on this computer) and adds it as short timed captions, CapCut style: a few words at a time, in sync with the voice, with the word being said highlighted (one text clip per word; highlight="none" for one clip per caption). Captions are ordinary text clips on layer ${CAPTION_LAYER}, so fix_caption / replace_in_captions fix wrong words and apply_text_template restyles them, and the whole thing is one undo step. Trims are respected: only words inside each clip's in/out are shown. Check the result with preview_strip.`,
     input: INPUT,
     async run(input) {
-      const { videoId, clipIds, language, maxWords, layer, replace, ...looks } =
-        z.object(INPUT).parse(input);
+      const {
+        videoId,
+        clipIds,
+        language,
+        maxWords,
+        layer,
+        replace,
+        template: templateName,
+        ...looks
+      } = z.object(INPUT).parse(input);
+      const template = templateName
+        ? await s.templates.use(templateName)
+        : undefined;
       const before = (await s.projects.get(videoId)).timeline;
       const ids = clipIds ?? audibleMainClips(before);
       if (ids.length === 0) {
@@ -97,7 +113,7 @@ export function autoCaptionsTool(
         videoId,
         'auto_captions',
         (timeline) => {
-          const look = captionLook(timeline.setup, looks);
+          const look = captionLook(timeline.setup, { ...looks, template });
           const plan = planCaptions(timeline, transcripts, {
             clipIds: ids,
             layer,
@@ -159,5 +175,5 @@ function describePlan(added: number, removed: number, layer: number) {
   if (added === 0) return 'No speech found in those clips; nothing was added.';
   const replaced =
     removed > 0 ? ` (replaced ${removed} earlier text clips)` : '';
-  return `Added ${added} caption clips on layer ${layer}${replaced}. Check them with preview_strip; fix a word with update_clip.`;
+  return `Added ${added} caption clips on layer ${layer}${replaced}. Check them with preview_strip; fix wrong words with fix_caption or replace_in_captions.`;
 }
