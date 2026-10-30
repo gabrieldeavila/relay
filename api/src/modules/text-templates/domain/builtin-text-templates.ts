@@ -1,0 +1,106 @@
+import type { TextTemplate } from './text-template.js';
+
+const PLAIN = {
+  stroke: null,
+  strokeRatio: 0,
+  background: null,
+  uppercase: false,
+  letterSpacingRatio: 0,
+  lineHeight: 1.15,
+};
+
+/** Templates that ship with Relay; their Google Fonts download on first use. */
+export const BUILTIN_TEXT_TEMPLATES: TextTemplate[] = [
+  {
+    ...PLAIN,
+    name: 'pop',
+    description:
+      'White heavy uppercase with a thick black outline (CapCut look)',
+    font: 'Montserrat, sans-serif',
+    weight: '900',
+    color: '#ffffff',
+    stroke: '#000000',
+    strokeRatio: 0.12,
+    uppercase: true,
+    lineHeight: 1.1,
+  },
+  {
+    ...PLAIN,
+    name: 'punch',
+    description:
+      'Tall condensed yellow uppercase with a black outline (meme style)',
+    font: 'Anton, Impact, sans-serif',
+    weight: '400',
+    color: '#ffe600',
+    stroke: '#000000',
+    strokeRatio: 0.1,
+    uppercase: true,
+    lineHeight: 1.05,
+  },
+  {
+    ...PLAIN,
+    name: 'headline',
+    description: 'Clean condensed uppercase, slightly spaced, thin outline',
+    font: 'Bebas Neue, Impact, sans-serif',
+    weight: '400',
+    color: '#ffffff',
+    stroke: '#000000',
+    strokeRatio: 0.05,
+    uppercase: true,
+    letterSpacingRatio: 0.04,
+    lineHeight: 1,
+  },
+  {
+    ...PLAIN,
+    name: 'news',
+    description:
+      'White semibold text on a dark bar (news ticker / lower third)',
+    font: 'Oswald, sans-serif',
+    weight: '600',
+    color: '#ffffff',
+    background: 'rgba(0, 0, 0, 0.7)',
+  },
+  {
+    ...PLAIN,
+    name: 'elegant',
+    description: 'Serif in sentence case with a soft shadow-like outline',
+    font: 'Playfair Display, Georgia, serif',
+    weight: '700',
+    color: '#ffffff',
+    stroke: 'rgba(0, 0, 0, 0.55)',
+    strokeRatio: 0.04,
+    lineHeight: 1.2,
+  },
+  {
+    ...PLAIN,
+    name: 'minimal',
+    description: 'Modern sans in sentence case with a light outline',
+    font: 'Inter, Helvetica, sans-serif',
+    weight: '600',
+    color: '#ffffff',
+    stroke: 'rgba(0, 0, 0, 0.6)',
+    strokeRatio: 0.04,
+  },
+  {
+    ...PLAIN,
+    name: 'marker',
+    description: 'Hand-drawn marker letters with a black outline',
+    font: 'Permanent Marker, cursive',
+    weight: '400',
+    color: '#ffffff',
+    stroke: '#000000',
+    strokeRatio: 0.08,
+  },
+  {
+    ...PLAIN,
+    name: 'retro',
+    description:
+      'Blocky pink uppercase with a deep purple outline (80s arcade)',
+    font: 'Bungee, Impact, sans-serif',
+    weight: '400',
+    color: '#ff4fa3',
+    stroke: '#1b0a3c',
+    strokeRatio: 0.1,
+    uppercase: true,
+  },
+];

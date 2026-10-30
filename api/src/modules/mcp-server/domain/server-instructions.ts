@@ -17,6 +17,7 @@ Videos (videoId from create_video or list_videos)
 - Times are seconds on the timeline. Clips sit on layers: 0 is the main track, higher layers draw on top; audio from all layers is mixed.
 - add_clip appends after the last clip on its layer unless you give start. Trim video with in/out (seconds of the source). Images last \`duration\` seconds.
 - add_text adds titles and captions (layer 10 by default, lower third unless you give a box). Same fonts as images.
+- Text templates bundle a font and a look (list_text_templates). When the person names one, pass template to add_text or auto_captions, or restyle existing text with apply_text_template. save_text_template keeps a look they like.
 - get_video lists every clip with start/end. update_clip moves, trims and restyles; split_clip + delete_clip cut out parts (closeGap to ripple).
 - Prefer batch_video for several edits at once. Check your work with preview_frame (one moment) and preview_strip (the whole video at a glance).
 - export_video only when the person asks or approves; then poll get_export.
@@ -32,7 +33,8 @@ Image AI
 const TRANSCRIPTION_INSTRUCTIONS = `
 
 Speech to text
-- auto_captions transcribes a video's speech on this computer and adds CapCut-style captions (a few words at a time, in sync, the word being said highlighted) as text clips on their own layer. Pick a style and maybe load_font a bold Google Font first; check with preview_strip.
+- auto_captions transcribes a video's speech on this computer and adds CapCut-style captions (a few words at a time, in sync, the word being said highlighted) as text clips on their own layer. Pick a style or a text template (or load_font a bold Google Font); check with preview_strip.
+- Proofread captions with list_captions; fix a caption with fix_caption (by its time) and a word misheard everywhere (often a name) with replace_in_captions.
 - transcribe_video gives the transcript sentence by sentence with source times: use it to find the best moments and cut them into a short with add_clip in/out.
 - The first transcription of a long file takes a while; later calls reuse it.`;
 

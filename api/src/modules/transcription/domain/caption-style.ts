@@ -1,3 +1,4 @@
+import type { TextTemplate } from '../../text-templates/domain/text-template.js';
 import type {
   Box,
   TextStyle,
@@ -71,8 +72,10 @@ export interface CaptionLook {
 
 export interface CaptionLookOptions {
   style: CaptionStyleName;
+  /** Used instead of the style preset when given. */
+  template?: TextTemplate;
   position: CaptionPosition;
-  font: string;
+  font?: string;
   color?: string;
   /** Font size in pixels; default scales with the video width. */
   size?: number;
@@ -85,7 +88,8 @@ export function captionLook(
   setup: VideoSetup,
   options: CaptionLookOptions,
 ): CaptionLook {
-  const preset = PRESETS[options.style];
+  const template = options.template;
+  const preset = template ?? PRESETS[options.style];
   const size =
     options.size ?? Math.round(Math.min(setup.width, setup.height) * 0.075);
   const color = options.color ?? preset.color;
@@ -98,14 +102,14 @@ export function captionLook(
       options.highlightColor,
     ),
     style: {
-      font: options.font,
+      font: options.font ?? template?.font ?? 'sans-serif',
       size,
       weight: preset.weight,
       color,
       align: 'center',
       verticalAlign: 'middle',
-      lineHeight: 1.1,
-      letterSpacing: 0,
+      lineHeight: template?.lineHeight ?? 1.1,
+      letterSpacing: Math.round(size * (template?.letterSpacingRatio ?? 0)),
       stroke: preset.stroke,
       strokeWidth: Math.round(size * preset.strokeRatio),
       background: preset.background,

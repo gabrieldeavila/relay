@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { resolveTextStyle } from '../../../text-templates/domain/resolve-text-style.js';
+import { templateText } from '../../../text-templates/domain/template-text-style.js';
+import { templateField } from '../../../text-templates/delivery/text-template-fields.js';
 import { defaultTextBox, layerEnd } from '../../domain/clip-placement.js';
 import { clipEnd } from '../../domain/clip-timing.js';
 import { nextClipId } from '../../domain/next-clip-id.js';
@@ -18,7 +21,7 @@ const TEXT_LAYER = 10;
 export const addTextTool = defineVideoEdit({
   name: 'add_text',
   title: 'Add text',
-  description: `Shows text (a title, a caption) for \`duration\` seconds. It is laid out inside box (default: a caption area in the lower part of the frame), wrapped to its width; fit="shrink" makes long text fit. Text goes on layer ${TEXT_LAYER} by default so it stays above the footage. Use load_font for Google Fonts; a stroke or a background keeps it readable on busy footage. highlight colors one word (karaoke-style captions). Check it with preview_frame.`,
+  description: `Shows text (a title, a caption) for \`duration\` seconds. It is laid out inside box (default: a caption area in the lower part of the frame), wrapped to its width; fit="shrink" makes long text fit. Text goes on layer ${TEXT_LAYER} by default so it stays above the footage. A template sets the whole look; style fields given override it (default: white bold sans-serif, 72px, thin black outline). Use load_font for other Google Fonts; a stroke or a background keeps it readable on busy footage. highlight colors one word (karaoke-style captions). Check it with preview_frame.`,
   input: {
     text: z.string().min(1),
     start: z
@@ -31,34 +34,28 @@ export const addTextTool = defineVideoEdit({
     duration: z.number().positive().default(3),
     layer: layerField.default(TEXT_LAYER),
     box: boxField.optional(),
-    font: textStyleFields.font.default('sans-serif'),
-    size: textStyleFields.size.default(72),
-    weight: textStyleFields.weight.default('bold'),
-    color: textStyleFields.color.default('#ffffff'),
-    align: textStyleFields.align.default('center'),
-    verticalAlign: textStyleFields.verticalAlign.default('middle'),
-    lineHeight: textStyleFields.lineHeight.default(1.15),
-    letterSpacing: textStyleFields.letterSpacing.default(0),
-    stroke: textStyleFields.stroke.default('#000000'),
-    strokeWidth: textStyleFields.strokeWidth.default(4),
-    background: textStyleFields.background.default(null),
-    fit: textStyleFields.fit.default('shrink'),
+    template: templateField.optional(),
+    ...z.object(textStyleFields).partial().shape,
     highlight: highlightField.nullable().default(null),
     ...clipTimingFields,
   },
-  plan(input, timeline) {
+  async plan(input, timeline, deps) {
     const {
       text,
       start,
       duration,
       layer,
       box,
+      template: templateName,
       fadeIn,
       fadeOut,
       opacity,
       highlight,
       ...style
     } = input;
+    const template = templateName
+      ? await deps.templates.use(templateName)
+      : null;
     const clip: TextClip = {
       id: nextClipId(timeline),
       kind: 'text',
@@ -68,9 +65,9 @@ export const addTextTool = defineVideoEdit({
       fadeIn,
       fadeOut,
       opacity,
-      text,
+      text: template ? templateText(template, text) : text,
       box: box ?? defaultTextBox(timeline.setup),
-      style,
+      style: resolveTextStyle(template, style),
       highlight,
     };
     const notes = textNotes(clip);

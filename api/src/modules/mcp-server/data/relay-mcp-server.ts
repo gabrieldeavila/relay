@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { resolve } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/server';
 import { AssetStore } from '../../assets/data/asset-store.js';
 import { assetMcpTools } from '../../assets/delivery/asset-mcp-tools.js';
@@ -9,10 +10,14 @@ import {
 import { generationMcpTools } from '../../generation/delivery/generation-mcp-tools.js';
 import { ImageDocuments } from '../../images/data/image-documents.js';
 import { imageMcpTools } from '../../images/delivery/image-mcp-tools.js';
+import { createTextTemplateStore } from '../../text-templates/data/text-template-store.js';
+import { createTextTemplates } from '../../text-templates/data/text-templates.js';
+import { textTemplateTools } from '../../text-templates/delivery/text-template-tools.js';
 import {
   TRANSCRIBER,
   type Transcriber,
 } from '../../transcription/data/transcriber.js';
+import { createTranscriptFiles } from '../../transcription/data/transcript-files.js';
 import { transcriptionMcpTools } from '../../transcription/delivery/transcription-mcp-tools.js';
 import { VideoExports } from '../../videos/data/video-exports.js';
 import { VideoProjects } from '../../videos/data/video-projects.js';
@@ -37,12 +42,26 @@ export class RelayMcpServer {
     @Inject(IMAGE_GENERATOR) generator: ImageGenerator | null,
     @Inject(TRANSCRIBER) transcriber: Transcriber | null,
   ) {
-    const videos = { projects, renderer, exports, assets };
+    const templates = createTextTemplates(
+      createTextTemplateStore(
+        resolve(process.env.TEXT_TEMPLATES_FILE ?? '.data/text-templates.json'),
+      ),
+      images.fonts,
+    );
+    const videos = {
+      projects,
+      renderer,
+      exports,
+      assets,
+      templates,
+      transcripts: createTranscriptFiles(),
+    };
     this.tools = [
       ...assetMcpTools(assets),
       ...imageMcpTools(images),
       ...generationMcpTools(generator, assets),
       ...videoMcpTools(videos),
+      ...textTemplateTools(templates, projects),
       ...transcriptionMcpTools(transcriber, videos),
     ];
     assertUniqueNames(this.tools);
