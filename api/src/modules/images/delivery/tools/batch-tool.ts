@@ -8,7 +8,7 @@ import {
 } from './tool-definition.js';
 
 /** Tools that replace or rewind the whole document, or write files, can't be part of a batch. */
-const NOT_BATCHABLE = new Set(['batch', 'export_image', 'undo', 'redo']);
+export const NOT_BATCHABLE = new Set(['batch', 'export_image', 'undo', 'redo']);
 const MAX_STEPS = 200;
 
 interface Step {

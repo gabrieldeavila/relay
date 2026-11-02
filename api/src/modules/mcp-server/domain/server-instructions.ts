@@ -12,6 +12,7 @@ Images (imageId from create_image, open_image or list_images)
 - Plan text with measure_text; for headlines use draw_text with a box and fit:"shrink". load_font a Google Fonts face for display text.
 - Call render_image to see the result after each batch (grid=true for coordinates, region to zoom in).
 - For photos: keep the Photo layer intact and build on top (duplicates, adjustment layers, masks).
+- Image templates are ready-made edits like photo looks (list_image_templates). When the person names one or wants a quick look, use apply_image_template; tweak with filters or the added layers' opacity. save_image_template keeps an edit they like for later.
 
 Videos (videoId from create_video or list_videos)
 - Times are seconds on the timeline. Clips sit on layers: 0 is the main track, higher layers draw on top; audio from all layers is mixed.

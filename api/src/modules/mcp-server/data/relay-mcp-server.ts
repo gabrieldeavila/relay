@@ -8,6 +8,8 @@ import {
   type ImageGenerator,
 } from '../../generation/data/image-generator.js';
 import { generationMcpTools } from '../../generation/delivery/generation-mcp-tools.js';
+import { createImageTemplates } from '../../image-templates/data/image-templates.js';
+import { imageTemplateTools } from '../../image-templates/delivery/image-template-tools.js';
 import { ImageDocuments } from '../../images/data/image-documents.js';
 import { imageMcpTools } from '../../images/delivery/image-mcp-tools.js';
 import { createTextTemplateStore } from '../../text-templates/data/text-template-store.js';
@@ -25,6 +27,7 @@ import { VideoRenderer } from '../../videos/data/video-renderer.js';
 import { videoMcpTools } from '../../videos/delivery/video-mcp-tools.js';
 import type { McpTool } from '../domain/mcp-tool.js';
 import { serverInstructions } from '../domain/server-instructions.js';
+import { createNamedJsonStore } from '../../../named-json-store.js';
 import { registerMcpTools } from './register-mcp-tools.js';
 
 /** Relay as an MCP server: one instance per request, sharing the same tools. */
@@ -48,6 +51,13 @@ export class RelayMcpServer {
       ),
       images.fonts,
     );
+    const imageTemplates = createImageTemplates(
+      createNamedJsonStore(
+        resolve(
+          process.env.IMAGE_TEMPLATES_FILE ?? '.data/image-templates.json',
+        ),
+      ),
+    );
     const videos = {
       projects,
       renderer,
@@ -59,6 +69,7 @@ export class RelayMcpServer {
     this.tools = [
       ...assetMcpTools(assets),
       ...imageMcpTools(images),
+      ...imageTemplateTools(imageTemplates, images),
       ...generationMcpTools(generator, assets),
       ...videoMcpTools(videos),
       ...textTemplateTools(templates, projects),

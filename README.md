@@ -37,6 +37,18 @@ claude mcp add --transport http relay http://localhost:4400/mcp
 Then ask, for example: "make a 1080x1920 cover that says BEACH DAY, then a vertical video
 from ~/Movies/beach.mov with the cover as the first 2 seconds and a caption".
 
+## Image templates (photo looks)
+
+Ready-made edits Claude can apply to a photo in one undo step: `black-white`, `noir`,
+`vintage`, `faded-film`, `cinematic`, `warm`, `cool`, `vivid`, `dreamy` and `vignette`. By
+default the look goes on a copy above the photo, so the original stays untouched and the
+copy's opacity sets the strength.
+
+Ask for more any time ("save this as my-look", "make a template that..."): `save_image_template`
+stores a list of image tool calls in `api/.data/image-templates.json`
+(`IMAGE_TEMPLATES_FILE` to move it). Placeholders like `$layer`, `$width` and `$cx` make a
+template fit any image.
+
 ## Optional: image AI
 
 Relay works fully without it. To let Claude generate elements that are hard to draw
