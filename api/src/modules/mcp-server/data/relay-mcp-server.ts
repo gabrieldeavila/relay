@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { McpServer } from '@modelcontextprotocol/server';
 import { AssetStore } from '../../assets/data/asset-store.js';
 import { assetMcpTools } from '../../assets/delivery/asset-mcp-tools.js';
+import { DesignTemplates } from '../../design-templates/data/design-templates.service.js';
+import { designTemplateTools } from '../../design-templates/delivery/design-template-tools.js';
 import {
   IMAGE_GENERATOR,
   type ImageGenerator,
@@ -39,6 +41,7 @@ export class RelayMcpServer {
   constructor(
     assets: AssetStore,
     images: ImageDocuments,
+    designs: DesignTemplates,
     projects: VideoProjects,
     renderer: VideoRenderer,
     exports: VideoExports,
@@ -70,6 +73,7 @@ export class RelayMcpServer {
       ...assetMcpTools(assets),
       ...imageMcpTools(images),
       ...imageTemplateTools(imageTemplates, images),
+      ...designTemplateTools(designs),
       ...generationMcpTools(generator, assets),
       ...videoMcpTools(videos),
       ...textTemplateTools(templates, projects),

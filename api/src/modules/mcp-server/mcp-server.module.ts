@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AssetsModule } from '../assets/assets.module.js';
+import { DesignTemplatesModule } from '../design-templates/design-templates.module.js';
 import { GenerationModule } from '../generation/generation.module.js';
 import { ImagesModule } from '../images/images.module.js';
 import { TranscriptionModule } from '../transcription/transcription.module.js';
@@ -10,6 +11,7 @@ import { McpController } from './delivery/mcp.controller.js';
 @Module({
   imports: [
     AssetsModule,
+    DesignTemplatesModule,
     GenerationModule,
     ImagesModule,
     TranscriptionModule,

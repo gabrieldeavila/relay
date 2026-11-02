@@ -5,7 +5,8 @@ Files
 - Photos, videos and audio become assets (import_media, or pass a path/url to any tool that takes a file). Originals are never changed. list_assets finds them again.
 - export_image turns an image into an image asset; add_clip puts it in a video (a cover, a logo, a title card). export_video makes an mp4 asset.
 
-Images (imageId from create_image, open_image or list_images)
+Images (imageId from create_image, open_image, create_from_design_template or list_images)
+- For social posts, stories, thumbnails, posters and banners, start from a design template (list_design_templates) when one fits: create_from_design_template with the person's texts, photos and colors, then adjust. When they like a design you made, offer save_design_template.
 - Coordinates are canvas pixels, origin top-left. get_document shows size, layers (bottom to top) and where each layer's content is.
 - Put separate elements on separate layers. Drawing tools target the active layer unless you pass layerId; add_layer makes its new layer active.
 - Prefer batch_image for groups of edits: all-or-nothing, one undo step.

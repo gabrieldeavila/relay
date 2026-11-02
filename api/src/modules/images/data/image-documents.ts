@@ -62,6 +62,11 @@ export class ImageDocuments implements OnModuleInit {
     return this.repository.list();
   }
 
+  /** An engine that is never saved, for drawing previews. */
+  scratchEngine(): DocumentEngine {
+    return new DocumentEngine(this.env);
+  }
+
   async nameOf(id: string) {
     return (await this.repository.find(id))?.name ?? null;
   }

@@ -37,6 +37,19 @@ claude mcp add --transport http relay http://localhost:4400/mcp
 Then ask, for example: "make a 1080x1920 cover that says BEACH DAY, then a vertical video
 from ~/Movies/beach.mov with the cover as the first 2 seconds and a caption".
 
+## Design templates (Canva-style)
+
+Ready-made designs with text, photo and color fields: `bold-announcement`, `photo-caption`,
+`sale-promo`, `quote-card` (Instagram posts), `story-photo-title` (story),
+`thumbnail-bold` (YouTube), `event-poster` and `blog-banner`. Browse them in the
+**Templates** tab of the app and click "Use template", or ask Claude ("make an event poster
+for my birthday on Dec 18 with ~/Pictures/me.jpg"). Every element lands on its own named
+layer, so you can keep editing. Fonts come from Google Fonts on first use.
+
+Ask Claude to save a design it made as a template (`save_design_template`); it shows up in
+the gallery. Saved designs live in `api/.data/design-templates.json`
+(`DESIGN_TEMPLATES_FILE` to move it).
+
 ## Image templates (photo looks)
 
 Ready-made edits Claude can apply to a photo in one undo step: `black-white`, `noir`,
