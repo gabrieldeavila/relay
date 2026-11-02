@@ -17,5 +17,18 @@
     "tab": "Vídeos",
     "emptyTitle": "Nenhum vídeo ainda",
     "emptyDescription": "Peça ao Claude algo como \"corte ~/Movies/viagem.mov em um vídeo vertical de 15 s com um título\"."
+  },
+  "templates": {
+    "tab": "Modelos",
+    "use": "Usar modelo",
+    "saved": "salvo",
+    "hint": "Escolha um design para começar uma imagem nova e peça ao Claude para colocar seus textos e fotos. Ou peça direto: \"faça um quote-card com a minha frase\".",
+    "categories": {
+      "instagram-post": "Posts do Instagram",
+      "instagram-story": "Stories do Instagram",
+      "youtube-thumbnail": "Miniaturas do YouTube",
+      "poster": "Pôsteres",
+      "banner": "Banners"
+    }
   }
 }

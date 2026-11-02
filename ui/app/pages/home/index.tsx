@@ -5,6 +5,7 @@ import { Tabs } from "@/ui/components/primitives/tabs";
 import { LanguageSelect } from "@/app/components/LanguageSelect";
 import { ConnectClaudeCard } from "./components/ConnectClaudeCard";
 import { ImagesTab } from "./components/ImagesTab";
+import { TemplatesTab } from "./components/TemplatesTab";
 import { VideosTab } from "./components/VideosTab";
 import { useStudioLists } from "./hooks/useStudioLists";
 
@@ -31,12 +32,16 @@ const Home = memo(() => {
           <Tabs.List>
             <Tabs.Trigger value="images">{t("images.tab")}</Tabs.Trigger>
             <Tabs.Trigger value="videos">{t("videos.tab")}</Tabs.Trigger>
+            <Tabs.Trigger value="templates">{t("templates.tab")}</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="images">
             <ImagesTab images={images.data} error={images.error} />
           </Tabs.Content>
           <Tabs.Content value="videos">
             <VideosTab videos={videos.data} error={videos.error} />
+          </Tabs.Content>
+          <Tabs.Content value="templates">
+            <TemplatesTab />
           </Tabs.Content>
         </Tabs>
       </div>

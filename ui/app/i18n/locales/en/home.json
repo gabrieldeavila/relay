@@ -17,5 +17,18 @@
     "tab": "Videos",
     "emptyTitle": "No videos yet",
     "emptyDescription": "Ask Claude something like \"cut ~/Movies/trip.mov into a 15 s vertical video with a title\"."
+  },
+  "templates": {
+    "tab": "Templates",
+    "use": "Use template",
+    "saved": "saved",
+    "hint": "Pick a design to start a new image, then ask Claude to fill in your texts and photos. Or ask directly: \"make a quote-card with my quote\".",
+    "categories": {
+      "instagram-post": "Instagram posts",
+      "instagram-story": "Instagram stories",
+      "youtube-thumbnail": "YouTube thumbnails",
+      "poster": "Posters",
+      "banner": "Banners"
+    }
   }
 }
