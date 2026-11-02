@@ -125,6 +125,8 @@ export type Command =
       layerId: string;
       src: string;
       rect: Rect;
+      /** Only the part of the image inside this rect is drawn. */
+      clip?: Rect;
     } & Targeted)
   | ({
       type: 'apply_filter';

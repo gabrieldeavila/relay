@@ -42,4 +42,20 @@ describe('fitImage', () => {
       height: 100,
     });
   });
+
+  it('fits into a frame instead of the canvas', () => {
+    const frame = { x: 10, y: 20, width: 40, height: 40 };
+    expect(fitImage({ natural, canvas, fit: 'cover', frame })).toEqual({
+      x: -10,
+      y: 20,
+      width: 80,
+      height: 40,
+    });
+    expect(fitImage({ natural, canvas, fit: 'contain', frame })).toEqual({
+      x: 10,
+      y: 30,
+      width: 40,
+      height: 20,
+    });
+  });
 });

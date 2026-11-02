@@ -16,7 +16,7 @@ export const imageTools = [
     name: 'place_image',
     title: 'Place image',
     description:
-      'Draws an image (an asset, a local file, an http(s) URL or a data:image URI) onto a layer, e.g. a photo or a logo on top of a layout. Files and URLs become assets. Without width/height it uses the natural size; one side keeps the aspect ratio; fit="contain"/"cover" fits it to the canvas.',
+      'Draws an image (an asset, a local file, an http(s) URL or a data:image URI) onto a layer, e.g. a photo or a logo on top of a layout. Files and URLs become assets. Without width/height it uses the natural size; one side keeps the aspect ratio; fit="contain"/"cover" fits it to the canvas, or to `frame` (cover crops to the frame, like a photo slot).',
     input: {
       layerId: layerIdField,
       assetId: z
@@ -38,6 +38,9 @@ export const imageTools = [
       width: z.number().positive().optional(),
       height: z.number().positive().optional(),
       fit: z.enum(['none', 'contain', 'cover']).default('none'),
+      frame: rectField
+        .optional()
+        .describe('With fit contain/cover: the box to fit into'),
       target: targetField,
     },
     async run(
@@ -51,8 +54,16 @@ export const imageTools = [
         canvas: engine.doc.meta,
         ...placement,
       });
+      const clip = placement.fit === 'cover' ? placement.frame : undefined;
       await engine.execute(
-        { type: 'place_image', layerId: id, src: image.src, rect, target },
+        {
+          type: 'place_image',
+          layerId: id,
+          src: image.src,
+          rect,
+          clip,
+          target,
+        },
         source,
       );
       return {
